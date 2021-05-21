@@ -16,7 +16,12 @@
 #
 
 add_library (SMCE_Boost INTERFACE)
-set (Boost_USE_STATIC_LIBS True)
+if (DEFINED ENV{Boost_USE_STATIC_LIBS})
+    set (Boost_USE_STATIC_LIBS "$ENV{Boost_USE_STATIC_LIBS}")
+else ()
+    set (Boost_USE_STATIC_LIBS True)
+endif ()
+
 if (MSVC)
     find_package (Boost 1.74 COMPONENTS atomic filesystem date_time)
 else ()

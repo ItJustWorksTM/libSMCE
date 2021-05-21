@@ -1,0 +1,14 @@
+FROM alpine:edge as builder
+WORKDIR /tmp
+COPY . /tmp/src
+ENV DESTDIR=/tmp/dist Boost_USE_STATIC_LIBS=False
+RUN mkdir "$DESTDIR" && \
+    apk update && \
+    apk upgrade && \
+    apk add git ninja cmake g++ boost-dev openssl-dev openssl-libs-static && \
+    cmake -G Ninja -S ./src -B ./build && \
+    cmake --build ./build --target install
+
+FROM alpine:edge
+COPY --from=builder /tmp/dist /
+RUN apk --no-cache add boost
