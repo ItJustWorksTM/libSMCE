@@ -323,7 +323,7 @@ jobs:
 #         cd build/test
 #         ctest --output-on-failure
   docker:
-    name: Docker libsmce:slim
+    name: Docker libsmce
     runs-on: ubuntu-latest
     steps:
       - name: Ref info
@@ -349,7 +349,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: Dockerfile.slim
           push: false
           platforms: linux/amd64
           tags: libsmce-amd64:latest
@@ -357,7 +356,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: Dockerfile.slim
           push: false
           platforms: linux/arm64
           tags: libsmce-arm64:latest
@@ -365,7 +363,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: Dockerfile.slim
           push: false
           platforms: linux/s390x
           tags: libsmce-s390x:latest
@@ -373,32 +370,111 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: Dockerfile.slim
           push: true
           platforms: linux/amd64,linux/arm64,linux/s390x
           tags: |
-            ghcr.io/itjustworkstm/libsmce/libsmce:git-${{ github.sha }}-slim
-            ghcr.io/itjustworkstm/libsmce/libsmce:git-${{ github.sha }}-slim
+            ghcr.io/itjustworkstm/libsmce/libsmce:git-${{ github.sha }}
       - name: Export and push images for head
         if: github.event_name == 'push' && github.ref == 'refs/head/master'
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: Dockerfile.slim
           push: true
           platforms: linux/amd64,linux/arm64,linux/s390x
           tags: |
-            ghcr.io/itjustworkstm/libsmce/libsmce:master-slim
-            ghcr.io/itjustworkstm/libsmce/libsmce:trunk-slim
+            ghcr.io/itjustworkstm/libsmce/libsmce:master
+            ghcr.io/itjustworkstm/libsmce/libsmce:trunk
       - name: Push release
         if: github.event_name == 'push' && github.ref != 'refs/tags/vignore' && startsWith(github.ref, 'refs/tags/v')
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: Dockerfile.slim
           push: true
           platforms: linux/amd64,linux/arm64,linux/s390x
           tags: |
-            ghcr.io/itjustworkstm/libsmce/libsmce:slim
-            ghcr.io/itjustworkstm/libsmce/libsmce:latest-slim
-            ghcr.io/itjustworkstm/libsmce/libsmce:${{ steps.ref_info.outputs.SOURCE_TAG }}-slim
+            ghcr.io/itjustworkstm/libsmce/libsmce:latest
+            ghcr.io/itjustworkstm/libsmce/libsmce:${{ steps.ref_info.outputs.SOURCE_TAG }}
+
+  docker-extra:
+    strategy:
+      fail-fast: false
+      matrix:
+        suffix: [ slim ]
+    name: Docker libsmce:${{ matrix.suffix }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ref info
+        id: ref_info
+        run: |
+          echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
+          echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
+          echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Setup Docker BuildX
+        uses: docker/setup-buildx-action@v1
+      - name: Log in to GitHub Docker Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build linux/amd64
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: Dockerfile.${{ matrix.suffix }}
+          push: false
+          platforms: linux/amd64
+          tags: libsmce-amd64:latest
+      - name: Build linux/arm64
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: Dockerfile.${{ matrix.suffix }}
+          push: false
+          platforms: linux/arm64
+          tags: libsmce-arm64:latest
+      - name: Build linux/s390x
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: Dockerfile.${{ matrix.suffix }}
+          push: false
+          platforms: linux/s390x
+          tags: libsmce-s390x:latest
+      - name: Export and push images for commit
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: Dockerfile.${{ matrix.suffix }}
+          push: true
+          platforms: linux/amd64,linux/arm64,linux/s390x
+          tags: |
+            ghcr.io/itjustworkstm/libsmce/libsmce:git-${{ github.sha }}-${{ matrix.suffix }}
+      - name: Export and push images for head
+        if: github.event_name == 'push' && github.ref == 'refs/head/master'
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: Dockerfile.${{ matrix.suffix }}
+          push: true
+          platforms: linux/amd64,linux/arm64,linux/s390x
+          tags: |
+            ghcr.io/itjustworkstm/libsmce/libsmce:master-${{ matrix.suffix }}
+            ghcr.io/itjustworkstm/libsmce/libsmce:trunk-${{ matrix.suffix }}
+      - name: Push release
+        if: github.event_name == 'push' && github.ref != 'refs/tags/vignore' && startsWith(github.ref, 'refs/tags/v')
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: Dockerfile.${{ matrix.suffix }}
+          push: true
+          platforms: linux/amd64,linux/arm64,linux/s390x
+          tags: |
+            ghcr.io/itjustworkstm/libsmce/libsmce:${{ matrix.suffix }}
+            ghcr.io/itjustworkstm/libsmce/libsmce:latest-${{ matrix.suffix }}
+            ghcr.io/itjustworkstm/libsmce/libsmce:${{ steps.ref_info.outputs.SOURCE_TAG }}-${{ matrix.suffix }}
