@@ -302,6 +302,7 @@ jobs:
 #   env:
 #     CC: ${{ matrix.compiler.c }}
 #     CXX: ${{ matrix.compiler.cxx }}
+#     OPENSSL_USE_STATIC_LIBS: False
 #   steps:
 #     - run: cd ~
 #     - uses: actions/checkout@v2
