@@ -447,6 +447,9 @@ jobs:
       matrix:
         os:
           - name: Debian
+            codename: Bookworm
+            image: debian:bookworm
+          - name: Debian
             codename: Bullseye
             image: gcc:11-bullseye
           - name: Debian
