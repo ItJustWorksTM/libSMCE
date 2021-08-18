@@ -531,27 +531,22 @@ jobs:
           - name: Fedora
             codename: 33
             image: fedora:33
-            pkg_mgr: dnf
             profile: Fedora33
           - name: Fedora
             codename: 34
             image: fedora:34
-            pkg_mgr: dnf
             profile: FedoraHost
 #          - name: Fedora
 #            codename: Rawhide
 #            image: fedora:rawhide
-#            pkg_mgr: dnf
 #            profile: FedoraHost
           - name: openSUSE
             codename: Tumbleweed
             image: opensuse/tumbleweed
-            pkg_mgr: zypper --no-gpg-checks
             profile: FedoraHost
           - name: OpenMandriva
             codename: Lx4.2
             image: openmandriva/4.2
-            pkg_mgr: dnf
             profile: FedoraHost
     container: ${{ matrix.os.image }}
     steps:
@@ -564,9 +559,9 @@ jobs:
           echo ::set-output name=SNAKE::$(zypper info boost-devel | grep -oP 'Version\s*: \K\d+\.\d+\.\d+' | sed 's/\./_/g')
        - name: Fetch deps
          run: |
-           [[ '${{ matrix.os.name }}' == 'Fedora' ]] && ${{ matrix.os.pkg_mgr }} install -y tar git cmake rpmdevtools rpmlint ninja-build gcc-c++ boost-devel openssl-devel || true
-           [[ '${{ matrix.os.name }}' == 'openSUSE' ]] && ${{ matrix.os.pkg_mgr }} install -y tar git cmake rpmdevtools rpm-build rpmlint ninja gcc-c++ boost-devel libboost_atomic${{ steps.boost-ver.outputs.SNAKE }}-devel libboost_filesystem${{ steps.boost-ver.outputs.SNAKE }}-devel libopenssl-devel || true
-           [[ '${{ matrix.os.name }}' == 'OpenMandriva' ]] && ${{ matrix.os.pkg_mgr }} install -y tar git cmake rpmdevtools rpm-build rpmlint ninja gcc-c++ glibc-devel lib64boost-devel lib64openssl-devel || true
+           [[ '${{ matrix.os.name }}' == 'Fedora' ]] && dnf install -y tar git cmake rpmdevtools rpmlint ninja-build gcc-c++ boost-devel openssl-devel || true
+           [[ '${{ matrix.os.name }}' == 'openSUSE' ]] && zypper install -y tar git cmake rpmdevtools rpm-build rpmlint ninja gcc-c++ boost-devel libboost_atomic${{ steps.boost-ver.outputs.SNAKE }}-devel libboost_filesystem${{ steps.boost-ver.outputs.SNAKE }}-devel libopenssl-devel || true
+           [[ '${{ matrix.os.name }}' == 'OpenMandriva' ]] && dnf install -y tar git cmake rpmdevtools rpm-build rpmlint ninja gcc-c++ glibc-devel lib64boost-devel lib64openssl-devel || true
        - uses: actions/checkout@v2
        - name: CMake Configure
          run: cmake -G Ninja -DSMCE_BUILD_PROFILE=${{ matrix.os.profile }} -S ./ -B ./build
@@ -582,9 +577,10 @@ jobs:
            image: ${{ matrix.os.image }}
            options: -v ${{ github.workspace }}:/host
            run: |
-             ${{ matrix.os.pkg_mgr }} install -y /host/build/*.rpm
-             ${{ matrix.os.pkg_mgr }} install -y cmake gcc-c++
-             [[ '${{ matrix.os.name }}' == 'OpenMandriva' ]] && ${{ matrix.os.pkg_mgr }} install -y make glibc-devel || true
+             [[ '${{ matrix.os.name }}' == 'openSUSE' ]] && zypper install -y dnf rpm-repos-openSUSE || true
+             dnf install -y /host/build/*.rpm
+             dnf install -y cmake gcc-c++
+             [[ '${{ matrix.os.name }}' == 'OpenMandriva' ]] && dnf install -y make glibc-devel || true
              cd /host/extra/samples/stduart
              CC=gcc CXX=g++ cmake -S . -B build
              cmake --build ./build
