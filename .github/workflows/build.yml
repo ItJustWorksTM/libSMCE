@@ -557,10 +557,15 @@ jobs:
     steps:
        - name: Setup workdir
          run: mkdir /tmp/wk && cd /tmp/wk
+       - name: Read Boost version
+         id: boost-ver
+         if: matrix.os.name == 'openSUSE'
+         run: |
+          echo ::set-output name=SNAKE::$(zypper info boost-devel | grep -oP 'Version\s*: \K\d+\.\d+\.\d+' | sed 's/\./_/g')
        - name: Fetch deps
          run: |
            [[ '${{ matrix.os.name }}' == 'Fedora' ]] && ${{ matrix.os.pkg_mgr }} install -y tar git cmake rpmdevtools rpmlint ninja-build gcc-c++ boost-devel openssl-devel || true
-           [[ '${{ matrix.os.name }}' == 'openSUSE' ]] && ${{ matrix.os.pkg_mgr }} install -y tar git cmake rpmdevtools rpm-build rpmlint ninja gcc-c++ boost-devel libopenssl-devel || true
+           [[ '${{ matrix.os.name }}' == 'openSUSE' ]] && ${{ matrix.os.pkg_mgr }} install -y tar git cmake rpmdevtools rpm-build rpmlint ninja gcc-c++ boost-devel libboost_atomic${{ steps.boost-ver.outputs.SNAKE }}-devel libboost_filesystem${{ steps.boost-ver.outputs.SNAKE }}-devel libopenssl-devel || true
            [[ '${{ matrix.os.name }}' == 'OpenMandriva' ]] && ${{ matrix.os.pkg_mgr }} install -y tar git cmake rpmdevtools rpm-build rpmlint ninja gcc-c++ glibc-devel lib64boost-devel lib64openssl-devel || true
        - uses: actions/checkout@v2
        - name: CMake Configure
