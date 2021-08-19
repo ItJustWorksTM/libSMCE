@@ -51,6 +51,9 @@ add_executable (SMCE_Tests
 configure_coverage (SMCE_Tests)
 target_link_libraries (SMCE_Tests PUBLIC "${SMCE_LINK_TARGET}" Catch2::Catch2WithMain)
 target_compile_definitions (SMCE_Tests PUBLIC SMCE_ARDRIVO_MQTT=$<BOOL:${SMCE_ARDRIVO_MQTT}>)
+if (MSVC)
+  target_compile_definitions (SMCE_Tests PUBLIC MSVC_DEBUG=$<CONFIG:Debug>)
+endif ()
 catch_discover_tests (SMCE_Tests)
 
 set (SMCE_TEST_DIR "${CMAKE_CURRENT_BINARY_DIR}/test_dir")

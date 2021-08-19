@@ -112,6 +112,7 @@ TEST_CASE("BoardView UART", "[BoardView]") {
     REQUIRE(uart0.tx().size() == 0);
     REQUIRE(in == out);
 
+#if !MSVC_DEBUG
     std::reverse(out.begin(), out.end());
     uart0.rx().write(out);
     ticks = 16'000;
@@ -123,6 +124,7 @@ TEST_CASE("BoardView UART", "[BoardView]") {
     REQUIRE(uart0.tx().read(in) == in.size());
     REQUIRE(uart0.tx().size() == 0);
     REQUIRE(in == out);
+#endif
 
     REQUIRE(br.stop());
 }
