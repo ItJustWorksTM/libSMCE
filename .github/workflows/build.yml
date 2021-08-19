@@ -283,11 +283,11 @@ jobs:
             -S ./ -B ./build
       - name: CMake build
         run: cmake --build ./build
-      #- name: Build & Run tests
-      #  run: |
-      #    cmake --build ./build --target SMCE_Tests
-      #    cd build/test
-      #    ctest --output-on-failure
+      - name: Build & Run tests
+        run: |
+          cmake --build ./build --target SMCE_Tests
+          cd build/test
+          ctest --output-on-failure
       - name: Package
         run: |
           mkdir ./build/packages
