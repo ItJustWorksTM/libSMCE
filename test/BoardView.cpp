@@ -109,6 +109,7 @@ TEST_CASE("BoardView UART", "[BoardView]") {
         std::this_thread::sleep_for(1ms);
     } while (uart0.tx().size() != in.size());
     REQUIRE(uart0.tx().read(in) == in.size());
+    REQUIRE(uart0.tx().size() == 0);
     REQUIRE(in == out);
 
     std::reverse(out.begin(), out.end());
@@ -120,6 +121,7 @@ TEST_CASE("BoardView UART", "[BoardView]") {
         std::this_thread::sleep_for(1ms);
     } while (uart0.tx().size() != in.size());
     REQUIRE(uart0.tx().read(in) == in.size());
+    REQUIRE(uart0.tx().size() == 0);
     REQUIRE(in == out);
 
     REQUIRE(br.stop());
