@@ -21,6 +21,8 @@
 #include <catch2/catch_test_macros.hpp>
 #include "SMCE/Board.hpp"
 #include "SMCE/BoardView.hpp"
+#include "SMCE/Sketch.hpp"
+#include "SMCE/SketchConf.hpp"
 #include "SMCE/Toolchain.hpp"
 #include "defs.hpp"
 
@@ -49,30 +51,31 @@ TEST_CASE("Patch lib", "[Board]") {
     smce::Toolchain tc{SMCE_PATH};
     REQUIRE(!tc.check_suitable_environment());
     // clang-format off
-    smce::Sketch sk{SKETCHES_PATH "patch", {
-        .fqbn = "arduino:avr:nano",
-        .complink_libs = { smce::SketchConfig::LocalArduinoLibrary{PATCHES_PATH "ESP32_analogRewrite", "ESP32 AnalogWrite"} }
-    }};
+    smce::SketchConfig skc{
+        "arduino:avr:nano",
+        {},
+        {},
+        { smce::SketchConfig::LocalArduinoLibrary{PATCHES_PATH "ESP32_analogRewrite", "ESP32 AnalogWrite"} },
+        {},
+        {}
+    };
     // clang-format on
+    smce::Sketch sk{SKETCHES_PATH "patch", std::move(skc)};
     const auto ec = tc.compile(sk);
     if (ec)
         std::cerr << tc.build_log().second;
     REQUIRE_FALSE(ec);
     smce::Board br{};
     // clang-format off
-    REQUIRE(br.configure({
-        .pins = {0},
-        .gpio_drivers = {
-            smce::BoardConfig::GpioDrivers{
-                .pin_id = 0,
-                .analog_driver = smce::BoardConfig::GpioDrivers::AnalogDriver{
-                    .board_read = false,
-                    .board_write = true
-                }
-            }
-        }
-    }));
+    smce::BoardConfig bc{
+        /* .pins = */{0},
+        /* .gpio_drivers = */{ smce::BoardConfig::GpioDrivers{0, std::nullopt, smce::BoardConfig::GpioDrivers::AnalogDriver{true, true}} },
+        {},
+        {},
+        {}
+    };
     // clang-format on
+    REQUIRE(br.configure(std::move(bc)));
     REQUIRE(br.attach_sketch(sk));
     REQUIRE(br.start());
     auto bv = br.view();

@@ -21,6 +21,7 @@
 #include <iostream>
 #include <catch2/catch_test_macros.hpp>
 #include "SMCE/Board.hpp"
+#include "SMCE/BoardConf.hpp"
 #include "SMCE/BoardView.hpp"
 #include "SMCE/Toolchain.hpp"
 #include "defs.hpp"
@@ -65,22 +66,15 @@ TEST_CASE("SD polyfill", "[SD File]") {
 
     smce::Board br{};
     // clang-format off
-    REQUIRE(br.configure({
-        .pins = {0},
-        .gpio_drivers = {
-            smce::BoardConfig::GpioDrivers{
-                .pin_id = 0,
-                .digital_driver = smce::BoardConfig::GpioDrivers::DigitalDriver{
-                    .board_read = true,
-                    .board_write = true
-                }
-            }
-            },
-            .sd_cards = {
-            smce::BoardConfig::SecureDigitalStorage{ .root_dir = STORAGE_PATH }
-        }
-    }));
+    smce::BoardConfig bc{
+        /* .pins = */{0},
+        /* .gpio_drivers = */{ smce::BoardConfig::GpioDrivers{0, smce::BoardConfig::GpioDrivers::DigitalDriver{true, true}, std::nullopt} },
+        {},
+        /* .sd_cards = */{ smce::BoardConfig::SecureDigitalStorage{0, STORAGE_PATH } },
+        {}
+    };
     // clang-format on
+    REQUIRE(br.configure(std::move(bc)));
 
     if (std::filesystem::exists(STORAGE_PATH))
         std::filesystem::remove_all(STORAGE_PATH);

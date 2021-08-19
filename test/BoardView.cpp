@@ -22,6 +22,7 @@
 #include <thread>
 #include <catch2/catch_test_macros.hpp>
 #include "SMCE/Board.hpp"
+#include "SMCE/BoardConf.hpp"
 #include "SMCE/BoardView.hpp"
 #include "SMCE/Toolchain.hpp"
 #include "defs.hpp"
@@ -38,34 +39,23 @@ TEST_CASE("BoardView GPIO", "[BoardView]") {
     REQUIRE_FALSE(ec);
     smce::Board br{};
     // clang-format off
-    REQUIRE(br.configure({
-        .pins = {0, 2},
-        .gpio_drivers = {
+    smce::BoardConfig bc{
+        /* .pins = */{0, 2},
+        /* .gpio_drivers = */{
             smce::BoardConfig::GpioDrivers{
-                .pin_id = 0,
-                .digital_driver = smce::BoardConfig::GpioDrivers::DigitalDriver{
-                    .board_read = true,
-                    .board_write = false
-                        },
-                        .analog_driver = smce::BoardConfig::GpioDrivers::AnalogDriver{
-                    .board_read = true,
-                    .board_write = false
-                }
+                0,
+                smce::BoardConfig::GpioDrivers::DigitalDriver{true, false},
+                smce::BoardConfig::GpioDrivers::AnalogDriver{true, false}
             },
             smce::BoardConfig::GpioDrivers{
-                .pin_id = 2,
-                .digital_driver = smce::BoardConfig::GpioDrivers::DigitalDriver{
-                    .board_read = false,
-                    .board_write = true
-                        },
-                        .analog_driver = smce::BoardConfig::GpioDrivers::AnalogDriver{
-                    .board_read = false,
-                    .board_write = true
-                }
+                2,
+                smce::BoardConfig::GpioDrivers::DigitalDriver{false, true},
+                smce::BoardConfig::GpioDrivers::AnalogDriver{false, true}
             },
         }
-    }));
+    };
     // clang-format on
+    REQUIRE(br.configure(std::move(bc)));
     REQUIRE(br.attach_sketch(sk));
     REQUIRE(br.start());
     auto bv = br.view();
