@@ -36,7 +36,7 @@ include (CTest)
 include (Catch)
 
 set (SMCE_LINK_TARGET SMCE)
-if (NOT SMCE_BUILD_SHARED)
+if (NOT SMCE_BUILD_SHARED OR MSVC)
   string (APPEND SMCE_LINK_TARGET "_static")
 endif ()
 
