@@ -30,7 +30,7 @@ Check our [Wiki](https://github.com/ItJustWorksTM/libSMCE/wiki) for more informa
 
 
 ### Runtime Requirements
-- [CMake](https://www.kitware.com/cmake) >= 3.10
+- [CMake](https://www.kitware.com/cmake) >= 3.12
 - C++ compiler with support for at least C++11 - MinGW and MSVC-Wine are NOT officially supported
 - [ArduinoCLI](https://arduino.github.io/arduino-cli) (**IMPORTANT NOTE**: we use [CMAW](https://github.com/AeroStun/CMAW) to manage ArduinoCLI)
 
