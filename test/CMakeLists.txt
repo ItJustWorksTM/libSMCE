@@ -56,6 +56,7 @@ if (MSVC)
 endif ()
 catch_discover_tests (SMCE_Tests)
 
+add_dependencies (SMCE_Tests ArdRtRes)
 set (SMCE_TEST_DIR "${CMAKE_CURRENT_BINARY_DIR}/test_dir")
 file (MAKE_DIRECTORY "${SMCE_TEST_DIR}/smce_root")
 add_custom_command (TARGET SMCE_Tests POST_BUILD

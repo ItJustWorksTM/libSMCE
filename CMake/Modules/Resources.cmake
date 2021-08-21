@@ -15,20 +15,34 @@
 #  limitations under the License.
 #
 
+set (SMCE_RUNTIME_CMAKE_MODULES)
+macro (copy_runtime_module MODULE_NAME)
+  configure_file ("${PROJECT_SOURCE_DIR}/CMake/Runtime/${MODULE_NAME}.cmake" "${SMCE_RTRES_DIR}/SMCE/share/CMake/Modules/${MODULE_NAME}.cmake" COPYONLY)
+  list (APPEND SMCE_RUNTIME_CMAKE_MODULES "${SMCE_RTRES_DIR}/SMCE/share/CMake/Modules/${MODULE_NAME}.cmake")
+endmacro ()
+
 macro (setup_smce_resources)
   set (SMCE_RTRES_DIR "${PROJECT_BINARY_DIR}/RtResources")
   file (REMOVE_RECURSE "${SMCE_RTRES_DIR}")
   file (MAKE_DIRECTORY "${SMCE_RTRES_DIR}")
 
   file (MAKE_DIRECTORY "${SMCE_RTRES_DIR}/SMCE/share")
-  file (COPY "${PROJECT_SOURCE_DIR}/CMake/Runtime" DESTINATION "${SMCE_RTRES_DIR}/SMCE/share")
-  file (COPY "${PROJECT_SOURCE_DIR}/CMake/Scripts" DESTINATION "${SMCE_RTRES_DIR}/SMCE/share")
+
+  configure_file ("${PROJECT_SOURCE_DIR}/CMake/Runtime/CMakeLists.txt" "${SMCE_RTRES_DIR}/SMCE/share/CMake/Runtime/CMakeLists.txt" COPYONLY)
+  configure_file ("${PROJECT_SOURCE_DIR}/CMake/Scripts/ConfigureSketch.cmake" "${SMCE_RTRES_DIR}/SMCE/share/CMake/Scripts/ConfigureSketch.cmake" COPYONLY)
+  copy_runtime_module (ArduinoPreludeVersion)
+  copy_runtime_module (InstallArduinoPrelude)
+  copy_runtime_module (LegacyPreprocessing)
+  copy_runtime_module (PrepareLibs)
+  copy_runtime_module (Preprocessing)
+  copy_runtime_module (ProbeCompilerIncdirs)
+  copy_runtime_module (UseHighestCxxStandard)
 
   file (MAKE_DIRECTORY "${SMCE_RTRES_DIR}/Ardrivo")
   file (MAKE_DIRECTORY "${SMCE_RTRES_DIR}/Ardrivo/bin")
   file (MAKE_DIRECTORY "${SMCE_RTRES_DIR}/Ardrivo/share")
 
-  file (COPY "${PROJECT_SOURCE_DIR}/share/Ardrivo/sketch_main.cpp" DESTINATION "${SMCE_RTRES_DIR}/Ardrivo/share")
+  configure_file ("${PROJECT_SOURCE_DIR}/share/Ardrivo/sketch_main.cpp" "${SMCE_RTRES_DIR}/Ardrivo/share/sketch_main.cpp" COPYONLY)
 
   set (SMCE_RESOURCES_ARK "${PROJECT_BINARY_DIR}/SMCE_Resources.zip")
   file (GENERATE
@@ -45,10 +59,12 @@ macro (setup_smce_resources)
       COMMAND "${CMAKE_COMMAND}" -E copy "$<TARGET_LINKER_FILE:Ardrivo>" "${SMCE_RTRES_DIR}/Ardrivo/bin"
       COMMAND "${CMAKE_COMMAND}" -E tar cf "${SMCE_RESOURCES_ARK}" --format=zip -- "${SMCE_RTRES_DIR}"
       DEPENDS
-      Ardrivo
-      "${PROJECT_SOURCE_DIR}/CMake/Runtime/CMakeLists.txt"
-      "${PROJECT_SOURCE_DIR}/CMake/Scripts/ConfigureSketch.cmake"
-      "${PROJECT_SOURCE_DIR}/share/Ardrivo/sketch_main.cpp"
+        Ardrivo
+        "${SMCE_RTRES_DIR}/Ardrivo/share/sketch_main.cpp"
+        "${SMCE_RTRES_DIR}/SMCE/share/CMake/Runtime/CMakeLists.txt"
+        "${SMCE_RTRES_DIR}/SMCE/share/CMake/Scripts/ConfigureSketch.cmake"
+        ${SMCE_RUNTIME_CMAKE_MODULES}
+      COMMENT "Generating resources archive"
   )
 
   file (MAKE_DIRECTORY "${SMCE_RTRES_DIR}/Ardrivo/include")

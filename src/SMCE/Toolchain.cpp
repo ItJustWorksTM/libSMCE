@@ -181,7 +181,7 @@ std::error_code Toolchain::do_configure(Sketch& sketch) noexcept {
         std::move(libs.cl_local_arg),
         std::move(libs.cl_patch_arg),
         "-P",
-        m_res_dir.string() + "/RtResources/SMCE/share/Scripts/ConfigureSketch.cmake",
+        m_res_dir.string() + "/RtResources/SMCE/share/CMake/Scripts/ConfigureSketch.cmake",
         (bp::std_out & bp::std_err) > cmake_conf_out
 #if BOOST_OS_WINDOWS
        , bp::windows::create_no_window
