@@ -56,15 +56,17 @@ if (MSVC)
 endif ()
 catch_discover_tests (SMCE_Tests)
 
-add_dependencies (SMCE_Tests ArdRtRes)
 set (SMCE_TEST_DIR "${CMAKE_CURRENT_BINARY_DIR}/test_dir")
 file (MAKE_DIRECTORY "${SMCE_TEST_DIR}/smce_root")
-add_custom_command (TARGET SMCE_Tests POST_BUILD
-    WORKING_DIRECTORY "${SMCE_TEST_DIR}/smce_root"
+add_custom_target (SMCE_Tests_ResDir
     COMMAND "${CMAKE_COMMAND}" -E tar xf "${SMCE_RESOURCES_ARK}"
+    DEPENDS "${SMCE_RESOURCES_ARK}"
+    WORKING_DIRECTORY "${SMCE_TEST_DIR}/smce_root"
+    COMMENT "Inflating resources for testsuite execution"
 )
 file (COPY sketches DESTINATION "${SMCE_TEST_DIR}")
 file (COPY patches DESTINATION "${SMCE_TEST_DIR}")
 target_compile_definitions (SMCE_Tests PUBLIC "SMCE_TEST_DIR=\"${SMCE_TEST_DIR}\"")
+add_dependencies (SMCE_Tests SMCE_Tests_ResDir)
 
 unset (SMCE_LINK_TARGET)
