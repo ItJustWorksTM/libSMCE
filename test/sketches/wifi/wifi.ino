@@ -3,7 +3,7 @@
 
 void setup() {
 #ifndef __SMCE__
-    Wifi.begin("foo", "bar");
+    WiFi.begin("foo", "bar");
 #endif
     MQTTClient clt;
     clt.begin(WiFi);
