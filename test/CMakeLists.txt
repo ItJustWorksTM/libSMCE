@@ -36,7 +36,7 @@ include (CTest)
 include (Catch)
 
 set (SMCE_LINK_TARGET SMCE)
-if (NOT SMCE_BUILD_SHARED OR MSVC)
+if (NOT SMCE_BUILD_SHARED)
   string (APPEND SMCE_LINK_TARGET "_static")
 endif ()
 
@@ -55,6 +55,12 @@ if (MSVC)
   target_compile_definitions (SMCE_Tests PUBLIC MSVC_DEBUG=$<CONFIG:Debug>)
 endif ()
 catch_discover_tests (SMCE_Tests)
+
+if (WIN32 AND SMCE_BUILD_SHARED)
+  add_custom_command (TARGET SMCE_Tests PRE_LINK
+      COMMAND "${CMAKE_COMMAND}" -E copy_if_different "$<TARGET_FILE:SMCE>" "$<TARGET_FILE_DIR:SMCE_Tests>"
+  )
+endif ()
 
 set (SMCE_TEST_DIR "${CMAKE_CURRENT_BINARY_DIR}/test_dir")
 file (MAKE_DIRECTORY "${SMCE_TEST_DIR}/smce_root")
