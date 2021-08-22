@@ -68,7 +68,7 @@ enum class Board::Command {
 };
 // clang-format on
 
-struct Board::Internal {
+struct SMCE_INTERNAL Board::Internal {
     Uuid uuid = Uuid::generate();
     SharedBoardData sbdata;
     bp::child sketch;

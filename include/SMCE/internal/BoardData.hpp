@@ -41,6 +41,7 @@
 #    include <boost/interprocess/managed_shared_memory.hpp>
 #endif
 #include <boost/interprocess/sync/spin/mutex.hpp>
+#include "SMCE/SMCE_iface.h"
 #include "SMCE/fwd.hpp"
 
 namespace smce {
@@ -64,7 +65,7 @@ struct IpcAtomicValue : boost::ipc_atomic<T> {
 };
 
 /// \internal
-struct IpcMovableMutex : boost::interprocess::ipcdetail::spin_mutex {
+struct SMCE_INTERNAL IpcMovableMutex : boost::interprocess::ipcdetail::spin_mutex {
     IpcMovableMutex() noexcept = default;
     IpcMovableMutex(IpcMovableMutex&&) noexcept {}                           // HSD never
     IpcMovableMutex& operator=(IpcMovableMutex&&) noexcept { return *this; } // HSD never
@@ -86,7 +87,7 @@ using ShmBasicString = boost::interprocess::basic_string<T, std::char_traits<T>,
 using ShmString = ShmBasicString<char>;
 
 /// \internal
-struct BoardData {
+struct SMCE_INTERNAL BoardData {
     struct Pin {
         // clang-format off
         enum class DataDirection {
@@ -110,7 +111,7 @@ struct BoardData {
         IpcAtomicValue<DataDirection> data_direction = DataDirection::in; // rw
         IpcAtomicValue<ActiveDriver> active_driver = ActiveDriver::gpio;  // rw
     };
-    struct UartChannel {
+    struct SMCE_INTERNAL UartChannel {
         IpcAtomicValue<bool> active = false; // rw
         IpcMovableMutex rx_mut;
         IpcMovableMutex tx_mut;
@@ -123,7 +124,7 @@ struct BoardData {
         std::optional<std::uint16_t> tx_pin_override;            // ro
         explicit UartChannel(const ShmAllocator<void>&);
     };
-    struct DirectStorage {
+    struct SMCE_INTERNAL DirectStorage {
         // clang-format off
         enum class Bus { SPI };
         // clang-format om
@@ -132,7 +133,7 @@ struct BoardData {
         ShmString root_dir;
         explicit DirectStorage(const ShmAllocator<void>&);
     };
-    struct FrameBuffer {
+    struct SMCE_INTERNAL FrameBuffer {
         // clang-format off
         enum struct Direction {
             in,

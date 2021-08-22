@@ -27,12 +27,13 @@
 #include "SMCE/BoardConf.hpp"
 #include "SMCE/BoardView.hpp"
 #include "SMCE/SMCE_fs.hpp"
+#include "SMCE/SMCE_iface.h"
 #include "SMCE/SketchConf.hpp"
 #include "SMCE/fwd.hpp"
 
 namespace smce {
 
-class Board {
+class SMCE_API Board {
   public:
     // clang-format off
     enum class Status {

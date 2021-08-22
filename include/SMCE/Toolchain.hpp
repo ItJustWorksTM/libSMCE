@@ -23,6 +23,7 @@
 #include <string>
 #include <system_error>
 #include <SMCE/SMCE_fs.hpp>
+#include <SMCE/SMCE_iface.h>
 #include <SMCE/Sketch.hpp>
 #include <SMCE/fwd.hpp>
 
@@ -51,7 +52,7 @@ enum struct toolchain_error {
  * Ideally there should only ever be one instance of this type
  * used at a given type in an application.
  **/
-class Toolchain {
+class SMCE_API Toolchain {
     stdfs::path m_res_dir;
     std::string m_cmake_path = "cmake";
 

@@ -24,6 +24,7 @@ configure_coverage (ipcSMCE)
 set_property (TARGET ipcSMCE PROPERTY CXX_EXTENSIONS Off)
 set_property (TARGET ipcSMCE PROPERTY POSITION_INDEPENDENT_CODE On)
 target_link_libraries (ipcSMCE PUBLIC iSMCE)
+target_compile_definitions (ipcSMCE PUBLIC SMCE_LIB_BUILD=1)
 target_sources (ipcSMCE PRIVATE
     include/SMCE/internal/BoardData.hpp
     src/SMCE/BoardData.cpp
@@ -35,5 +36,5 @@ target_sources (ipcSMCE PRIVATE
 if (NOT MSVC)
   target_compile_options (ipcSMCE PRIVATE "-Wall" "-Wextra" "-Wpedantic" "-Werror" "-Wcast-align")
 else ()
-  target_compile_options (ipcSMCE PRIVATE "/W4" "/permissive-" "/wd4244" "/wd4459" "/WX")
+  target_compile_options (ipcSMCE PRIVATE "/W4" "/permissive-" "/wd4244" "/wd4251" "/wd4459" "/WX")
 endif ()

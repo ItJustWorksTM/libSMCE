@@ -22,6 +22,7 @@
 #include <cstdint>
 #include <span>
 #include <string_view>
+#include "SMCE/SMCE_iface.h"
 #include "SMCE/fwd.hpp"
 
 namespace smce {
@@ -29,7 +30,7 @@ namespace smce {
 /**
  * Analog driver for a GPIO pin
  **/
-class VirtualAnalogDriver {
+class SMCE_API VirtualAnalogDriver {
     friend class VirtualPin;
     BoardData* m_bdat;
     std::size_t m_idx;
@@ -44,7 +45,7 @@ class VirtualAnalogDriver {
     void write(std::uint16_t) noexcept;
 };
 
-class VirtualDigitalDriver {
+class SMCE_API VirtualDigitalDriver {
     friend class VirtualPin;
     BoardData* m_bdat;
     std::size_t m_idx;
@@ -59,7 +60,7 @@ class VirtualDigitalDriver {
     void write(bool) noexcept;
 };
 
-class VirtualPin {
+class SMCE_API VirtualPin {
     friend class VirtualPins;
     BoardData* m_bdat;
     std::size_t m_idx;
@@ -82,7 +83,7 @@ class VirtualPin {
     [[nodiscard]] VirtualAnalogDriver analog() noexcept { return {m_bdat, m_idx}; }
 };
 
-class VirtualPins {
+class SMCE_API VirtualPins {
     friend BoardView;
     BoardData* m_bdat;
     explicit VirtualPins(BoardData* bdat) : m_bdat{bdat} {}
@@ -96,7 +97,7 @@ class VirtualPins {
     // [[nodiscard]] std::size_t size() noexcept;
 };
 
-class VirtualUartBuffer {
+class SMCE_API VirtualUartBuffer {
     friend class VirtualUart;
     // clang-format off
     enum class Direction { rx, tx };
@@ -117,7 +118,7 @@ class VirtualUartBuffer {
     [[nodiscard]] char front() noexcept;
 };
 
-class VirtualUart {
+class SMCE_API VirtualUart {
     friend class VirtualUarts;
     BoardData* m_bdat;
     std::size_t m_index;
@@ -132,7 +133,7 @@ class VirtualUart {
     VirtualUartBuffer tx() noexcept { return {m_bdat, m_index, VirtualUartBuffer::Direction::tx}; }
 };
 
-class VirtualUarts {
+class SMCE_API VirtualUarts {
     friend BoardView;
     BoardData* m_bdat;
     constexpr VirtualUarts() noexcept = default;
@@ -155,7 +156,7 @@ class VirtualUarts {
  * An RGB888 framebuffer, holding a single frame.
  * Intended to be used to implement cameras and screen library shims.
  **/
-class FrameBuffer {
+class SMCE_API FrameBuffer {
     friend class FrameBuffers;
     BoardData* m_bdat;
     std::size_t m_idx;
@@ -209,7 +210,7 @@ class FrameBuffer {
     bool read_rgb444(std::span<std::byte>);
 };
 
-class FrameBuffers {
+class SMCE_API FrameBuffers {
     friend BoardView;
     BoardData* m_bdat;
     constexpr FrameBuffers() noexcept = default;
@@ -226,7 +227,7 @@ class FrameBuffers {
  * Mutable view of the virtual board.
  * \note Must stay a no-fail interface (operations all silently fail on error and never cause UB)
  **/
-class BoardView {
+class SMCE_API BoardView {
     BoardData* m_bdat{};
 
   public:
@@ -254,7 +255,7 @@ class BoardView {
     [[nodiscard]] std::string_view storage_get_root(Link link, std::uint16_t accessor) noexcept;
 };
 
-class VirtualUarts::Iterator {
+class SMCE_API VirtualUarts::Iterator {
     friend VirtualUarts;
     VirtualUarts m_vu{};
     std::size_t m_index = 0;

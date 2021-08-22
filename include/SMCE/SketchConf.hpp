@@ -23,6 +23,7 @@
 #include <variant>
 #include <vector>
 #include <SMCE/SMCE_fs.hpp>
+#include <SMCE/SMCE_iface.h>
 #include <SMCE/fwd.hpp>
 
 namespace smce {
@@ -30,7 +31,7 @@ namespace smce {
 /**
  * Configuration for sketch building
  **/
-struct SketchConfig {
+struct SMCE_API SketchConfig {
     /**
      * On-disk C++ library
      * \warning Unused; unsupported at the current time

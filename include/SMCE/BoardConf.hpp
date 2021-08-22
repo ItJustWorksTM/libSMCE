@@ -23,14 +23,15 @@
 #include <optional>
 #include <vector>
 #include "SMCE/SMCE_fs.hpp"
+#include "SMCE/SMCE_iface.h"
 
 namespace smce {
 
 /**
  * Configuration for running a sketch
  **/
-struct BoardConfig {
-    struct GpioDrivers {
+struct SMCE_API BoardConfig {
+    struct SMCE_API GpioDrivers {
         struct DigitalDriver {
             bool board_read;
             bool board_write;
@@ -44,7 +45,7 @@ struct BoardConfig {
         std::optional<DigitalDriver> digital_driver;
         std::optional<AnalogDriver> analog_driver;
     };
-    struct UartChannel {
+    struct SMCE_API UartChannel {
         std::optional<std::uint16_t> rx_pin_override;
         std::optional<std::uint16_t> tx_pin_override;
         std::uint16_t baud_rate = 9600;
@@ -53,17 +54,17 @@ struct BoardConfig {
         std::size_t flushing_threshold = 0;
     };
     /*
-    struct I2cBus {
+    struct SMCE_API I2cBus {
         std::optional<std::uint16_t> rx_pin_override;
         std::optional<std::uint16_t> tx_pin_override;
     };
     */
-    struct SecureDigitalStorage {
+    struct SMCE_API SecureDigitalStorage {
         std::uint16_t cspin = 0; /// SPI Chip-Select pin; default one opened is 0
         stdfs::path root_dir;    /// Path to root directory
     };
 
-    struct FrameBuffer {
+    struct SMCE_API FrameBuffer {
         // clang-format off
         /// \ref smce::FrameBuffer::Direction
         enum struct Direction {

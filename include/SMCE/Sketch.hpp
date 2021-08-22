@@ -20,6 +20,7 @@
 #define SMCE_SKETCH_HPP
 
 #include "SMCE/SMCE_fs.hpp"
+#include "SMCE/SMCE_iface.h"
 #include "SMCE/SketchConf.hpp"
 #include "SMCE/Uuid.hpp"
 #include "SMCE/fwd.hpp"
@@ -35,7 +36,7 @@ enum class sketch_error {
 /**
  * A sketch
  **/
-class Sketch {
+class SMCE_API Sketch {
     friend Board;
     friend Toolchain;
 

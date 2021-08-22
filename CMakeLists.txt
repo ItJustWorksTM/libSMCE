@@ -105,6 +105,7 @@ set_property (TARGET objSMCE PROPERTY POSITION_INDEPENDENT_CODE True)
 target_link_libraries (objSMCE PUBLIC ipcSMCE)
 target_sources (objSMCE PRIVATE
     include/SMCE/internal/utils.hpp
+    include/SMCE/SMCE_iface.h
     include/SMCE/SMCE_fs.hpp
     include/SMCE/BoardConf.hpp
     include/SMCE/Board.hpp
@@ -120,7 +121,7 @@ target_sources (objSMCE PRIVATE
 if (NOT MSVC)
   target_compile_options (objSMCE PRIVATE "-Wall" "-Wextra" "-Wpedantic" "-Werror" "-Wcast-align")
 else ()
-  target_compile_options (objSMCE PRIVATE "/W4" "/permissive-" "/wd4244" "/wd4459" "/WX")
+  target_compile_options (objSMCE PRIVATE "/W4" "/permissive-" "/wd4244" "/wd4251" "/wd4459" "/WX")
 endif ()
 
 if (SMCE_BUILD_SHARED)
@@ -143,6 +144,9 @@ if (SMCE_BUILD_STATIC)
       PRIVATE objSMCE ipcSMCE
       PUBLIC iSMCE
   )
+  if (WIN32)
+    target_compile_definitions (SMCE_static INTERFACE SMCE_WIN32_LINK_STATIC)
+  endif ()
   set_property (TARGET SMCE_static PROPERTY INTERFACE_SMCE_MAJOR_VERSION "${PROJECT_VERSION_MAJOR}")
   set_property (TARGET SMCE_static APPEND PROPERTY COMPATIBLE_INTERFACE_STRING SMCE_MAJOR_VERSION)
 endif ()

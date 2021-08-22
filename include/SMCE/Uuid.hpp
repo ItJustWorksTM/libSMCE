@@ -22,11 +22,12 @@
 #include <array>
 #include <cstddef>
 #include <string>
+#include <SMCE/SMCE_iface.h>
 #include <SMCE/fwd.hpp>
 
 namespace smce {
 
-class Uuid {
+class SMCE_API Uuid {
   public:
     std::array<std::byte, 16> bytes;
 

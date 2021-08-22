@@ -20,12 +20,13 @@
 #define SMCE_SHAREDBOARDDATA_HPP
 
 #include <boost/interprocess/managed_shared_memory.hpp>
+#include "SMCE/SMCE_iface.h"
 #include "SMCE/internal/BoardData.hpp"
 
 namespace smce {
 
 /// \internal
-class SharedBoardData {
+class SMCE_INTERNAL SharedBoardData {
     boost::interprocess::managed_shared_memory m_shm;
     std::string m_name;
     BoardData* m_bd = nullptr;
