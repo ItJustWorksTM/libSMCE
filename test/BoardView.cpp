@@ -105,7 +105,7 @@ TEST_CASE("BoardView UART", "[BoardView]") {
     int ticks = 16'000;
     do {
         if (ticks-- == 0)
-            FAIL();
+            FAIL("Timed out");
         std::this_thread::sleep_for(1ms);
     } while (uart0.tx().size() != in.size());
     REQUIRE(uart0.tx().read(in) == in.size());
@@ -118,7 +118,7 @@ TEST_CASE("BoardView UART", "[BoardView]") {
     ticks = 16'000;
     do {
         if (ticks-- == 0)
-            FAIL();
+            FAIL("Timed out");
         std::this_thread::sleep_for(1ms);
     } while (uart0.tx().size() != in.size());
     REQUIRE(uart0.tx().read(in) == in.size());
