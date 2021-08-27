@@ -40,12 +40,6 @@ jobs:
           apt-get install -y lcov curl wget git cmake ninja-build g++ libboost-all-dev libssl-dev
           ninja --version
           cmake --version
-          wget -qO arduino-cli.tgz "https://github.com/arduino/arduino-cli/releases/download/0.18.3/arduino-cli_0.18.3_Linux_64bit.tar.gz"
-          tar xzf arduino-cli.tgz
-          mv arduino-cli /usr/local/bin/
-          rm arduino-cli.tgz
-          arduino-cli version
-          arduino-cli core install arduino:avr
       - name: CMake configure
         run: |
           export BOOST_ROOT="$(pwd)/boost_root"
@@ -112,9 +106,6 @@ jobs:
           sudo apt install ninja-build
           ninja --version # technically not a dependency, but used to speedup builds
           cmake --version
-          brew install arduino-cli
-          arduino-cli version
-          arduino-cli core install arduino:avr
       - name: CMake configure
         run: |
           export BOOST_ROOT="$(pwd)/boost_root"
@@ -169,11 +160,9 @@ jobs:
       - uses: actions/checkout@v2
       - name: Check deps
         run: |
-          brew install ninja arduino-cli
+          brew install ninja
           ninja --version # technically not a dependency, but used to speedup builds
           cmake --version
-          arduino-cli version
-          arduino-cli core install arduino:avr
       - name: Cache Boost with GCC
         if: startsWith(matrix.compiler.name, 'GCC')
         uses: actions/cache@v2
@@ -266,10 +255,8 @@ jobs:
       - name: Check deps
         shell: bash
         run: |
-          choco install ninja arduino-cli openssl > silence
+          choco install ninja openssl > silence
           ninja --version
-          arduino-cli version
-          arduino-cli core install arduino:avr
       - uses: ilammy/msvc-dev-cmd@v1
       - name: CMake configure
         run: |
@@ -323,14 +310,12 @@ jobs:
       - uses: actions/checkout@v2
       - name: Check deps
         run: |
-          pacman -Syu --noconfirm git cmake boost openssl arduino-cli ninja
+          pacman -Syu --noconfirm git cmake boost openssl ninja
           if [ "${{ matrix.compiler.c }}" = "clang" ];
           then
             pacman -Syu --noconfirm clang
           fi
           ninja --version
-          arduino-cli version
-          arduino-cli core install arduino:avr
       - name: CMake configure
         run: |
           mkdir build
@@ -372,10 +357,7 @@ jobs:
 #      - name: Check deps
 #        run: |
 #          dnf -y install ${{ matrix.compiler.pkg }} curl git cmake ninja-build boost-devel mosquitto-devel
-#          curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | BINDIR=/usr/local/bin sh
 #          ninja --version
-#          arduino-cli version
-#          arduino-cli core install arduino:avr
 #      - name: CMake configure
 #        run: |
 #          cmake -G Ninja \
@@ -419,10 +401,7 @@ jobs:
 #      - name: Check deps
 #        run: |
 #          dnf -y install curl git cmake ninja ${{ matrix.compiler.pkg }} glibc-devel lib64boost-devel lib64openssl-devel
-#          curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | BINDIR=/usr/local/bin sh
 #          ninja --version
-#          arduino-cli version
-#          arduino-cli core install arduino:avr
 #      - name: CMake configure
 #        run: |
 #          cmake -G Ninja \
