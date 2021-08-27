@@ -60,10 +60,7 @@ int main(int argc, char** argv) {
     // clang-format off
     smce::Sketch sketch{argv[2], {
           .fqbn = argv[1],
-          .preproc_libs = {
-              smce::SketchConfig::RemoteArduinoLibrary{"WiFi"},
-              smce::SketchConfig::RemoteArduinoLibrary{"MQTT"}
-          }
+          .legacy_preproc_libs = { {"WiFi"}, {"MQTT"} }
     }};
     // // clang-format on
 

@@ -17,11 +17,10 @@
 
 ## Expected variables
 # SMCE_DIR - Path to the SMCE dir
+# SKETCH_HEXID - Hexadecimal UUID of the sketch
 # SKETCH_FQBN - Fully qualified board name to use
 # SKETCH_PATH - Path to the Arduino sketch
-# PREPROC_REMOTE_LIBS - whitespace-separated of remote libs to pull for preprocessing
-# COMPLINK_REMOTE_LIBS - remote libs needed at compile/link-time
-# COMPLINK_PATCH_LIBS - remote libs to patch for compile/link-time
+# PREPROC_REMOTE_LIBS - whitespace-separated of remote libs to pull for legacy preprocessing
 
 ## Optional env
 # SMCE_LEGACY_PREPROCESSING - use arduino-cli to preprocess instead of arduino-prelude
@@ -52,61 +51,7 @@ endif ()
 
 include (ArduinoPreludeVersion)
 
-# Download latest CMAW if not preinstalled
-set (CMAW_AUTO_PATH "${SMCE_DIR}")
-set (CMAW_URL "https://github.com/AeroStun/CMAW/raw/master/CMAW.cmake")
-set (CMAW_RUNLOC "${MODULES_DIR}/CMAW.cmake")
-include ("${CMAW_RUNLOC}" OPTIONAL RESULT_VARIABLE CMAW_FOUND)
-if (CMAW_FOUND)
-  if (CMAW_VERSION VERSION_LESS "0.1.3")
-    set (CMAW_OLD True)
-  else ()
-    set (CMAW_OLD False)
-  endif ()
-endif ()
-if (NOT CMAW_FOUND OR CMAW_OLD)
-  file (DOWNLOAD "${CMAW_URL}" "${CMAW_RUNLOC}")
-  include ("${CMAW_RUNLOC}")
-endif ()
-message (STATUS "Using CMAW version ${CMAW_VERSION}")
-
-cmaw_arduinocli_version (ARDCLI_VERSION)
-message (STATUS "Using ArduinoCLI version ${ARDCLI_VERSION}")
-
-if ($ENV{SMCE_LEGACY_PREPROCESSING})
-  string (REPLACE ":" ";" SKETCH_FQBN_PARTS ${SKETCH_FQBN})
-  list (GET SKETCH_FQBN_PARTS 0 SKETCH_FQBN_PACKAGER)
-  list (GET SKETCH_FQBN_PARTS 1 SKETCH_FQBN_ARCH)
-  cmaw_install_cores ("${SKETCH_FQBN_PACKAGER}:${SKETCH_FQBN_ARCH}")
-endif ()
-
-if (NOT DEFINED ENV{SMCE_INDEX_UPDATE} OR \"$ENV{SMCE_INDEX_UPDATE}\")
-  cmaw_update_library_index ()
-endif ()
-foreach (REMOTE_LIB ${PREPROC_REMOTE_LIBS} ${COMPLINK_REMOTE_LIBS})
-  cmaw_install_libraries ("${REMOTE_LIB}")
-endforeach ()
-
-cmaw_dump_config (ARDCLI_CONFIG)
-string (REGEX REPLACE ";" "\\\\;" ARDCLI_CONFIG "${ARDCLI_CONFIG}")
-string (REGEX REPLACE "\n" ";" ARDCLI_CONFIG "${ARDCLI_CONFIG}")
-set (ARDCLI_CONFIG_USERDIR "NOTFOUND")
-foreach (ARDCLI_CONFIG_LINE ${ARDCLI_CONFIG})
-  if (ARDCLI_CONFIG_LINE MATCHES "^  user: (.*)$")
-    string (STRIP "${CMAKE_MATCH_1}" ARDCLI_CONFIG_USERDIR)
-    break ()
-  endif ()
-endforeach ()
-if (NOT ARDCLI_CONFIG_USERDIR)
-  message (FATAL_ERROR "Could not find the userdir in the ArduinoCLI config dump")
-elseif (NOT EXISTS "${ARDCLI_CONFIG_USERDIR}")
-  message (WARNING "ArduinoCLI userdir could not be found on disk (\"${ARDCLI_CONFIG_USERDIR}\")")
-endif ()
-
-string (RANDOM LENGTH 13 COMP_DIRNAME)
-set (COMP_DIR "${SMCE_DIR}/tmp/${COMP_DIRNAME}")
-file (MAKE_DIRECTORY "${COMP_DIR}")
-message (STATUS "SMCE: Compilation directory is \"${COMP_DIR}\"")
+set (COMP_DIR "${SMCE_DIR}/tmp/${SKETCH_HEXID}")
 
 if (IS_DIRECTORY "${SKETCH_PATH}")
   set (SKETCH_DIR "${SKETCH_PATH}")
@@ -118,9 +63,58 @@ else ()
   endif ()
 endif ()
 
-include (PrepareLibs)
-
 if ("$ENV{SMCE_LEGACY_PREPROCESSING}")
+  # Download latest CMAW if not preinstalled
+  set (CMAW_AUTO_PATH "${SMCE_DIR}")
+  set (CMAW_URL "https://github.com/AeroStun/CMAW/raw/master/CMAW.cmake")
+  set (CMAW_RUNLOC "${MODULES_DIR}/CMAW.cmake")
+  include ("${CMAW_RUNLOC}" OPTIONAL RESULT_VARIABLE CMAW_FOUND)
+  if (CMAW_FOUND)
+    if (CMAW_VERSION VERSION_LESS "0.1.3")
+      set (CMAW_OLD True)
+    else ()
+      set (CMAW_OLD False)
+    endif ()
+  endif ()
+  if (NOT CMAW_FOUND OR CMAW_OLD)
+    file (DOWNLOAD "${CMAW_URL}" "${CMAW_RUNLOC}")
+    include ("${CMAW_RUNLOC}")
+  endif ()
+  message (STATUS "Using CMAW version ${CMAW_VERSION}")
+
+  cmaw_arduinocli_version (ARDCLI_VERSION)
+  message (STATUS "Using ArduinoCLI version ${ARDCLI_VERSION}")
+
+  if ($ENV{SMCE_LEGACY_PREPROCESSING})
+    string (REPLACE ":" ";" SKETCH_FQBN_PARTS ${SKETCH_FQBN})
+    list (GET SKETCH_FQBN_PARTS 0 SKETCH_FQBN_PACKAGER)
+    list (GET SKETCH_FQBN_PARTS 1 SKETCH_FQBN_ARCH)
+    cmaw_install_cores ("${SKETCH_FQBN_PACKAGER}:${SKETCH_FQBN_ARCH}")
+  endif ()
+
+  if (NOT DEFINED ENV{SMCE_INDEX_UPDATE} OR \"$ENV{SMCE_INDEX_UPDATE}\")
+    cmaw_update_library_index ()
+  endif ()
+  foreach (REMOTE_LIB ${PREPROC_REMOTE_LIBS} ${COMPLINK_REMOTE_LIBS})
+    cmaw_install_libraries ("${REMOTE_LIB}")
+  endforeach ()
+
+  cmaw_dump_config (ARDCLI_CONFIG)
+  string (REGEX REPLACE ";" "\\\\;" ARDCLI_CONFIG "${ARDCLI_CONFIG}")
+  string (REGEX REPLACE "\n" ";" ARDCLI_CONFIG "${ARDCLI_CONFIG}")
+  set (ARDCLI_CONFIG_USERDIR "NOTFOUND")
+  foreach (ARDCLI_CONFIG_LINE ${ARDCLI_CONFIG})
+    if (ARDCLI_CONFIG_LINE MATCHES "^  user: (.*)$")
+      string (STRIP "${CMAKE_MATCH_1}" ARDCLI_CONFIG_USERDIR)
+      break ()
+    endif ()
+  endforeach ()
+  if (NOT ARDCLI_CONFIG_USERDIR)
+    message (FATAL_ERROR "Could not find the userdir in the ArduinoCLI config dump")
+  elseif (NOT EXISTS "${ARDCLI_CONFIG_USERDIR}")
+    message (WARNING "ArduinoCLI userdir could not be found on disk (\"${ARDCLI_CONFIG_USERDIR}\")")
+  endif ()
+
   include (LegacyPreprocessing)
 endif ()
 

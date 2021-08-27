@@ -23,6 +23,7 @@
 #define SKETCHES_PATH SMCE_TEST_DIR "/sketches/"
 #define PATCHES_PATH SMCE_TEST_DIR "/patches/"
 #define STORAGE_PATH SMCE_TEST_DIR "/storage/"
+#define MANIFESTS_PATH SMCE_TEST_DIR "/manifests/"
 
 #include <thread>
 

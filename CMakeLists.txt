@@ -105,6 +105,7 @@ set_property (TARGET objSMCE PROPERTY POSITION_INDEPENDENT_CODE True)
 target_link_libraries (objSMCE PUBLIC ipcSMCE)
 target_sources (objSMCE PRIVATE
     include/SMCE/internal/utils.hpp
+    include/SMCE/internal/portable/ostream_joiner.hpp
     include/SMCE/SMCE_iface.h
     include/SMCE/SMCE_fs.hpp
     include/SMCE/BoardConf.hpp
@@ -116,6 +117,8 @@ target_sources (objSMCE PRIVATE
     src/SMCE/Sketch.cpp
     include/SMCE/Uuid.hpp
     src/SMCE/Uuid.cpp
+    include/SMCE/PluginManifest.hpp
+    src/SMCE/PluginManifest.cpp
     include/SMCE/SketchConf.hpp
 )
 if (NOT MSVC)

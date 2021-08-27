@@ -38,6 +38,8 @@ enum struct toolchain_error {
     cmake_unknown_output,
     cmake_failing,
 
+    invalid_plugin_name,
+
     sketch_invalid,
     configure_failed,
     build_failed,

@@ -36,10 +36,7 @@ TEST_CASE("WiFi intended use", "[WiFi]") {
     // clang-format off
     smce::Sketch sk{SKETCHES_PATH "wifi", {
         .fqbn = "arduino:avr:nano",
-        .preproc_libs = {
-            smce::SketchConfig::RemoteArduinoLibrary{"WiFi", ""},
-            smce::SketchConfig::RemoteArduinoLibrary{"MQTT", ""}
-        }
+        .legacy_preproc_libs = { { "WiFi" }, { "MQTT" } }
     }};
     // clang-format on
     const auto ec = tc.compile(sk);
@@ -56,7 +53,7 @@ TEST_CASE("SD polyfill", "[SD File]") {
     // clang-format off
     smce::Sketch sk{SKETCHES_PATH "sd_fs", {
         .fqbn = "arduino:avr:nano",
-        .preproc_libs = { smce::SketchConfig::RemoteArduinoLibrary{"SD", ""} }
+        .legacy_preproc_libs = { {"SD"} }
     }};
     // clang-format on
     const auto ec = tc.compile(sk);

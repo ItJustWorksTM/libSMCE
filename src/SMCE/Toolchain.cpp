@@ -25,6 +25,8 @@
 #if BOOST_OS_WINDOWS
 #    include <boost/process/windows.hpp>
 #endif
+#include <SMCE/PluginManifest.hpp>
+#include <SMCE/SMCE_iface.h>
 #include <SMCE/Sketch.hpp>
 #include <SMCE/SketchConf.hpp>
 #include <SMCE/internal/utils.hpp>
@@ -55,6 +57,8 @@ struct toolchain_error_category : public std::error_category {
             return "Resource directory is a file";
         case toolchain_error::cmake_not_found:
             return "CMake not found in PATH";
+        case toolchain_error::invalid_plugin_name:
+            return "Plugin name is \".\", \"..\", or contains a forward slash";
         case toolchain_error::sketch_invalid:
             return "Sketch path is invalid";
         case toolchain_error::configure_failed:
@@ -93,63 +97,37 @@ inline std::error_code make_error_code(toolchain_error ev) {
 
 struct ProcessedLibs {
     std::string pp_remote_arg = "-DPREPROC_REMOTE_LIBS=";
-    std::string cl_remote_arg = "-DCOMPLINK_REMOTE_LIBS=";
-    std::string cl_local_arg = "-DCOMPLINK_LOCAL_LIBS=";
-    std::string cl_patch_arg = "-DCOMPLINK_PATCH_LIBS=";
 };
 ProcessedLibs process_libraries(const SketchConfig& skonf) noexcept {
     ProcessedLibs ret;
-    for (const auto& lib : skonf.preproc_libs) {
-        // clang-format off
-        std::visit(Visitor{
-            [&](const SketchConfig::RemoteArduinoLibrary& lib) {
-                ret.pp_remote_arg += lib.name;
-                if (!lib.version.empty())
-                    ret.pp_remote_arg += '@' + lib.version;
-                ret.pp_remote_arg += ';';
-            },
-            [](const auto&) {}
-       }, lib);
-        // clang-format on
-    }
-
-    for (const auto& lib : skonf.complink_libs) {
-        // clang-format off
-        std::visit(Visitor{
-            [&](const SketchConfig::RemoteArduinoLibrary& lib) {
-                ret.cl_remote_arg += lib.name;
-                if (!lib.version.empty())
-                    ret.cl_remote_arg += '@' + lib.version;
-                ret.cl_remote_arg += ';';
-            },
-            [&](const SketchConfig::LocalArduinoLibrary& lib) {
-                if (lib.patch_for.empty()) {
-                    ret.cl_local_arg += lib.root_dir.string();
-                    ret.cl_local_arg += ';';
-                    return;
-                }
-                ret.cl_remote_arg += lib.patch_for;
-                ret.cl_remote_arg += ' ';
-                ret.cl_patch_arg += lib.root_dir.string();
-                ret.cl_patch_arg += '|';
-                ret.cl_patch_arg += lib.patch_for;
-                ret.cl_patch_arg += ';';
-            },
-            [](const SketchConfig::FreestandingLibrary&) {}
-        }, lib);
-        // clang-format on
+    for (const auto& lib : skonf.legacy_preproc_libs) {
+        ret.pp_remote_arg += lib.name;
+        if (!lib.version.empty())
+            ret.pp_remote_arg += '@' + lib.version;
+        ret.pp_remote_arg += ';';
     }
 
     if (ret.pp_remote_arg.back() == ';')
         ret.pp_remote_arg.pop_back();
-    if (ret.cl_remote_arg.back() == ';')
-        ret.cl_remote_arg.pop_back();
-    if (ret.cl_local_arg.back() == ';')
-        ret.cl_local_arg.pop_back();
-    if (ret.cl_patch_arg.back() == ';')
-        ret.cl_patch_arg.pop_back();
 
     return ret;
+}
+SMCE_INTERNAL std::error_code write_manifests(const SketchConfig& skonf, const stdfs::path& tmpdir) {
+    const auto manifests_dir = tmpdir / "manifests";
+    {
+        std::error_code ec;
+        stdfs::create_directory(manifests_dir, ec);
+        if (ec)
+            return ec;
+    }
+
+    for (const auto& pm : skonf.plugins) {
+        if (pm.name == "." || pm.name == ".." || pm.name.find('/') != std::string::npos)
+            return toolchain_error::invalid_plugin_name;
+        if (const auto ec = write_manifest(pm, manifests_dir / (pm.name + ".cmake")))
+            return ec;
+    }
+    return {};
 }
 
 Toolchain::Toolchain(stdfs::path resources_dir) noexcept : m_res_dir{std::move(resources_dir)} {
@@ -157,12 +135,24 @@ Toolchain::Toolchain(stdfs::path resources_dir) noexcept : m_res_dir{std::move(r
 }
 
 std::error_code Toolchain::do_configure(Sketch& sketch) noexcept {
+    const auto sketch_hexid = sketch.m_uuid.to_hex();
+    sketch.m_tmpdir = this->m_res_dir / "tmp" / sketch_hexid;
+
+    {
+        std::error_code ec;
+        stdfs::create_directories(sketch.m_tmpdir, ec);
+        if (ec)
+            return ec;
+    }
+
 #if !BOOST_OS_WINDOWS
     const char* const generator_override = std::getenv("CMAKE_GENERATOR");
     const char* const generator =
         generator_override ? generator_override : (!bp::search_path("ninja").empty() ? "Ninja" : "");
 #endif
 
+    if (const auto ec = write_manifests(sketch.m_conf, sketch.m_tmpdir))
+        return ec;
     ProcessedLibs libs = process_libraries(sketch.m_conf);
 
     namespace bp = boost::process;
@@ -174,12 +164,10 @@ std::error_code Toolchain::do_configure(Sketch& sketch) noexcept {
         bp::env["CMAKE_GENERATOR"] = generator,
 #endif
         "-DSMCE_DIR=" + m_res_dir.string(),
+        "-DSKETCH_HEXID=" + sketch_hexid,
         "-DSKETCH_FQBN=" + sketch.m_conf.fqbn,
         "-DSKETCH_PATH=" + stdfs::absolute(sketch.m_source).generic_string(),
         std::move(libs.pp_remote_arg),
-        std::move(libs.cl_remote_arg),
-        std::move(libs.cl_local_arg),
-        std::move(libs.cl_patch_arg),
         "-P",
         m_res_dir.string() + "/RtResources/SMCE/share/CMake/Scripts/ConfigureSketch.cmake",
         (bp::std_out & bp::std_err) > cmake_conf_out
@@ -191,25 +179,15 @@ std::error_code Toolchain::do_configure(Sketch& sketch) noexcept {
 
     {
         std::string line;
-        int i = 0;
         while (std::getline(cmake_conf_out, line)) {
-            if (!line.starts_with("-- SMCE: ")) {
-                [[maybe_unused]] std::lock_guard lk{m_build_log_mtx};
-                (m_build_log += line) += '\n';
-                continue;
-            }
-            line.erase(0, line.find_first_of('"') + 1);
-            line.pop_back();
-            switch (i++) {
-            case 0:
-                sketch.m_tmpdir = std::move(line);
-                break;
-            case 1:
+            if (line.starts_with("-- SMCE: ")) {
+                line.erase(0, line.find_first_of('"') + 1);
+                line.pop_back();
                 sketch.m_executable = std::move(line);
                 break;
-            default:
-                assert(false);
             }
+            [[maybe_unused]] std::lock_guard lk{m_build_log_mtx};
+            (m_build_log += line) += '\n';
         }
     }
 

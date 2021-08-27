@@ -1,0 +1,2 @@
+set (PLUGIN_NAME "NoUri")
+set (PLUGIN_VERSION "0")
