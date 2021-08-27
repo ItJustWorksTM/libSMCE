@@ -70,5 +70,5 @@ macro (setup_smce_resources)
   file (MAKE_DIRECTORY "${SMCE_RTRES_DIR}/Ardrivo/include")
   file (COPY "${PROJECT_SOURCE_DIR}/include/Ardrivo" DESTINATION "${SMCE_RTRES_DIR}/Ardrivo/include")
 
-  add_custom_target (ArdRtRes DEPENDS "${SMCE_RESOURCES_ARK}")
+  add_custom_target (ArdRtRes DEPENDS ArdRtRes "${SMCE_RESOURCES_ARK}")
 endmacro ()
