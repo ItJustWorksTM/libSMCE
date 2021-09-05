@@ -267,6 +267,7 @@ jobs:
             -DSMCE_CXXRT_LINKING=SHARED `
             -DSMCE_BOOST_LINKING=STATIC `
             -DSMCE_OPENSSL_LINKING=STATIC `
+            -DCPACK_PACKAGE_DIRECTORY=packages `
             -S ./ -B ./build
       - name: CMake build
         run: cmake --build ./build
@@ -279,7 +280,7 @@ jobs:
         run: |
           mkdir ./build/packages
           cd build
-          cpack -B packages
+          cmake --build . --target package
           rm -R packages/_CPack_Packages
           cd ..
       - name: Upload artifacts
