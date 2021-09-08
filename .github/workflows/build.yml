@@ -407,6 +407,12 @@ jobs:
         run: |
           dnf -y install curl git cmake ninja ${{ matrix.compiler.pkg }} glibc-devel lib64boost-devel lib64openssl-devel
           ninja --version
+
+          if [[ -f /usr/lib64/librt.so ]]; then
+            echo "This hotfix is no longer needed" && exit 255
+          else
+            ln -s /lib64/librt.so.1 /usr/lib64/librt.so
+          fi
       - name: CMake configure
         run: |
           cmake -G Ninja \
