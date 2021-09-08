@@ -24,12 +24,19 @@
 
 #include <chrono>
 #include <cstdio>
+#include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <utility>
+#include <boost/predef.h>
+#include <boost/process/detail/traits/wchar_t.hpp> // Needed but not included by the header below
+#include <boost/process/env.hpp>
 #include <boost/process/io.hpp>
+#if !BOOST_OS_WINDOWS
+#    include <boost/process/search_path.hpp>
+#endif
 #include <boost/process/start_dir.hpp>
 #include <boost/process/system.hpp>
 #include <catch2/catch_test_macros.hpp>
@@ -52,6 +59,12 @@ static auto operator<<(std::ostream& os, F&& f)
 }
 
 TEST_CASE("Invalid manifests processing", "[Plugin]") {
+#if !BOOST_OS_WINDOWS
+    const char* const generator_override = std::getenv("CMAKE_GENERATOR");
+    const char* const generator =
+        generator_override ? generator_override : (!bp::search_path("ninja").empty() ? "Ninja" : "");
+#endif
+
     constexpr auto module_path = SMCE_PATH "/RtResources/SMCE/share/CMake/Modules/ProcessManifests.cmake";
     const std::filesystem::path tmproot = SMCE_PATH "/tmp";
 
@@ -66,14 +79,24 @@ TEST_CASE("Invalid manifests processing", "[Plugin]") {
     std::filesystem::create_directory(base_dir / "manifests");
 
     std::filesystem::copy(MANIFESTS_PATH + manifest + ".cmake", base_dir / "manifests");
-    REQUIRE(bp::system(bp::shell, bp::start_dir(base_dir.generic_string()), "cmake", "-P", module_path,
-                       (bp::std_out & bp::std_err) > stderr) != 0);
+    const auto res = bp::system(bp::shell, bp::start_dir(base_dir.generic_string()),
+#if !BOOST_OS_WINDOWS
+                                bp::env["CMAKE_GENERATOR"] = generator,
+#endif
+                                "cmake", "-P", module_path, (bp::std_out & bp::std_err) > stderr);
 
+    REQUIRE(res != 0);
     [[maybe_unused]] std::error_code ec;
     std::filesystem::remove_all(base_dir, ec);
 }
 
 TEST_CASE("Valid manifests processing", "[Plugin]") {
+#if !BOOST_OS_WINDOWS
+    const char* const generator_override = std::getenv("CMAKE_GENERATOR");
+    const char* const generator =
+        generator_override ? generator_override : (!bp::search_path("ninja").empty() ? "Ninja" : "");
+#endif
+
     constexpr auto module_path = SMCE_PATH "/RtResources/SMCE/share/CMake/Modules/ProcessManifests.cmake";
     const std::filesystem::path tmproot = SMCE_PATH "/tmp";
 
@@ -131,8 +154,13 @@ TEST_CASE("Valid manifests processing", "[Plugin]") {
             loader << cmake_require_target("smce_plugin_ESP32_AnalogWrite");
         }
 
-        REQUIRE(bp::system(bp::shell, bp::start_dir(base_dir.generic_string()), "cmake", "--log-level=DEBUG", "-S", ".",
-                           "-B", "build", (bp::std_out & bp::std_err) > stderr) == 0);
+        const auto res =
+            bp::system(bp::shell, bp::start_dir(base_dir.generic_string()),
+#if !BOOST_OS_WINDOWS
+                       bp::env["CMAKE_GENERATOR"] = generator,
+#endif
+                       "cmake", "--log-level=DEBUG", "-S", ".", "-B", "build", (bp::std_out & bp::std_err) > stderr);
+        REQUIRE(res == 0);
     }
 }
 
