@@ -40,16 +40,22 @@ if (NOT SMCE_BUILD_SHARED)
   string (APPEND SMCE_LINK_TARGET "_static")
 endif ()
 
+
+include (BindGen)
+smce_bindgen_host (TestUDD "TestUDD" 1.0 "s8 f0" "u32 f1" "au16 f2" "mutex f3" "mutex f4")
+target_link_libraries (TestUDD PUBLIC "${SMCE_LINK_TARGET}")
+
 add_executable (SMCE_Tests
     defs.hpp
     Board.cpp
     BoardView.cpp
+    BoardDevice.cpp
     LibManagement.cpp
     Polyfills.cpp
     Toolchain.cpp
 )
 configure_coverage (SMCE_Tests)
-target_link_libraries (SMCE_Tests PUBLIC "${SMCE_LINK_TARGET}" Catch2::Catch2WithMain SMCE_Boost)
+target_link_libraries (SMCE_Tests PUBLIC TestUDD "${SMCE_LINK_TARGET}" Catch2::Catch2WithMain SMCE_Boost)
 target_compile_definitions (SMCE_Tests PUBLIC SMCE_ARDRIVO_MQTT=$<BOOL:${SMCE_ARDRIVO_MQTT}>)
 if (MSVC)
   target_compile_definitions (SMCE_Tests PUBLIC MSVC_DEBUG=$<CONFIG:Debug>)
@@ -64,14 +70,31 @@ endif ()
 
 set (SMCE_TEST_DIR "${CMAKE_CURRENT_BINARY_DIR}/test_dir")
 file (MAKE_DIRECTORY "${SMCE_TEST_DIR}/smce_root")
+file (GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/inflate_ark_if_different.cmake" CONTENT [[
+  # HSD generated
+  file (TIMESTAMP "${CMAKE_ARGV3}" curr_filetime)
+  if (EXISTS "${CMAKE_BINARY_DIR}/ark-filetime.txt")
+    file (READ "${CMAKE_BINARY_DIR}/ark-filetime.txt" prev_filetime)
+    if (curr_filetime STREQUAL prev_filetime)
+      return ()
+    endif ()
+  endif ()
+
+  message (STATUS "Inflating resources for testsuite execution)")
+  execute_process (COMMAND "${CMAKE_COMMAND}" -E tar xf "${CMAKE_ARGV3}"
+    WORKING_DIRECTORY "${CMAKE_ARGV4}"
+  )
+  file (WRITE "${CMAKE_BINARY_DIR}/ark-filetime.txt" "${curr_filetime}")
+]])
 add_custom_target (SMCE_Tests_ResDir
-    COMMAND "${CMAKE_COMMAND}" -E tar xf "${SMCE_RESOURCES_ARK}"
+    COMMAND "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/inflate_ark_if_different.cmake" "${SMCE_RESOURCES_ARK}" "\"${SMCE_TEST_DIR}/smce_root\""
     DEPENDS ArdRtRes "${SMCE_RESOURCES_ARK}"
-    WORKING_DIRECTORY "${SMCE_TEST_DIR}/smce_root"
-    COMMENT "Inflating resources for testsuite execution"
+    WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+    COMMENT "Checking resources change"
 )
 file (COPY sketches DESTINATION "${SMCE_TEST_DIR}")
 file (COPY patches DESTINATION "${SMCE_TEST_DIR}")
+file (COPY plugins DESTINATION "${SMCE_TEST_DIR}")
 file (COPY manifests DESTINATION "${SMCE_TEST_DIR}")
 target_compile_definitions (SMCE_Tests PUBLIC "SMCE_TEST_DIR=\"${SMCE_TEST_DIR}\"")
 add_dependencies (SMCE_Tests SMCE_Tests_ResDir)

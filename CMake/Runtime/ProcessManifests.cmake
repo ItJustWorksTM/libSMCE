@@ -300,6 +300,7 @@ function (process_manifests)
       set (visibility INTERFACE)
     endif ()
 
+    target_include_directories (smce_plugin_${PLUGIN_NAME} SYSTEM PRIVATE "${SMCE_DIR}/RtResources/Ardrivo/include" "${PROJECT_BINARY_DIR}/SMCE_Devices/include")
     target_include_directories (smce_plugin_${PLUGIN_NAME} ${visibility} ${incdirs})
     target_link_directories (smce_plugin_${PLUGIN_NAME} ${visibility} ${linkdirs})
     target_link_libraries (smce_plugin_${PLUGIN_NAME} ${visibility} ${linklibs})

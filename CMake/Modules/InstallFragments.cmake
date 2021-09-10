@@ -19,7 +19,7 @@ include_guard ()
 
 include (GNUInstallDirs)
 
-set (SMCE_BOILERPLATE_TARGETS objSMCE ipcSMCE iSMCE)
+set (SMCE_BOILERPLATE_TARGETS objSMCE HostUDD BindGenProxies ipcSMCE iSMCE)
 
 function (smce_internal_install TARGETS)
   cmake_parse_arguments (SMCE_INSTALL "" "COMPONENT" "TARGETS" ${ARGV})
@@ -35,7 +35,7 @@ function (smce_internal_install TARGETS)
       LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
       RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
       INCLUDES DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/SMCE"
-    )
+  )
 endfunction ()
 
 function (smce_install_boilerplate_targets)
@@ -102,6 +102,7 @@ macro (smce_install_config)
   install (FILES
       "${PROJECT_BINARY_DIR}/SMCEConfig.cmake"
       "${PROJECT_BINARY_DIR}/SMCEConfigVersion.cmake"
+      "${PROJECT_SOURCE_DIR}/CMake/Modules/BindGen.cmake"
       DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/SMCE"
       ${SMCE_COMPONENT_CONFIG}
   )

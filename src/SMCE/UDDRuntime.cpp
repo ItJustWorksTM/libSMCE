@@ -1,5 +1,5 @@
 /*
- *  fwd.hpp
+ *  SMCE/UDDRuntime.cpp
  *  Copyright 2021 ItJustWorksTM
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,23 +16,13 @@
  *
  */
 
-#ifndef SMCE_FWD_HPP
-#define SMCE_FWD_HPP
+#include "SMCE/internal/BoardDeviceView.hpp"
+#include "SMCE_rt/internal/host_rt.hpp"
 
-namespace smce {
+namespace smce_rt {
 
-struct BoardConfig;
-class Board;
-class BoardView;
-class BoardDeviceSpecification;
-class BoardDeviceView;
-class Sketch;
-class Toolchain;
-struct SketchConfig;
-class Uuid;
+BoardDeviceAllocationPtrBases getBases(smce::BoardView& bv, std::string_view sv) {
+    return smce::BoardDeviceView{bv}.getBases(sv);
+}
 
-/// \internal
-struct BoardData;
-} // namespace smce
-
-#endif // SMCE_FWD_HPP
+} // namespace smce_rt

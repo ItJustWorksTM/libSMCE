@@ -1,5 +1,5 @@
 /*
- *  fwd.hpp
+ *  internal/BoardDeviceView.hpp
  *  Copyright 2021 ItJustWorksTM
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,23 +16,30 @@
  *
  */
 
-#ifndef SMCE_FWD_HPP
-#define SMCE_FWD_HPP
+// USERS SHALL NOT INCLUDE THIS FILE
+
+#ifndef LIBSMCE_INTERNAL_BOARDDEVICESPECIFICATION_HPP
+#define LIBSMCE_INTERNAL_BOARDDEVICESPECIFICATION_HPP
+
+#include <string_view>
 
 namespace smce {
 
-struct BoardConfig;
-class Board;
-class BoardView;
-class BoardDeviceSpecification;
-class BoardDeviceView;
-class Sketch;
-class Toolchain;
-struct SketchConfig;
-class Uuid;
+class BoardDeviceSpecification {
+  public:
+    std::string_view full_string;
+    std::string_view name;
+    std::size_t r8_count;
+    std::size_t r16_count;
+    std::size_t r32_count;
+    std::size_t r64_count;
+    std::size_t a8_count;
+    std::size_t a16_count;
+    std::size_t a32_count;
+    std::size_t a64_count;
+    std::size_t mtx_count;
+};
 
-/// \internal
-struct BoardData;
 } // namespace smce
 
-#endif // SMCE_FWD_HPP
+#endif // LIBSMCE_INTERNAL_BOARDDEVICESPECIFICATION_HPP

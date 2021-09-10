@@ -114,6 +114,7 @@ TEST_CASE("Valid manifests processing", "[Plugin]") {
             "ESP32_AnalogWrite",
             "0.2",
             {},
+            {},
             "https://github.com/ERROPiX/ESP32_AnalogWrite/archive/refs/tags/0.2.zip",
             "file://" PATCHES_PATH "ESP32_analogRewrite",
             smce::PluginManifest::Defaults::arduino,
@@ -190,6 +191,7 @@ TEST_CASE("Patch lib", "[Board]") {
     smce::PluginManifest esp32aw_pm{
         "ESP32_AnalogWrite",
         "0.2",
+        {},
         {},
         "https://github.com/ERROPiX/ESP32_AnalogWrite/archive/refs/tags/0.2.zip",
         "file://" PATCHES_PATH "ESP32_analogRewrite",

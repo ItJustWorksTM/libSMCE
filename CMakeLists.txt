@@ -28,8 +28,8 @@ endif ()
 
 include (Coverage)
 
-set (PREV_CMAKE_MSVC_RUNTIME_LIBRARY "${CMAKE_MSVC_RUNTIME_LIBRARY}")
-set (CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+set(PREV_CMAKE_MSVC_RUNTIME_LIBRARY "${CMAKE_MSVC_RUNTIME_LIBRARY}")
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 if ("${SMCE_CXXRT_LINKING}" STREQUAL "SHARED")
   string (APPEND CMAKE_MSVC_RUNTIME_LIBRARY "DLL")
 endif ()
@@ -46,11 +46,31 @@ include (Resources)
 
 include (ipcSMCE)
 
+add_library (BindGenProxies OBJECT)
+configure_coverage (BindGenProxies)
+set_property (TARGET BindGenProxies PROPERTY POSITION_INDEPENDENT_CODE True)
+target_link_libraries (BindGenProxies PUBLIC ipcSMCE)
+target_sources (BindGenProxies PRIVATE
+    include/SMCE_rt/SMCE_proxies.hpp
+    src/SMCE_rt/BindGenProxies.cpp
+)
+
+add_library (ArdrivoUDD OBJECT)
+configure_coverage (ArdrivoUDD)
+set_property (TARGET ArdrivoUDD PROPERTY CXX_EXTENSIONS Off)
+set_property (TARGET ArdrivoUDD PROPERTY POSITION_INDEPENDENT_CODE True)
+target_include_directories (ArdrivoUDD PRIVATE include/Ardrivo)
+target_link_libraries (ArdrivoUDD PUBLIC ipcSMCE BindGenProxies)
+target_sources (ArdrivoUDD PRIVATE
+    include/SMCE_rt/internal/sketch_rt.hpp
+    src/Ardrivo/UDDRuntime.cpp
+)
+
 add_library (Ardrivo SHARED)
 configure_coverage (Ardrivo)
 set_property (TARGET Ardrivo PROPERTY CXX_EXTENSIONS Off)
 target_include_directories (Ardrivo PRIVATE include/Ardrivo)
-target_link_libraries (Ardrivo PRIVATE ipcSMCE)
+target_link_libraries (Ardrivo PRIVATE ipcSMCE ArdrivoUDD BindGenProxies)
 target_sources (Ardrivo PRIVATE
     src/Ardrivo/SMCE_main.cpp
 
@@ -98,11 +118,22 @@ else ()
   target_compile_options (Ardrivo PRIVATE "/W4" "/permissive-" "/wd4244" "/wd4459" "/wd4716" "/WX")
 endif ()
 
+add_library (HostUDD OBJECT)
+configure_coverage (HostUDD)
+set_property (TARGET HostUDD PROPERTY CXX_EXTENSIONS Off)
+set_property (TARGET HostUDD PROPERTY POSITION_INDEPENDENT_CODE True)
+target_link_libraries (HostUDD PUBLIC ipcSMCE BindGenProxies)
+target_sources (HostUDD PRIVATE
+    include/SMCE_rt/internal/sketch_rt.hpp
+    src/SMCE/UDDRuntime.cpp
+)
+
+
 add_library (objSMCE OBJECT)
 configure_coverage (objSMCE)
 set_property (TARGET objSMCE PROPERTY CXX_EXTENSIONS Off)
 set_property (TARGET objSMCE PROPERTY POSITION_INDEPENDENT_CODE True)
-target_link_libraries (objSMCE PUBLIC ipcSMCE)
+target_link_libraries (objSMCE PUBLIC ipcSMCE HostUDD)
 target_sources (objSMCE PRIVATE
     include/SMCE/internal/utils.hpp
     include/SMCE/internal/portable/ostream_joiner.hpp
@@ -120,6 +151,7 @@ target_sources (objSMCE PRIVATE
     include/SMCE/PluginManifest.hpp
     src/SMCE/PluginManifest.cpp
     include/SMCE/SketchConf.hpp
+    include/SMCE/internal/BoardDeviceSpecification.hpp
 )
 if (NOT MSVC)
   target_compile_options (objSMCE PRIVATE "-Wall" "-Wextra" "-Wpedantic" "-Werror" "-Wcast-align")
@@ -131,7 +163,7 @@ if (SMCE_BUILD_SHARED)
   add_library (SMCE SHARED)
   configure_coverage (SMCE)
   target_link_libraries (SMCE
-      PRIVATE objSMCE ipcSMCE
+      PRIVATE objSMCE HostUDD ipcSMCE BindGenProxies
       PUBLIC iSMCE
   )
   set_property (TARGET SMCE PROPERTY VERSION "${PROJECT_VERSION}")
@@ -144,7 +176,7 @@ if (SMCE_BUILD_STATIC)
   add_library (SMCE_static STATIC)
   configure_coverage (SMCE_static)
   target_link_libraries (SMCE_static
-      PRIVATE objSMCE ipcSMCE
+      PRIVATE objSMCE HostUDD ipcSMCE BindGenProxies
       PUBLIC iSMCE
   )
   if (WIN32)

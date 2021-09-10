@@ -1,6 +1,6 @@
 /*
- *  fwd.hpp
- *  Copyright 2021 ItJustWorksTM
+ *  UDDProvider.hpp
+ *  Copyright 2020-2021 ItJustWorksTM
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,23 +16,9 @@
  *
  */
 
-#ifndef SMCE_FWD_HPP
-#define SMCE_FWD_HPP
+#include "TestUDD.hpp"
+#include "UDDProvider.hpp"
 
-namespace smce {
+void signalA(int device) { TestUDD::objects.at(device).f2.store(10); }
 
-struct BoardConfig;
-class Board;
-class BoardView;
-class BoardDeviceSpecification;
-class BoardDeviceView;
-class Sketch;
-class Toolchain;
-struct SketchConfig;
-class Uuid;
-
-/// \internal
-struct BoardData;
-} // namespace smce
-
-#endif // SMCE_FWD_HPP
+void signalB(int device) { TestUDD::objects.at(device).f2.store(65500); }

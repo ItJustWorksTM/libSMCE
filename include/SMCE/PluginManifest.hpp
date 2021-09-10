@@ -39,9 +39,10 @@ struct PluginManifest {
 
     std::string name;
     std::string version;
-    std::vector<std::string> depends; /// required plugins
-    std::string uri;                  /// file:// of the source-root or http[s]:// of the tar/zip archive
-    std::string patch_uri;            /// same as above but for patching
+    std::vector<std::string> depends;       /// required plugins
+    std::vector<std::string> needs_devices; /// required board devices
+    std::string uri;                        /// file:// of the source-root or http[s]:// of the tar/zip archive
+    std::string patch_uri;                  /// same as above but for patching
     Defaults defaults;
     std::vector<std::string> incdirs;
     std::vector<std::string> sources;

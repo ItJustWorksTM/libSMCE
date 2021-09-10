@@ -230,6 +230,8 @@ class SMCE_API FrameBuffers {
 class SMCE_API BoardView {
     BoardData* m_bdat{};
 
+    friend BoardDeviceView;
+
   public:
     // clang-format off
     enum class Link {
