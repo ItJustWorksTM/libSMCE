@@ -20,6 +20,7 @@
 #    error "SMCE_RESOURCES_DIR is not set"
 #endif
 
+#include <array>
 #include <atomic>
 #include <chrono>
 #include <cstdlib>
@@ -121,7 +122,7 @@ int main(int argc, char** argv) {
         }
         if (std::cin.eof())
             break;
-        uart0.rx().write((const char[]){'\n'});
+        uart0.rx().write({{'\n'}});
     }
 
     run = false;
