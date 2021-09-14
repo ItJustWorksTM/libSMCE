@@ -24,7 +24,6 @@
 #include <chrono>
 #include <cstdlib>
 #include <iostream>
-#include <span>
 #include <string_view>
 #include <thread>
 #include <SMCE/Board.hpp>
@@ -121,7 +120,7 @@ int main(int argc, char** argv) {
         }
         if (std::cin.eof())
             break;
-        uart0.rx().write((const char[]){'\n'});
+        uart0.rx().write({{'\n'}});
     }
 
     run = false;
