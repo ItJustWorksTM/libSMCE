@@ -28,6 +28,7 @@
 #include <span>
 #include <string_view>
 #include <thread>
+#include <utility>
 #include <SMCE/Board.hpp>
 #include <SMCE/BoardConf.hpp>
 #include <SMCE/BoardView.hpp>
@@ -79,10 +80,12 @@ int main(int argc, char** argv) {
     smce::Board board; // Create the virtual Arduino board
     board.attach_sketch(sketch);
     // clang-format off
-    board.configure({
+    smce::BoardConfig board_conf{
         .uart_channels = { {} },
         .sd_cards = { smce::BoardConfig::SecureDigitalStorage{ .root_dir = "." } }
-    });
+    };
+
+    board.configure(std::move(board_conf));
     // clang-format on
 
     // Power-on the board
