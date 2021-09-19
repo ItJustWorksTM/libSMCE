@@ -14,7 +14,7 @@ Check our [Wiki](https://github.com/ItJustWorksTM/libSMCE/wiki) for more informa
 #### Supported I/O
 - GPIO (Arduino's `digitalRead`, `analogWrite`, etc)
 - UART (Arduino's `Serial` global)
-- SD
+- SD (writes to host's filesystem in a pre-configured root)
 - MQTT (interface of [arduino-mqtt](https://github.com/256dpi/arduino-mqtt)) - Note: cannot be monitored by host application
 - OV767X Camera (interface of [Arduino_OV767X](https://github.com/arduino-libraries/Arduino_OV767X)) - Note: available pixel formats differ
 
