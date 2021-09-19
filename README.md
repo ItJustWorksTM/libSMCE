@@ -59,7 +59,6 @@ cpack
 - Serve the Doxygen-generated docs
 - Making a proper [Hugo](https://gohugo.io)-generated wiki in Markdown
 - `std::error_code`ify `smce::Board`
-- Removal of the strong dependency on ArduinoCLI (preprocess ourselves)
 - Add more I/O features, in particular the ones that were in [SMartCarEmul](https://github.com/ItJustWorksTM/SmartcarEmul)
 - Add interrupts support
 - Allow consumers to specify toolchain files
