@@ -38,15 +38,13 @@ elif [[ "$HOST_OS" = "linux" ]]; then
     echo "apt-get not found on host."
     echo "Install apt-get manually."
     # Install apt-get
+elif [[ "$HOST_OS" = "other" ]];  then
+  echo "Host OS not supported."
 fi
 '''
 
 if [[ -f $CMAKE_LOCATION ]]; then
   echo "CMake found on host."
-  elif [[ "$HOST_OS" = "other" ]];  then
-    echo "Host OS not supported."
-  fi
-
 else 
   echo "CMake not found on host."
   if [[ "$HOST_OS" = "windows" ]]; then
