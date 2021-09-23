@@ -62,3 +62,6 @@ cpack
 - Add more I/O features, in particular the ones that were in [SMartCarEmul](https://github.com/ItJustWorksTM/SmartcarEmul)
 - Add interrupts support
 - Allow consumers to specify toolchain files
+
+### First-party frontend
+See [SMCE-gd](https://github.com/ItJustWorksTM/smce-gd), designed for Arduino RC vehicles.
