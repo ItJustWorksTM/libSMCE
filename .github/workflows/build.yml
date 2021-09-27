@@ -141,15 +141,23 @@ jobs:
       fail-fast: false
       matrix:
         compiler:
+          - name: GCC 11
+            release: true
+            slug: gcc
+            c: gcc-11
+            cxx: g++-11
           - name: GCC 10
+            release: false
             slug: gcc
             c: gcc-10
             cxx: g++-10
-          - name: Clang/LLVM 11
+          - name: Clang/LLVM 12
+            release: true
             slug: clang
-            c: clang-11
-            cxx: clang++-11
+            c: clang-12
+            cxx: clang++-12
           - name: AppleClang 12
+            release: true
             slug: appleclang
             c: clang
             cxx: clang++
@@ -184,8 +192,8 @@ jobs:
         run: brew install boost
       - name: CMake configure
         run: |
-          [ "$CC" = "clang-11" ] && export CC="$(brew --prefix llvm)/bin/clang -stdlib=libc++ -nostdinc++ -I/usr/local/opt/llvm/include/c++/v1 -L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib -Wno-unused-command-line-argument"
-          [ "$CXX" = "clang++-11" ] && export CXX="$(brew --prefix llvm)/bin/clang++ -stdlib=libc++ -nostdinc++ -I/usr/local/opt/llvm/include/c++/v1 -L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib -Wno-unused-command-line-argument"
+          [ "${{ matrix.compiler.slug }}" = "clang" ] && export CC="$(brew --prefix llvm)/bin/clang -stdlib=libc++ -nostdinc++ -I/usr/local/opt/llvm/include/c++/v1 -L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib -Wno-unused-command-line-argument"
+          [ "${{ matrix.compiler.slug }}" = "clang" ] && export CXX="$(brew --prefix llvm)/bin/clang++ -stdlib=libc++ -nostdinc++ -I/usr/local/opt/llvm/include/c++/v1 -L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib -Wno-unused-command-line-argument"
           mkdir build
           cmake -G Ninja \
             -DCMAKE_BUILD_TYPE=Release \
@@ -198,8 +206,8 @@ jobs:
         run: cmake --build ./build
       - name: Build & Run tests
         run: |
-          [ "$CC" = "clang-11" ] && export CC="$(brew --prefix llvm)/bin/clang -stdlib=libc++ -nostdinc++ -I/usr/local/opt/llvm/include/c++/v1 -L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib -Wno-unused-command-line-argument"
-          [ "$CXX" = "clang++-11" ] && export CXX="$(brew --prefix llvm)/bin/clang++ -stdlib=libc++ -nostdinc++ -I/usr/local/opt/llvm/include/c++/v1 -L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib -Wno-unused-command-line-argument"
+          [ "${{ matrix.compiler.slug }}" = "clang" ] && export CC="$(brew --prefix llvm)/bin/clang -stdlib=libc++ -nostdinc++ -I/usr/local/opt/llvm/include/c++/v1 -L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib -Wno-unused-command-line-argument"
+          [ "${{ matrix.compiler.slug }}" = "clang" ] && export CXX="$(brew --prefix llvm)/bin/clang++ -stdlib=libc++ -nostdinc++ -I/usr/local/opt/llvm/include/c++/v1 -L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib -Wno-unused-command-line-argument"
           cmake --build ./build --target SMCE_Tests
           (cd build/test/; ctest --output-on-failure)
       - name: Package
@@ -208,6 +216,7 @@ jobs:
           (cd build/; cpack -B packages)
           rm -rd build/packages/_CPack_Packages
       - name: Upload artifacts
+        if: matrix.boost.release
         uses: 'actions/upload-artifact@v2'
         with:
           name: libSMCE-macos-${{ matrix.compiler.slug }}
