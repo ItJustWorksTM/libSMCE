@@ -229,13 +229,16 @@ jobs:
       fail-fast: false
       matrix:
         build_type: [Debug, Release]
-        compiler:
-          - name: MSVC
-            c: cl
-            cxx: cl
-#         - name: Clang/LLVM
-#           c: clang-cl
-#           cxx: clang++-cl
+        tools:
+          - name: Ninja + MSVC
+            params: "-G Ninja"
+            release: true
+          - name: MSBuild VS2019 + MSVC
+            cmake_params: "-G \"Visual Studio 16 2019\" -A x64"
+            release: false
+          - name: MSBuild VS2019 + ClangCL
+            cmake_params: "-G \"Visual Studio 16 2019\" -A x64 -T ClangCL"
+            release: false
         boost:
           - version: 1.74.0
             slug: 1_74_0
@@ -246,9 +249,6 @@ jobs:
           - version: 1.76.0
             slug: 1_76_0
             release: true
-#   env:
-#     CC: ${{ matrix.compiler.c }}
-#     CXX: ${{ matrix.compiler.cxx }}
     steps:
       - uses: actions/checkout@v2
       - run: mkdir C:\local
@@ -269,8 +269,7 @@ jobs:
       - uses: ilammy/msvc-dev-cmd@v1
       - name: CMake configure
         run: |
-          mkdir build
-          cmake -G Ninja `
+          cmake ${{ matrix.tools.params }} `
             -DBOOST_ROOT=C:\local\boost_${{ matrix.boost.slug }} `
             -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} `
             -DSMCE_CXXRT_LINKING=SHARED `
@@ -293,10 +292,10 @@ jobs:
           rm -R packages/_CPack_Packages
           cd ..
       - name: Upload artifacts
-        if: matrix.boost.release
+        if: matrix.boost.release && matrix.tools.release
         uses: 'actions/upload-artifact@v2'
         with:
-          name: libSMCE-windows-${{ matrix.compiler.c }}
+          name: libSMCE-windows-cl
           path: build/packages/*
   build-arch:
     name: libSMCE - ArchLinux (${{ matrix.compiler.name }})
