@@ -80,7 +80,7 @@ file (GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/inflate_ark_if_different.cmak
     endif ()
   endif ()
 
-  message (STATUS "Inflating resources for testsuite execution)")
+  message (STATUS "Inflating resources for testsuite execution")
   execute_process (COMMAND "${CMAKE_COMMAND}" -E tar xf "${CMAKE_ARGV3}"
     WORKING_DIRECTORY "${CMAKE_ARGV4}"
   )
