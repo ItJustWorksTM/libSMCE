@@ -69,6 +69,20 @@ if (WIN32 AND SMCE_BUILD_SHARED)
 endif ()
 
 set (SMCE_TEST_DIR "${CMAKE_CURRENT_BINARY_DIR}/test_dir")
+copy_at_build (DESTINATION "${SMCE_TEST_DIR}"
+    DIRECTORIES
+      sketches
+      patches
+      plugins
+      manifests
+    APPEND_TRACKER SMCE_TEST_ASSETS
+    COMMENT "Updating assets"
+)
+add_custom_target (SMCE_Tests_Assets
+    DEPENDS ${SMCE_TEST_ASSETS}
+    COMMENT ""
+)
+
 file (MAKE_DIRECTORY "${SMCE_TEST_DIR}/smce_root")
 file (GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/inflate_ark_if_different.cmake" CONTENT [[
   # HSD generated
@@ -90,13 +104,10 @@ add_custom_target (SMCE_Tests_ResDir
     COMMAND "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/inflate_ark_if_different.cmake" "${SMCE_RESOURCES_ARK}" "\"${SMCE_TEST_DIR}/smce_root\""
     DEPENDS ArdRtRes "${SMCE_RESOURCES_ARK}"
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-    COMMENT "Checking resources change"
+    COMMENT ""
 )
-file (COPY sketches DESTINATION "${SMCE_TEST_DIR}")
-file (COPY patches DESTINATION "${SMCE_TEST_DIR}")
-file (COPY plugins DESTINATION "${SMCE_TEST_DIR}")
-file (COPY manifests DESTINATION "${SMCE_TEST_DIR}")
+
 target_compile_definitions (SMCE_Tests PUBLIC "SMCE_TEST_DIR=\"${SMCE_TEST_DIR}\"")
-add_dependencies (SMCE_Tests SMCE_Tests_ResDir)
+add_dependencies (SMCE_Tests SMCE_Tests_ResDir SMCE_Tests_Assets)
 
 unset (SMCE_LINK_TARGET)
