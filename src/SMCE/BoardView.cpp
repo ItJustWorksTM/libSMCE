@@ -325,28 +325,30 @@ bool FrameBuffer::read_rgb888(std::span<std::byte> buf) {
     return true;
 }
 
-constexpr static std::size_t div_ceil(std::size_t lhs, std::size_t rhs) noexcept { return lhs / rhs + !!(lhs % rhs); }
-
-constexpr static auto rgb444_bits_per_pixel = 12;
+/*
+ * MEDIA_BUS_FMT_RGB444_2X8_PADHI_LE is laid as:
+ * 76543210 | 76543210
+ * GGGGBBBB   0000RRRR
+ */
 bool FrameBuffer::write_rgb444(std::span<const std::byte> buf) {
     if (!exists())
         return false;
 
     auto& frame_buf = m_bdat->frame_buffers[m_idx];
-    if (buf.size() != div_ceil(frame_buf.data.size() / 3 * rgb444_bits_per_pixel, 8))
+    if (buf.size() != frame_buf.data.size() / 3 * 2)
         return false;
 
     [[maybe_unused]] std::lock_guard lk{frame_buf.data_mut};
 
-    auto* to = frame_buf.data.data();
-    for (std::size_t i = 0; i < buf.size() - (frame_buf.data.size() % 2); ++i) {
-        const std::byte from = buf[i];
-        *to++ = from & std::byte{0xF0};
-        *to++ = from << 4;
+    auto from = buf.begin();
+    auto to = frame_buf.data.begin();
+    while (from != buf.end()) {
+        const auto gb = *from++;
+        const auto xr = *from++;
+        *to++ = xr << 4;
+        *to++ = gb & std::byte{0xF0};
+        *to++ = gb << 4;
     }
-
-    if (frame_buf.data.size() % 2)
-        *to = buf.back() & std::byte{0xF0};
 
     return true;
 }
@@ -356,19 +358,19 @@ bool FrameBuffer::read_rgb444(std::span<std::byte> buf) {
         return false;
 
     auto& frame_buf = m_bdat->frame_buffers[m_idx];
-    if (buf.size() != div_ceil(frame_buf.data.size() / 3 * rgb444_bits_per_pixel, 8))
+    if (buf.size() != frame_buf.data.size() / 3 * 2)
         return false;
     [[maybe_unused]] std::lock_guard lk{frame_buf.data_mut};
 
     const auto* from = frame_buf.data.data();
-    for (std::size_t i = 0; i < buf.size() - (frame_buf.data.size() % 2); ++i) {
-        std::byte& to = buf[i];
-        to = (from[0] & std::byte{0xF0}) | (from[1] >> 4);
-        from += 2;
+    auto to = buf.begin();
+    while (to != buf.end()) {
+        const auto r = *from++;
+        const auto g = *from++;
+        const auto b = *from++;
+        *to++ = (g & std::byte{0xF0}) | (b >> 4);
+        *to++ = r >> 4;
     }
-
-    if (frame_buf.data.size() % 2)
-        buf.back() = *from & std::byte{0xF0};
 
     return true;
 }

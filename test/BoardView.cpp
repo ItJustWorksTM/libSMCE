@@ -157,13 +157,10 @@ TEST_CASE("BoardView RGB444 cvt", "[BoardView]") {
     {
         constexpr std::size_t height = 1;
         constexpr std::size_t width = 1;
-        constexpr std::size_t n_pixels = height * width;
 
-        constexpr std::array in = {'\xAB'_b, '\xC0'_b};
-        static_assert(in.size() == div_ceil(n_pixels * bpp_444, 8));
-
+        constexpr std::array in = {'\xBC'_b, '\x0A'_b};
         constexpr std::array expected_out = {'\xA0'_b, '\xB0'_b, '\xC0'_b};
-        static_assert(expected_out.size() == div_ceil(n_pixels * bpp_888, 8));
+        static_assert(in.size() == expected_out.size() / 3 * 2);
 
         fb.set_height(height);
         fb.set_width(width);
@@ -177,14 +174,11 @@ TEST_CASE("BoardView RGB444 cvt", "[BoardView]") {
     {
         constexpr std::size_t height = 2;
         constexpr std::size_t width = 2;
-        constexpr std::size_t n_pixels = height * width;
 
-        constexpr std::array in = {'\x11'_b, '\x22'_b, '\x33'_b, '\x44'_b, '\x55'_b, '\x66'_b};
-        static_assert(in.size() == div_ceil(n_pixels * bpp_444, 8));
-
-        constexpr std::array expected_out = {'\x10'_b, '\x10'_b, '\x20'_b, '\x20'_b, '\x30'_b, '\x30'_b,
-                                             '\x40'_b, '\x40'_b, '\x50'_b, '\x50'_b, '\x60'_b, '\x60'_b};
-        static_assert(expected_out.size() == div_ceil(n_pixels * bpp_888, 8));
+        constexpr std::array in = {'\x23'_b, '\xF1'_b, '\x56'_b, '\xF4'_b, '\x89'_b, '\xF7'_b, '\xBC'_b, '\xFA'_b};
+        constexpr std::array expected_out = {'\x10'_b, '\x20'_b, '\x30'_b, '\x40'_b, '\x50'_b, '\x60'_b,
+                                             '\x70'_b, '\x80'_b, '\x90'_b, '\xA0'_b, '\xB0'_b, '\xC0'_b};
+        static_assert(in.size() == expected_out.size() / 3 * 2);
 
         fb.set_height(height);
         fb.set_width(width);
@@ -198,13 +192,10 @@ TEST_CASE("BoardView RGB444 cvt", "[BoardView]") {
     {
         constexpr std::size_t height = 1;
         constexpr std::size_t width = 1;
-        constexpr std::size_t n_pixels = height * width;
 
         constexpr std::array in = {'\xAD'_b, '\xBE'_b, '\xCF'_b};
-        static_assert(in.size() == div_ceil(n_pixels * bpp_888, 8));
-
-        constexpr std::array expected_out = {'\xAB'_b, '\xC0'_b};
-        static_assert(expected_out.size() == div_ceil(n_pixels * bpp_444, 8));
+        constexpr std::array expected_out = {'\xBC'_b, '\x0A'_b};
+        static_assert(expected_out.size() == in.size() / 3 * 2);
 
         fb.set_height(height);
         fb.set_width(width);
@@ -218,14 +209,12 @@ TEST_CASE("BoardView RGB444 cvt", "[BoardView]") {
     {
         constexpr std::size_t height = 2;
         constexpr std::size_t width = 2;
-        constexpr std::size_t n_pixels = height * width;
 
-        constexpr std::array in = {'\x10'_b, '\x10'_b, '\x20'_b, '\x20'_b, '\x30'_b, '\x30'_b,
-                                   '\x40'_b, '\x40'_b, '\x50'_b, '\x50'_b, '\x60'_b, '\x60'_b};
-        static_assert(in.size() == div_ceil(n_pixels * bpp_888, 8));
-
-        constexpr std::array expected_out = {'\x11'_b, '\x22'_b, '\x33'_b, '\x44'_b, '\x55'_b, '\x66'_b};
-        static_assert(expected_out.size() == div_ceil(n_pixels * bpp_444, 8));
+        constexpr std::array in = {'\x1A'_b, '\x2B'_b, '\x3C'_b, '\x4D'_b, '\x5E'_b, '\x6F'_b,
+                                   '\x7A'_b, '\x8B'_b, '\x9C'_b, '\xAD'_b, '\xBE'_b, '\xCF'_b};
+        constexpr std::array expected_out = {'\x23'_b, '\x01'_b, '\x56'_b, '\x04'_b,
+                                             '\x89'_b, '\x07'_b, '\xBC'_b, '\x0A'_b};
+        static_assert(expected_out.size() == in.size() / 3 * 2);
 
         fb.set_height(height);
         fb.set_width(width);

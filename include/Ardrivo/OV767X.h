@@ -24,8 +24,8 @@
 
 // clang-format off
 enum SMCE_OV767_Format {
-    RGB888,
-    RGB444,
+    RGB888, // RRRRRRRRGGGGGGGGBBBBBBBB // SMCE extension
+    RGB444, // GGGGBBBB----RRRR
 };
 
 enum SMCE_OV767_Resolution {
