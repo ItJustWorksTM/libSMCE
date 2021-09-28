@@ -128,3 +128,113 @@ TEST_CASE("BoardView UART", "[BoardView]") {
 
     REQUIRE(br.stop());
 }
+
+constexpr auto div_ceil(std::size_t lhs, std::size_t rhs) { return lhs / rhs + !!(lhs % rhs); }
+
+constexpr std::byte operator""_b(char c) noexcept { return static_cast<std::byte>(c); }
+
+constexpr std::size_t bpp_444 = 4 + 4 + 4;
+constexpr std::size_t bpp_888 = 8 + 8 + 8;
+
+TEST_CASE("BoardView RGB444 cvt", "[BoardView]") {
+    smce::Toolchain tc{SMCE_PATH};
+    REQUIRE(!tc.check_suitable_environment());
+    smce::Sketch sk{SKETCHES_PATH "noop", {.fqbn = "arduino:avr:nano"}};
+    const auto ec = tc.compile(sk);
+    if (ec)
+        std::cerr << tc.build_log().second;
+    REQUIRE_FALSE(ec);
+    smce::Board br{};
+    REQUIRE(br.configure({.frame_buffers = {{}}}));
+    REQUIRE(br.attach_sketch(sk));
+    REQUIRE(br.start());
+    auto bv = br.view();
+    REQUIRE(bv.valid());
+    REQUIRE(br.suspend());
+    auto fb = bv.frame_buffers[0];
+    REQUIRE(fb.exists());
+
+    {
+        constexpr std::size_t height = 1;
+        constexpr std::size_t width = 1;
+        constexpr std::size_t n_pixels = height * width;
+
+        constexpr std::array in = {'\xAB'_b, '\xC0'_b};
+        static_assert(in.size() == div_ceil(n_pixels * bpp_444, 8));
+
+        constexpr std::array expected_out = {'\xA0'_b, '\xB0'_b, '\xC0'_b};
+        static_assert(expected_out.size() == div_ceil(n_pixels * bpp_888, 8));
+
+        fb.set_height(height);
+        fb.set_width(width);
+        REQUIRE(fb.write_rgb444(in));
+
+        std::array<std::byte, std::size(expected_out)> out;
+        REQUIRE(fb.read_rgb888(out));
+        REQUIRE(out == expected_out);
+    }
+
+    {
+        constexpr std::size_t height = 2;
+        constexpr std::size_t width = 2;
+        constexpr std::size_t n_pixels = height * width;
+
+        constexpr std::array in = {'\x11'_b, '\x22'_b, '\x33'_b, '\x44'_b, '\x55'_b, '\x66'_b};
+        static_assert(in.size() == div_ceil(n_pixels * bpp_444, 8));
+
+        constexpr std::array expected_out = {'\x10'_b, '\x10'_b, '\x20'_b, '\x20'_b, '\x30'_b, '\x30'_b,
+                                             '\x40'_b, '\x40'_b, '\x50'_b, '\x50'_b, '\x60'_b, '\x60'_b};
+        static_assert(expected_out.size() == div_ceil(n_pixels * bpp_888, 8));
+
+        fb.set_height(height);
+        fb.set_width(width);
+        fb.write_rgb444(in);
+
+        std::array<std::byte, std::size(expected_out)> out;
+        fb.read_rgb888(out);
+        REQUIRE(out == expected_out);
+    }
+
+    {
+        constexpr std::size_t height = 1;
+        constexpr std::size_t width = 1;
+        constexpr std::size_t n_pixels = height * width;
+
+        constexpr std::array in = {'\xAD'_b, '\xBE'_b, '\xCF'_b};
+        static_assert(in.size() == div_ceil(n_pixels * bpp_888, 8));
+
+        constexpr std::array expected_out = {'\xAB'_b, '\xC0'_b};
+        static_assert(expected_out.size() == div_ceil(n_pixels * bpp_444, 8));
+
+        fb.set_height(height);
+        fb.set_width(width);
+        REQUIRE(fb.write_rgb888(in));
+
+        std::array<std::byte, std::size(expected_out)> out;
+        REQUIRE(fb.read_rgb444(out));
+        REQUIRE(out == expected_out);
+    }
+
+    {
+        constexpr std::size_t height = 2;
+        constexpr std::size_t width = 2;
+        constexpr std::size_t n_pixels = height * width;
+
+        constexpr std::array in = {'\x10'_b, '\x10'_b, '\x20'_b, '\x20'_b, '\x30'_b, '\x30'_b,
+                                   '\x40'_b, '\x40'_b, '\x50'_b, '\x50'_b, '\x60'_b, '\x60'_b};
+        static_assert(in.size() == div_ceil(n_pixels * bpp_888, 8));
+
+        constexpr std::array expected_out = {'\x11'_b, '\x22'_b, '\x33'_b, '\x44'_b, '\x55'_b, '\x66'_b};
+        static_assert(expected_out.size() == div_ceil(n_pixels * bpp_444, 8));
+
+        fb.set_height(height);
+        fb.set_width(width);
+        fb.write_rgb888(in);
+
+        std::array<std::byte, std::size(expected_out)> out;
+        fb.read_rgb444(out);
+        REQUIRE(out == expected_out);
+    }
+
+    REQUIRE(br.stop());
+}
