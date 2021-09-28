@@ -471,7 +471,7 @@ jobs:
       options: --security-opt seccomp=unconfined
     env:
       DEBIAN_FRONTEND: "noninteractive"
-      CMAKE_VERSION: 3.20.5
+      CMAKE_VERSION: 3.21.3
     steps:
       - name: Setup workdir
         run: mkdir /tmp/wk && cd /tmp/wk
