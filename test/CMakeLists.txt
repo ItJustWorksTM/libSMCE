@@ -15,6 +15,11 @@
 #  limitations under the License.
 #
 
+if (DEFINED CMAKE_CXX_STANDARD)
+  set (PREV_CMAKE_CXX_STANDARD ${CMAKE_CXX_STANDARD})
+endif ()
+set (CMAKE_CXX_STANDARD 20)
+
 find_package (Catch2 QUIET)
 if (NOT Catch2_FOUND)
   include (FetchContent)
@@ -30,6 +35,12 @@ if (NOT Catch2_FOUND)
   set (CATCH_BUILD_STATIC_LIBRARY On CACHE INTERNAL "" FORCE)
   add_subdirectory ("${catch2_SOURCE_DIR}" "${catch2_BINARY_DIR}" EXCLUDE_FROM_ALL)
   list (APPEND CMAKE_MODULE_PATH "${Catch2_SOURCE_DIR}/extras")
+endif ()
+
+if (DEFINED PREV_CMAKE_CXX_STANDARD)
+  set (CMAKE_CXX_STANDARD ${PREV_CMAKE_CXX_STANDARD})
+else ()
+  unset (CMAKE_CXX_STANDARD)
 endif ()
 
 include (CTest)
