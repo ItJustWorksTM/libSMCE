@@ -28,6 +28,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   coverage-linux:
     name: libSMCE (coverage) - Linux
+    if: 0 == 1
     runs-on: ubuntu-latest
     container: ubuntu:hirsute
     env:
@@ -69,6 +70,7 @@ jobs:
 
   build-ubuntu:
     name: libSMCE - Ubuntu (${{ matrix.compiler.name }} & Boost ${{ matrix.boost.version }})
+    if: 0 == 1
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -136,6 +138,7 @@ jobs:
 
   build-macos:
     name: libSMCE - macOS (${{ matrix.compiler.name }})
+    if: 0 == 1
     runs-on: macos-latest
     strategy:
       fail-fast: false
@@ -224,6 +227,7 @@ jobs:
 
   build-windows:
     name: libSMCE - Windows ${{ matrix.build_type }} (${{ matrix.compiler.name }} & Boost ${{ matrix.boost.version }})
+    if: 0 == 1
     runs-on: windows-latest
     strategy:
       fail-fast: false
@@ -300,6 +304,7 @@ jobs:
           path: build/packages/*
   build-arch:
     name: libSMCE - ArchLinux (${{ matrix.compiler.name }})
+    if: 0 == 1
     runs-on: ubuntu-latest
     container: archlinux:base-devel
     strategy:
@@ -344,6 +349,7 @@ jobs:
           ctest --output-on-failure
   build-fedora:
     name: libSMCE - Fedora Rawhide (${{ matrix.compiler.name }})
+    if: 0 == 1
     runs-on: ubuntu-latest
     container:
       image: fedora:rawhide
@@ -390,6 +396,7 @@ jobs:
 
   build-openmandriva:
     name: libSMCE - OpenMandriva Lx Cooker (${{ matrix.compiler.name }})
+    if: 0 == 1
     runs-on: ubuntu-latest
     container:
       image: openmandriva/cooker:latest
@@ -448,9 +455,9 @@ jobs:
           - { sys: ucrt64,  env: ucrt-x86_64 }
           - { sys: clang64, env: clang-x86_64 }
     env:
-      SRCDEST: .
-      PKGDEST: dist
+      PKGDEST: ${{ github.workspace }}/dist
       MINGW_SMCE_TREE: true
+      MINGW_ARCH: ${{ matrix.sys }}
     name: libSMCE - MSYS2 (${{ matrix.sys }})
     defaults:
       run:
@@ -485,6 +492,7 @@ jobs:
 
   package-deb:
     name: Package per-distro DEBs (${{ matrix.os.name }} ${{ matrix.os.codename }})
+    if: 0 == 1
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -572,6 +580,7 @@ jobs:
           path: build/*.deb
   package-rpm:
     name: Package per-distro RPMs (${{ matrix.os.name }} ${{ matrix.os.codename }})
+    if: 0 == 1
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

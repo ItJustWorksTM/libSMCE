@@ -10,6 +10,7 @@ url="https://github.com/ItJustWorksTM/libSMCE"
 license=('Apache2.0')
 depends=("${MINGW_PACKAGE_PREFIX}-gcc-libs" "${MINGW_PACKAGE_PREFIX}-boost>=1.74.0")
 makedepends=("${MINGW_PACKAGE_PREFIX}-cmake>=3.20"
+             "${MINGW_PACKAGE_PREFIX}-ninja"
              "${MINGW_PACKAGE_PREFIX}-gcc>=10")
 
 if [ -z "$MINGW_SMCE_TREE" ]
@@ -18,11 +19,14 @@ then
   exit 1
   #source=("${_realname}-${pkgver}.tar.gz"::https://github.com/ItJustWorksTM/libSMCE/archive/refs/tags/v${pkgver}.tar.gz)
   #sha256sums=('5f72f4f07187ea3beb8d010c1fb21692b850123987518144d849f0cb55f3aad6')
+  export xsrcdir="${srcdir}"
+else
+  export xsrcdir="${srcdir}../"
 fi
 
 build() {
   ${MINGW_PREFIX}/bin/cmake.exe \
-    -G"MSYS Makefiles" \
+    -G Ninja \
     -DCMAKE_INSTALL_PREFIX=${MINGW_PREFIX} \
     -DSMCE_BUILD_SHARED=On \
     -DSMCE_BUILD_STATIC=On \
@@ -32,22 +36,30 @@ build() {
     -DSMCE_MOSQUITTO_LINKING=AUTO \
     -DSMCE_OPENSSL_LINKING=SHARED \
     -DSMCE_ARDRIVO_OV767X=On \
-    -S "${srcdir}"
-    -B "${srcdir}/build-${MINGW_CHOST}"
+    -S "${xsrcdir}"
+    -B "${xsrcdir}/build-${MINGW_CHOST}"
 
-  ${MINGW_PREFIX}/bin/cmake.exe --build "${srcdir}/build-${MINGW_CHOST}"
+  ${MINGW_PREFIX}/bin/cmake.exe --build "${xsrcdir}/build-${MINGW_CHOST}"
 }
 
 check() {
-  ${MINGW_PREFIX}/bin/cmake.exe --build "${srcdir}/build-${MINGW_CHOST}" \
+  if [ -n "$MINGW_SMCE_TREE" ]
+  then
+    cd ..
+  fi
+  ${MINGW_PREFIX}/bin/cmake.exe --build "${xsrcdir}/build-${MINGW_CHOST}" \
     --target SMCE_tests
   ${MINGW_PREFIX}/bin/ctest.exe \
-    --test-dir "${srcdir}/build-${MINGW_CHOST}/test" \
+    --test-dir "${xsrcdir}/build-${MINGW_CHOST}/test" \
     --output-on-error
 }
 
 package() {
+  if [ -n "$MINGW_SMCE_TREE" ]
+  then
+    cd ..
+  fi
   DESTDIR=${pkgdir} \
-  ${MINGW_PREFIX}/bin/cmake.exe --build "${srcdir}/build-${MINGW_CHOST}" \
+  ${MINGW_PREFIX}/bin/cmake.exe --build "${xsrcdir}/build-${MINGW_CHOST}" \
     --target install
 }
