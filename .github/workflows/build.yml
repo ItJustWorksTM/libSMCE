@@ -516,7 +516,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: ${{ matrix.os.image }}
-          options: -v ${{ github.workspace }}:/host
+          options: -v ${{ github.workspace }}:/host --security-opt seccomp=unconfined
           run: |
             apt-get update -y
             apt-get install -y /host/build/*.deb
