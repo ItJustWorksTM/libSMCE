@@ -437,6 +437,51 @@ jobs:
           cmake --build ./build --target SMCE_Tests
           cd build/test
           ctest --output-on-failure
+  build-mingw:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { sys: mingw32, env: i686 }
+          - { sys: mingw64, env: x86_64 }
+          - { sys: ucrt64,  env: ucrt-x86_64 }
+          - { sys: clang64, env: clang-x86_64 }
+    env:
+      SRCDEST: .
+      PKGDEST: dist
+      MINGW_SMCE_TREE: true
+    name: libSMCE - MSYS2 (${{ matrix.sys }})
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: ${{ matrix.sys }}
+          install: >-
+            git
+            mingw-w64-${{ matrix.env }}-toolchain
+            mingw-w64-${{ matrix.env }}-cmake
+            mingw-w64-${{ matrix.env }}-ninja
+      - run: |
+          git config --global core.eol lf
+          git config --global core.autocrlf input
+        shell: bash
+      - uses: actions/checkout@v2
+      - name: Build package
+        run: makepkg-mingw -p PKGBUILD.msys -sCLf --noarchive --nocheck --noconfirm --noprogressbar
+      - name: Check package
+        run: makepkg-mingw -p PKGBUILD.msys -L --check --noarchive --noconfirm --noprogressbar
+      - name: Archive package
+        run: makepkg-mingw -p PKGBUILD.msys -R --noconfirm --noprogressbar
+      - name: Install package
+        run: pacman --noconfirm -U ./*.pkg.tar.zst
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: libSMCE-msys2-${{ matrix.sys }}
+          path: dist/*
 
   package-deb:
     name: Package per-distro DEBs (${{ matrix.os.name }} ${{ matrix.os.codename }})

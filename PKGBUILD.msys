@@ -1,0 +1,53 @@
+_realname=libSMCE
+pkgbase="mingw-w64-${_realname}"
+pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgver=1.4.0
+pkgrel=1
+pkgdesc="A library to run your Arduino code on a desktop OS (mingw-w64)"
+arch=('any')
+mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clang32')
+url="https://github.com/ItJustWorksTM/libSMCE"
+license=('Apache2.0')
+depends=("${MINGW_PACKAGE_PREFIX}-gcc-libs" "${MINGW_PACKAGE_PREFIX}-boost>=1.74.0")
+makedepends=("${MINGW_PACKAGE_PREFIX}-cmake>=3.20"
+             "${MINGW_PACKAGE_PREFIX}-gcc>=10")
+
+if [ -z "$MINGW_SMCE_TREE" ]
+then
+  echo "Error: no supported release yet"
+  exit 1
+  #source=("${_realname}-${pkgver}.tar.gz"::https://github.com/ItJustWorksTM/libSMCE/archive/refs/tags/v${pkgver}.tar.gz)
+  #sha256sums=('5f72f4f07187ea3beb8d010c1fb21692b850123987518144d849f0cb55f3aad6')
+fi
+
+build() {
+  ${MINGW_PREFIX}/bin/cmake.exe \
+    -G"MSYS Makefiles" \
+    -DCMAKE_INSTALL_PREFIX=${MINGW_PREFIX} \
+    -DSMCE_BUILD_SHARED=On \
+    -DSMCE_BUILD_STATIC=On \
+    -DSMCE_CXXRT_LINKING=SHARED \
+    -DSMCE_BOOST_LINKING=SHARED \
+    -DSMCE_ARDRIVO_MQTT=On \
+    -DSMCE_MOSQUITTO_LINKING=AUTO \
+    -DSMCE_OPENSSL_LINKING=SHARED \
+    -DSMCE_ARDRIVO_OV767X=On \
+    -S "${srcdir}"
+    -B "${srcdir}/build-${MINGW_CHOST}"
+
+  ${MINGW_PREFIX}/bin/cmake.exe --build "${srcdir}/build-${MINGW_CHOST}"
+}
+
+check() {
+  ${MINGW_PREFIX}/bin/cmake.exe --build "${srcdir}/build-${MINGW_CHOST}" \
+    --target SMCE_tests
+  ${MINGW_PREFIX}/bin/ctest.exe \
+    --test-dir "${srcdir}/build-${MINGW_CHOST}/test" \
+    --output-on-error
+}
+
+package() {
+  DESTDIR=${pkgdir} \
+  ${MINGW_PREFIX}/bin/cmake.exe --build "${srcdir}/build-${MINGW_CHOST}" \
+    --target install
+}
