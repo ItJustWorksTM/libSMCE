@@ -22,10 +22,11 @@
 #include <string>
 #include <system_error>
 #include <boost/predef.h>
-#include <boost/process.hpp>
 #if BOOST_OS_WINDOWS
 #    include <boost/process/windows.hpp>
 #endif
+#include <boost/process.hpp>
+
 #include <SMCE/PluginManifest.hpp>
 #include <SMCE/SMCE_iface.h>
 #include <SMCE/Sketch.hpp>
