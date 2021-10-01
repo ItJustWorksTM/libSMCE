@@ -1,3 +1,6 @@
+# The main documents for Group 9 is in smce
+Here: https://github.com/KraftKatten/Group-9-frontend-smce-gd
+
 # libSMCE
 _Spiritual successor to the backend of [SMartCarEmul](https://github.com/ItJustWorksTM/SmartcarEmul)_  
 _Copyright © ItJustWorks™_
