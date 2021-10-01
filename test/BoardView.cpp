@@ -60,18 +60,34 @@ TEST_CASE("BoardView GPIO", "[BoardView]") {
     REQUIRE(br.start());
     auto bv = br.view();
     REQUIRE(bv.valid());
-    auto pin0 = bv.pins[0].digital();
+    auto pin0 = bv.pins[0];
     REQUIRE(pin0.exists());
-    auto pin1 = bv.pins[1].digital();
+    auto pin0d = pin0.digital();
+    REQUIRE(pin0d.exists());
+    REQUIRE(pin0d.can_read());
+    REQUIRE_FALSE(pin0d.can_write());
+    auto pin0a = pin0.analog();
+    REQUIRE(pin0a.exists());
+    REQUIRE(pin0a.can_read());
+    REQUIRE_FALSE(pin0a.can_write());
+    auto pin1 = bv.pins[1];
     REQUIRE_FALSE(pin1.exists());
-    auto pin2 = bv.pins[2].digital();
+    auto pin2 = bv.pins[2];
     REQUIRE(pin2.exists());
+    auto pin2d = pin2.digital();
+    REQUIRE(pin2d.exists());
+    REQUIRE_FALSE(pin2d.can_read());
+    REQUIRE(pin2d.can_write());
+    auto pin2a = pin2.analog();
+    REQUIRE(pin2a.exists());
+    REQUIRE_FALSE(pin2a.can_read());
+    REQUIRE(pin2a.can_write());
     std::this_thread::sleep_for(1ms);
 
-    pin0.write(false);
-    test_pin_delayable(pin2, true, 16384, 1ms);
-    pin0.write(true);
-    test_pin_delayable(pin2, false, 16384, 1ms);
+    pin0d.write(false);
+    test_pin_delayable(pin2d, true, 16384, 1ms);
+    pin0d.write(true);
+    test_pin_delayable(pin2d, false, 16384, 1ms);
     REQUIRE(br.stop());
 }
 
@@ -108,7 +124,9 @@ TEST_CASE("BoardView UART", "[BoardView]") {
             FAIL("Timed out");
         std::this_thread::sleep_for(1ms);
     } while (uart0.tx().size() != in.size());
+    REQUIRE(uart0.tx().front() == 'H');
     REQUIRE(uart0.tx().read(in) == in.size());
+    REQUIRE(uart0.tx().front() == '\0');
     REQUIRE(uart0.tx().size() == 0);
     REQUIRE(in == out);
 
