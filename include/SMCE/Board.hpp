@@ -85,7 +85,6 @@ class SMCE_API Board {
 
   private:
     struct Internal;
-    enum class Command;
 
     void do_spawn() noexcept;
     void do_sweep() noexcept;
