@@ -541,6 +541,10 @@ jobs:
             image: fedora:34
             profile: FedoraHost
           - name: Fedora
+            codename: 35
+            image: fedora:35
+            profile: FedoraHost
+          - name: Fedora
             codename: Rawhide
             image: fedora:rawhide
             profile: FedoraHost
