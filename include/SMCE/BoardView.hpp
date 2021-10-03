@@ -200,13 +200,13 @@ class SMCE_API FrameBuffer {
     /// \note Frequency is in Hz
     void set_freq(std::uint8_t) noexcept;
 
-    /// Copies a frame from an RGB888 buffer
+    /// Copies a frame from a packed buffer of pixels in the format RRRRRRRRGGGGGGGGBBBBBBBB
     bool write_rgb888(std::span<const std::byte>);
-    /// Copies a frame into an RGB888 buffer
+    /// Copies a frame into a packed buffer of pixels in the format RRRRRRRRGGGGGGGGBBBBBBBB
     bool read_rgb888(std::span<std::byte>);
-    /// Copies a frame from an RGB444 buffer
+    /// Copies a frame from a packed buffer of pixels in the format GGGGBBBB0000RRRR
     bool write_rgb444(std::span<const std::byte>);
-    /// Copies a frame into an RGB444 buffer
+    /// Copies a frame into a packed buffer of pixels in the format GGGGBBBB0000RRRR
     bool read_rgb444(std::span<std::byte>);
 };
 

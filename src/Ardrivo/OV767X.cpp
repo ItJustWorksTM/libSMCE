@@ -116,7 +116,7 @@ int OV767X::height() const {
     return smce::board_view.frame_buffers[m_key].get_height();
 }
 
-constexpr std::array<std::pair<int, int>, 2> bits_bytes_pixel_formats{{{24, 3}, {12, 2}}};
+constexpr std::array<std::pair<int, int>, 2> bits_bytes_pixel_formats{{{24, 3}, {16, 2}}};
 
 int OV767X::bitsPerPixel() const {
     if (!m_begun) {
