@@ -120,6 +120,7 @@ TEST_CASE("BoardView UART", "[BoardView]") {
     std::array out = {'H', 'E', 'L', 'L', 'O', ' ', 'U', 'A', 'R', 'T', '\0'};
     std::array<char, out.size()> in{};
     REQUIRE(uart0.rx().write(out) == out.size());
+    REQUIRE(uart0.rx().size() != 0);
     int ticks = 16'000;
     do {
         if (ticks-- == 0)
@@ -171,8 +172,12 @@ TEST_CASE("BoardView RGB444 cvt", "[BoardView]") {
     auto bv = br.view();
     REQUIRE(bv.valid());
     REQUIRE(br.suspend());
+
     auto fb = bv.frame_buffers[0];
-    REQUIRE(fb.exists());
+
+    SECTION("BoradView"){
+        REQUIRE(fb.exists());
+    }
 
     {
         constexpr std::size_t height = 1;
