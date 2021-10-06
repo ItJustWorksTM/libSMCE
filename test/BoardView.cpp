@@ -176,8 +176,12 @@ TEST_CASE("BoardView RGB444 cvt", "[BoardView]") {
     auto bv = br.view();
     REQUIRE(bv.valid());
     REQUIRE(br.suspend());
+
     auto fb = bv.frame_buffers[0];
-    REQUIRE(fb.exists());
+
+    SECTION("BoradView"){
+        REQUIRE(fb.exists());
+    }
 
     {
         constexpr std::size_t height = 1;

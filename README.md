@@ -3,7 +3,7 @@ _Spiritual successor to the backend of [SMartCarEmul](https://github.com/ItJustW
 _Copyright © ItJustWorks™_
 
 ![Build](https://github.com/ItJustWorksTM/libSMCE/workflows/Build/badge.svg?branch=master)
-[![codecov](https://codecov.io/gh/ItJustWorksTM/libSMCE/branch/master/graph/badge.svg?token=0Q5P5TVW4N)](https://codecov.io/gh/ItJustWorksTM/libSMCE)
+[![codecov](https://codecov.io/gh/DAT265group2/libSMCE/branch/master/graph/badge.svg?token=XL2WYC8JI4)](https://codecov.io/gh/DAT265group2/libSMCE)
 
 Status: _Actively maintained_
 
