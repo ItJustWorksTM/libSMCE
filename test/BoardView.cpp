@@ -171,8 +171,10 @@ TEST_CASE("BoardView RGB444 cvt", "[BoardView]") {
     auto bv = br.view();
     REQUIRE(bv.valid());
     REQUIRE(br.suspend());
-    auto fb = bv.frame_buffers[0];
-    REQUIRE(bb.exists());
+    SECTION( "Buffer does not exist" ) {
+        auto fb = bv.frame_buffers[0];
+        REQUIRE(fb.exists());
+    }
     REQUIRE(fb.exists());
 
     {
