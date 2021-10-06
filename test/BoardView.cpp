@@ -76,6 +76,10 @@ TEST_CASE("BoardView GPIO", "[BoardView]") {
     REQUIRE_FALSE(pin1.exists());
     auto pin2 = bv.pins[2];
     REQUIRE(pin2.exists());
+    REQUIRE(pin2.locked());
+    smce::VirtualPin::DataDirection dir = smce::VirtualPin::DataDirection::in;
+    pin2.set_direction(dir);
+    REQUIRE(pin2.get_direction() == dir);
     auto pin2d = pin2.digital();
     REQUIRE(pin2d.exists());
     REQUIRE_FALSE(pin2d.can_read());
@@ -120,6 +124,7 @@ TEST_CASE("BoardView UART", "[BoardView]") {
     std::array out = {'H', 'E', 'L', 'L', 'O', ' ', 'U', 'A', 'R', 'T', '\0'};
     std::array<char, out.size()> in{};
     REQUIRE(uart0.rx().write(out) == out.size());
+    REQUIRE(uart0.rx().size() != 0);
     int ticks = 16'000;
     do {
         if (ticks-- == 0)
@@ -171,10 +176,7 @@ TEST_CASE("BoardView RGB444 cvt", "[BoardView]") {
     auto bv = br.view();
     REQUIRE(bv.valid());
     REQUIRE(br.suspend());
-    SECTION( "Buffer does not exist" ) {
-        auto fb = bv.frame_buffers[0];
-        REQUIRE(fb.exists());
-    }
+    auto fb = bv.frame_buffers[0];
     REQUIRE(fb.exists());
 
     {
