@@ -76,7 +76,7 @@ TEST_CASE("BoardView GPIO", "[BoardView]") {
     REQUIRE_FALSE(pin1.exists());
     auto pin2 = bv.pins[2];
     REQUIRE(pin2.exists());
-    REQUIRE(pin2.locked());
+    REQUIRE_FALSE(pin2.locked());
     smce::VirtualPin::DataDirection dir = smce::VirtualPin::DataDirection::in;
     pin2.set_direction(dir);
     REQUIRE(pin2.get_direction() == dir);
