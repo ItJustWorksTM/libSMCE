@@ -516,7 +516,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: ${{ matrix.os.image }}
-          options: -v ${{ github.workspace }}:/host
+          options: -v ${{ github.workspace }}:/host --security-opt seccomp=unconfined
           run: |
             apt-get update -y
             apt-get install -y /host/build/*.deb
@@ -539,6 +539,10 @@ jobs:
           - name: Fedora
             codename: 34
             image: fedora:34
+            profile: FedoraHost
+          - name: Fedora
+            codename: 35
+            image: fedora:35
             profile: FedoraHost
           - name: Fedora
             codename: Rawhide

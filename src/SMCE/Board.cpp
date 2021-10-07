@@ -60,15 +60,6 @@ namespace bip = boost::interprocess;
 
 namespace smce {
 
-// clang-format off
-enum class Board::Command {
-    run,      // <==>
-    stop,     // ==>
-    suspend,  // ==>
-    stop_ack, // <==
-};
-// clang-format on
-
 struct SMCE_INTERNAL Board::Internal {
     Uuid uuid = Uuid::generate();
     SharedBoardData sbdata;
