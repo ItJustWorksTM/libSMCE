@@ -37,35 +37,42 @@ jobs:
       - name: Check deps
         run: |
           apt-get update
-          apt-get install -y lcov curl wget git cmake ninja-build g++ libboost-all-dev libssl-dev
+          apt-get install -y lcov curl wget git cmake ninja-build g++ libboost-all-dev libmosquitto-dev pkg-config jq perl-base
           ninja --version
           cmake --version
+      - name: Setup global CMake interceptor
+        run: |
+          mv /usr/bin/cmake /usr/bin/cmake-real
+          cp ci/cmake-interceptor.sh /usr/bin/cmake
+          chmod +x /usr/bin/cmake
       - name: CMake configure
         run: |
-          export BOOST_ROOT="$(pwd)/boost_root"
-          mkdir build
           cmake -G Ninja \
           -DCMAKE_BUILD_TYPE=Debug \
           -DSMCE_COVERAGE=On \
           -DSMCE_BUILD_STATIC=Off \
           -DSMCE_CXXRT_LINKING=SHARED \
           -DSMCE_BOOST_LINKING=SHARED \
-          -DSMCE_OPENSSL_LINKING=SHARED \
-          -S ./ -B ./build
+          -DSMCE_MOSQUITTO_LINKING=SHARED \
+          -B ./build
       - name: CMake build
         run: cmake --build ./build
       - name: Build & Run tests
         run: |
           cmake --build ./build --target SMCE_Tests
           (cd build/test/; ctest --output-on-failure)
-      - name: Collect coverage information
+      - name: Collect C++ coverage information
         run: |
           lcov --directory . --capture --output-file coverage.info
           lcov --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' "$(pwd)/test/*" "$(pwd)/build/*" --output-file coverage.info
           lcov --list coverage.info
-      - name: Upload coverage to Codecov
+      - name: Collect CMake coverage information
         run: |
-          bash -c "$(curl -s https://codecov.io/bash)" -f coverage.info || echo "Codecov did not collect coverage reports"
+          ci/scan-cmake-commands.sh
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          files: ./coverage.info,./cmake-codecov-report.json
 
   build-ubuntu:
     name: libSMCE - Ubuntu (${{ matrix.compiler.name }} & Boost ${{ matrix.boost.version }})
