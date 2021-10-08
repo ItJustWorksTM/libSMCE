@@ -76,7 +76,7 @@ Board::Board(std::function<void(int)> exit_notify) noexcept
 Board::~Board() { do_reap(); }
 
 [[nodiscard]] BoardView Board::view() noexcept {
-    if (m_status != Status::running && m_status != Status::suspended)
+    if (m_status != Status::prepared && m_status != Status::running && m_status != Status::suspended)
         return {};
     return BoardView{*m_internal->sbdata.get_board_data()};
 }
@@ -130,9 +130,10 @@ bool Board::configure(BoardConfig bconf) noexcept {
     return true;
 }
 
-bool Board::start() noexcept {
+bool Board::prepare() noexcept {
     if (m_status != Status::configured && m_status != Status::stopped)
         return false;
+
     if (!m_sketch_ptr || !m_sketch_ptr->is_compiled())
         return false;
 
@@ -142,6 +143,18 @@ bool Board::start() noexcept {
             }) == m_conf_opt->board_devices.cend())
             return false;
     }
+
+    m_internal->sbdata.configure("SMCE-Runner-" + m_internal->uuid.to_hex(), *m_conf_opt);
+
+    m_status = Status::prepared;
+    return true;
+}
+
+bool Board::start() noexcept {
+    if (m_status == Status::configured)
+        prepare();
+    if (m_status != Status::prepared && m_status != Status::stopped)
+        return false;
 
     do_spawn();
 
@@ -212,12 +225,10 @@ bool Board::stop() noexcept { return terminate(); }
  * Spawns the child process and its log grabber
  **/
 void Board::do_spawn() noexcept {
-    auto hex_uuid = m_internal->uuid.to_hex();
-    m_internal->sbdata.configure("SMCE-Runner-" + hex_uuid, *m_conf_opt);
 
     // clang-format off
     m_internal->sketch = bp::child{
-        bp::env["SEGNAME"] = "SMCE-Runner-" + hex_uuid,
+        bp::env["SEGNAME"] = "SMCE-Runner-" + m_internal->uuid.to_hex(),
         "\"" + m_sketch_ptr->m_executable.string() + "\"",
         bp::std_out > bp::null,
         bp::std_err > m_internal->sketch_log
