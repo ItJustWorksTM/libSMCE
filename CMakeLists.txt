@@ -129,7 +129,7 @@ target_sources (HostUDD PRIVATE
 )
 
 
-add_library (objSMCE OBJECT)
+add_library (objSMCE OBJECT )
 configure_coverage (objSMCE)
 set_property (TARGET objSMCE PROPERTY CXX_EXTENSIONS Off)
 set_property (TARGET objSMCE PROPERTY POSITION_INDEPENDENT_CODE True)
@@ -153,6 +153,15 @@ target_sources (objSMCE PRIVATE
     include/SMCE/SketchConf.hpp
     include/SMCE/internal/BoardDeviceSpecification.hpp
 )
+
+add_executable(SMCE_Cli src/SMCE/SMCE_Client.cpp)
+target_link_libraries(SMCE_Cli
+        PRIVATE objSMCE HostUDD ipcSMCE BindGenProxies
+        PUBLIC iSMCE
+        )
+set (SMCE_RES "${PROJECT_BINARY_DIR}")
+target_compile_definitions (SMCE_Cli PRIVATE "SMCE_RESOURCES_DIR=\"${SMCE_RES}\"")
+
 if (NOT MSVC)
   target_compile_options (objSMCE PRIVATE "-Wall" "-Wextra" "-Wpedantic" "-Werror" "-Wcast-align")
 else ()
