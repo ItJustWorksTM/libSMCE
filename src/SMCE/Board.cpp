@@ -134,16 +134,6 @@ bool Board::prepare() noexcept {
     if (m_status != Status::configured && m_status != Status::stopped)
         return false;
 
-    if (!m_sketch_ptr || !m_sketch_ptr->is_compiled())
-        return false;
-
-    for (const auto& skdev : m_sketch_ptr->m_conf.genbind_devices) {
-        if (std::find_if(m_conf_opt->board_devices.cbegin(), m_conf_opt->board_devices.cend(), [&](const auto& e) {
-                return e.spec.get().full_string == skdev.get().full_string;
-            }) == m_conf_opt->board_devices.cend())
-            return false;
-    }
-
     m_internal->sbdata.configure("SMCE-Runner-" + m_internal->uuid.to_hex(), *m_conf_opt);
 
     m_status = Status::prepared;
@@ -155,6 +145,16 @@ bool Board::start() noexcept {
         prepare();
     if (m_status != Status::prepared && m_status != Status::stopped)
         return false;
+
+    if (!m_sketch_ptr || !m_sketch_ptr->is_compiled())
+        return false;
+
+    for (const auto& skdev : m_sketch_ptr->m_conf.genbind_devices) {
+        if (std::find_if(m_conf_opt->board_devices.cbegin(), m_conf_opt->board_devices.cend(), [&](const auto& e) {
+                return e.spec.get().full_string == skdev.get().full_string;
+            }) == m_conf_opt->board_devices.cend())
+            return false;
+    }
 
     do_spawn();
 
