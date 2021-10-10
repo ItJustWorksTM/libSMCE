@@ -73,6 +73,11 @@ jobs:
         uses: codecov/codecov-action@v2
         with:
           files: ./coverage.info,./cmake-codecov-report.json
+      - name: Upload traces
+        uses: 'actions/upload-artifact@v2'
+        with:
+          name: cmcov-traces
+          path: CMakeTrace/
 
   build-ubuntu:
     name: libSMCE - Ubuntu (${{ matrix.compiler.name }} & Boost ${{ matrix.boost.version }})
