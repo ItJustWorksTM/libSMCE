@@ -10,7 +10,7 @@ negative_report='{ "coverage": {} }'
 
 for f in $(find "${base_dir}" -type d \( -path "${base_dir}/build" -o -path "${base_dir}/cmake-build*" -o -path "${base_dir}/boost" \) -prune -o \( -name 'CMakeLists.txt' -o -name '*.cmake' \)); do
   echo 'Scanning' $f
-  json_lno=$(jq -sc 'map({ (.|tostring): 0}) | add' < <(perl -nE 'qr/(?:\[(=*)\[(?:.|\n)+?\]\1\](?:.|\n)+?)*^\K(?=[ \t]*?(?!end(?:if|foreach|function|macro))\w+?\s*?\()/mp && say $.' "$f"))
+  json_lno=$("${base_dir}/ci/locate-cmake-commands.pl" "$f" | jq -sc 'map({ (.|tostring): 0}) | add')
   negative_report=$(jq -c --arg fname "$f" --argjson lines "${json_lno}" '.coverage += {($fname): $lines}' <<< "${negative_report}")
 done
 
