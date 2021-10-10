@@ -57,7 +57,7 @@ macro (smce_bindgen_configure_prelude)
   set (GENERATED_DEVICE_FIELDS "")
   set (GENERATED_DEVICE_FIELDS_ASSIGN "")
   set (GENERATED_DEVICE_CTOR_CALL "")
-  set (GENERATED_DEVICE_CTOR_INIT "")
+  set (GENERATED_DEVICE_CTOR_INIT ": ")
   set (GENERATED_DEVICE_CTOR_ARGS "")
   foreach (field ${FIELDS})
     if (NOT field MATCHES "^([A-Za-z_][A-Za-z0-9_]*) ([A-Za-z_][A-Za-z0-9_]*)$")
@@ -178,7 +178,7 @@ namespace smce_rt {
 struct Impl {};
 }
 
-@GENERATED_DEVICE@::@GENERATED_DEVICE@(@GENERATED_DEVICE_CTOR_ARGS@) : @GENERATED_DEVICE_CTOR_INIT@ {}
+@GENERATED_DEVICE@::@GENERATED_DEVICE@(@GENERATED_DEVICE_CTOR_ARGS@) @GENERATED_DEVICE_CTOR_INIT@ {}
 
 std::vector<@GENERATED_DEVICE@> @GENERATED_DEVICE@::getObjects(smce::BoardView& bv) {
     auto bases = smce_rt::getBases(bv, "@GENERATED_DEVICE@");
@@ -228,7 +228,7 @@ struct Impl {};
 
 const std::vector<@GENERATED_DEVICE@> @GENERATED_DEVICE@::objects = @GENERATED_DEVICE@::init();
 
-@GENERATED_DEVICE@::@GENERATED_DEVICE@(@GENERATED_DEVICE_CTOR_ARGS@) : @GENERATED_DEVICE_CTOR_INIT@ {}
+@GENERATED_DEVICE@::@GENERATED_DEVICE@(@GENERATED_DEVICE_CTOR_ARGS@) @GENERATED_DEVICE_CTOR_INIT@ {}
 
 std::vector<@GENERATED_DEVICE@> @GENERATED_DEVICE@::init() {
     auto bases = smce_rt::getBases("@GENERATED_DEVICE@", @GENERATED_DEVICE_LENGTH@);
