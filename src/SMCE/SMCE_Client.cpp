@@ -18,6 +18,7 @@
 #include <thread>
 #include <utility>
 #include <string>
+#include <vector>
 #include <SMCE/Board.hpp>
 #include <SMCE/BoardConf.hpp>
 #include <SMCE/BoardView.hpp>
@@ -36,7 +37,9 @@ void print_menu(){
     std::cout << "SMCE Client menu:" << std::endl;
     std::cout << "-h -> see menu" << std::endl;
     std::cout << "-s -> start/resume" << std::endl;
-    std::cout << "-p -> pause" << std::endl;
+    std::cout << "-p -> pause or resume" << std::endl;
+    std::cout << "-r -> reset board" << std::endl;
+    std::cout << "-io <pin> <value> -> set a specific value on pin" << std::endl;
     std::cout << "-m <message> -> send message to board" << std::endl;
     std::cout << "-q -> quit" << std::endl;
 }
@@ -101,8 +104,10 @@ int main(int argc, char** argv){
 
     // Main loop, handle the command input
     while(true){
+        bool suspended = false;
+        std::cout << "$>";
         std::string input;
-        std::cin >> input;
+        std::getline(std::cin,input);
         //TODO
             //Split input, check if it has more then one string.
             // If so its a message, error on more then 2
@@ -114,16 +119,23 @@ int main(int argc, char** argv){
                 return EXIT_FAILURE;
             }
         }else if (input == "-p"){
+            suspended = board.suspend();
+            if(!suspended){
+                suspended = board.suspend();
+                std::cout << "Board paused" << std::endl;
+            }else if(suspended){
+                board.resume();
+                suspended = false;
+                std::cout << "Board resumed" << std::endl;
+            }
+        }else if (input.starts_with("-m ")){
             //TODO
-            std::cout << "pause" << std::endl;
-        }else if (input == "-m"){
-            //TODO
-            std::cout << "message" << std::endl;
+            std::cout << "message" << " " << input.substr(2) << std::endl;
         }else if (input == "-q"){
             std::cout << "Quitting..." << std::endl;
             board.stop();
             break;
-        }else if (input == "-io"){
+        }else if (input.starts_with("-io ")){
             //TODO
             std::cout << "GPIO pins..." << std::endl;
         }else{
