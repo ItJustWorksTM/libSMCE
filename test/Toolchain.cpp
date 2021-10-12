@@ -26,7 +26,6 @@ TEST_CASE("Toolchain invalid", "[Toolchain]") {
     smce::Toolchain tc{path};
     REQUIRE(tc.resource_dir() == path);
     REQUIRE(tc.check_suitable_environment());
-    REQUIRE_FALSE(tc.cmake_path().empty());
 }
 
 TEST_CASE("Toolchain error","[Toolchain]"){
