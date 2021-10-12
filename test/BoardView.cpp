@@ -28,9 +28,7 @@
 #include "defs.hpp"
 
 using namespace std::literals;
-
-
-
+//Delete the space there to pass the format check
 TEST_CASE("BoardView GPIO", "[BoardView]") {
     smce::Toolchain tc{SMCE_PATH};
     REQUIRE(!tc.check_suitable_environment());
@@ -76,6 +74,8 @@ TEST_CASE("BoardView GPIO", "[BoardView]") {
     REQUIRE_FALSE(pin1.exists());
     auto pin2 = bv.pins[2];
     REQUIRE(pin2.exists());
+
+//    Add test for pin2 lock and direction
     REQUIRE_FALSE(pin2.locked());
     smce::VirtualPin::DataDirection dir = smce::VirtualPin::DataDirection::in;
     pin2.set_direction(dir);
@@ -120,11 +120,12 @@ TEST_CASE("BoardView UART", "[BoardView]") {
     REQUIRE_FALSE(uart1.rx().exists());
     REQUIRE_FALSE(uart1.tx().exists());
     std::this_thread::sleep_for(1ms);
-
     std::array out = {'H', 'E', 'L', 'L', 'O', ' ', 'U', 'A', 'R', 'T', '\0'};
     std::array<char, out.size()> in{};
     REQUIRE(uart0.rx().write(out) == out.size());
+    //   Add test for rx size
     REQUIRE(uart0.rx().size() != 0);
+
     int ticks = 16'000;
     do {
         if (ticks-- == 0)
