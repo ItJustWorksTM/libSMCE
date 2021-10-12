@@ -88,7 +88,6 @@ TEST_CASE("BoardView GPIO", "[BoardView]") {
     REQUIRE_FALSE(pin2a.can_read());
     REQUIRE(pin2a.can_write());
     std::this_thread::sleep_for(1ms);
-
     pin0d.write(false);
     test_pin_delayable(pin2d, true, 16384, 1ms);
     pin0d.write(true);
@@ -120,12 +119,15 @@ TEST_CASE("BoardView UART", "[BoardView]") {
     REQUIRE_FALSE(uart1.tx().exists());
     std::this_thread::sleep_for(1ms);
     std::array out = {'H', 'E', 'L', 'L', 'O', ' ', 'U', 'A', 'R', 'T', '\0'};
+    //create a loop to initialize it
+    std::array<char32_t, 64> max_size =  {'E', 'T'};
     std::array<char, out.size()> in{};
+    std::cout << "checking the size" << out.size() << "\n";
     REQUIRE(uart0.rx().write(out) == out.size());
     //   Add test for rx size
     REQUIRE(uart0.rx().size() != 0);
     // Add test for VirtualUartBuffer max_size()
-    REQUIRE(uart0.rx().max_size() > 0);
+    REQUIRE(uart0.rx().max_size() == max_size.size());
     int ticks = 16'000;
     do {
         if (ticks-- == 0)
