@@ -16,6 +16,7 @@
  *
  */
 #include <filesystem>
+#include <iostream>
 #include <catch2/catch_test_macros.hpp>
 #include "SMCE/Toolchain.hpp"
 #include "defs.hpp"
@@ -33,4 +34,34 @@ TEST_CASE("Toolchain valid", "[Toolchain]") {
     REQUIRE(!tc.check_suitable_environment());
     REQUIRE(tc.resource_dir() == SMCE_PATH);
     REQUIRE_FALSE(tc.cmake_path().empty());
+}
+
+TEST_CASE("Sketch compilation valid", "[Toolchain]") {
+    // Setup toolchain
+    smce::Toolchain tc{SMCE_PATH};
+    REQUIRE(!tc.check_suitable_environment());
+    REQUIRE(tc.resource_dir() == SMCE_PATH);
+    REQUIRE_FALSE(tc.cmake_path().empty());
+
+    // Compile test sketch
+    smce::Sketch sk{SKETCHES_PATH "uart", {.fqbn = "test-board", .legacy_preproc_libs = {{"WiFi"}, {"MQTT"}}}};
+    const auto ec = tc.compile(sk);
+    if (ec)
+        std::cerr << tc.build_log().second;
+    REQUIRE(!ec);
+}
+
+TEST_CASE("Sketch compilation invalid", "[Toolchain]") {
+    // Setup toolchain
+    smce::Toolchain tc{SMCE_PATH};
+    REQUIRE(!tc.check_suitable_environment());
+    REQUIRE(tc.resource_dir() == SMCE_PATH);
+    REQUIRE_FALSE(tc.cmake_path().empty());
+
+    // Compile test sketch with empty SketchConfig-object
+    smce::Sketch sk{SKETCHES_PATH "uart", {}};
+    const auto ec = tc.compile(sk);
+    if (ec)
+        std::cerr << tc.build_log().second;
+    REQUIRE(ec);
 }
