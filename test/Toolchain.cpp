@@ -22,20 +22,19 @@
 
 TEST_CASE("Toolchain invalid", "[Toolchain]") {
     const auto path = SMCE_TEST_DIR "/empty_dir";
-    const auto pathdoesexist = SMCE_TEST_DIR "/";
     std::filesystem::create_directory(path);
     smce::Toolchain tc{path};
     REQUIRE(tc.resource_dir() == path);
+    REQUIRE_FALSE(tc.cmake_path().empty());
+}
 
+TEST_CASE("Toolchain error","[Toolchain]"){
+    const auto pathdoesexist = SMCE_TEST_DIR ;
     std::filesystem::create_directory(pathdoesexist);
     smce::Toolchain tcexist{pathdoesexist};
     REQUIRE(tcexist.resource_dir() == pathdoesexist);
 
-    REQUIRE_FALSE(tc.cmake_path().empty());
-
-
 }
-
 TEST_CASE("Toolchain valid", "[Toolchain]") {
     smce::Toolchain tc{SMCE_PATH};
     REQUIRE(!tc.check_suitable_environment());
