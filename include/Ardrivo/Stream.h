@@ -32,18 +32,10 @@ enum LookaheadMode {
 };
 // clang-format on
 
-class SMCE__DLL_RT_API Stream : public Print {
+class SMCE__DLL_RT_API StreamSuper : public Print {
     long _timeout{DEFAULT_TIMEOUT};
 
-  protected:
-    int peekNextDigit(LookaheadMode lookahead, bool detectDecimal);
-
-  public:
-    virtual int available() = 0;
-    virtual int read() = 0;
-    virtual int peek() = 0;
-
-    Stream() = default;
+    StreamSuper() = default;
 
     [[nodiscard]] bool find(char target) noexcept { return find(&target, 0); }
     [[nodiscard]] bool find(const char* target, int length) noexcept {

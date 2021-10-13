@@ -113,13 +113,20 @@ TEST_CASE("BoardView UART", "[BoardView]") {
     REQUIRE(uart0.exists());
     REQUIRE(uart0.rx().exists());
     REQUIRE(uart0.tx().exists());
+    REQUIRE(uart0.is_active());
+    uart0.set_active(false);
+    REQUIRE_FALSE(uart0.is_active());
+    uart0.set_active(true);
     auto uart1 = bv.uart_channels[1];
     REQUIRE_FALSE(uart1.exists());
     REQUIRE_FALSE(uart1.rx().exists());
     REQUIRE_FALSE(uart1.tx().exists());
+    REQUIRE_FALSE(uart1.is_active());
+    uart1.set_active(true);
+    REQUIRE_FALSE(uart1.is_active());
     std::this_thread::sleep_for(1ms);
     std::array out = {'H', 'E', 'L', 'L', 'O', ' ', 'U', 'A', 'R', 'T', '\0'};
-    //create a loop to initialize it
+    //create an array of 64 bytes to check if max lenght is correct.
     std::array<char32_t, 64> max_size =  {'E', 'T'};
     std::array<char, out.size()> in{};
     std::cout << "checking the size" << out.size() << "\n";
