@@ -113,10 +113,7 @@ TEST_CASE("BoardView UART", "[BoardView]") {
     REQUIRE(uart0.exists());
     REQUIRE(uart0.rx().exists());
     REQUIRE(uart0.tx().exists());
-    REQUIRE(uart0.is_active());
-    uart0.set_active(false);
     REQUIRE_FALSE(uart0.is_active());
-    uart0.set_active(true);
     auto uart1 = bv.uart_channels[1];
     REQUIRE_FALSE(uart1.exists());
     REQUIRE_FALSE(uart1.rx().exists());
