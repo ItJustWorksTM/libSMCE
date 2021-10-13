@@ -28,7 +28,7 @@ TEST_CASE("Toolchain invalid", "[Toolchain]") {
     REQUIRE(tc.check_suitable_environment());
 }
 
-//TEST_CASE("Toolchain error","[Toolchain]"){
+// TEST_CASE("Toolchain error","[Toolchain]"){
 //    const auto path = SMCE_TEST_DIR "/empty_dir";
 //    std::filesystem::create_directory(path);
 //    smce::Toolchain tc{path};

@@ -28,7 +28,7 @@
 #include "defs.hpp"
 
 using namespace std::literals;
-//Delete the space there to pass the format check
+// Delete the space there to pass the format check
 TEST_CASE("BoardView GPIO", "[BoardView]") {
     smce::Toolchain tc{SMCE_PATH};
     REQUIRE(!tc.check_suitable_environment());
@@ -74,7 +74,7 @@ TEST_CASE("BoardView GPIO", "[BoardView]") {
     REQUIRE_FALSE(pin1.exists());
     auto pin2 = bv.pins[2];
     REQUIRE(pin2.exists());
-//    Add test for pin2 lock and direction
+    // Add test for pin2 lock and direction
     REQUIRE_FALSE(pin2.locked());
     smce::VirtualPin::DataDirection dir = smce::VirtualPin::DataDirection::in;
     pin2.set_direction(dir);
@@ -114,6 +114,9 @@ TEST_CASE("BoardView UART", "[BoardView]") {
     REQUIRE(uart0.rx().exists());
     REQUIRE(uart0.tx().exists());
     REQUIRE_FALSE(uart0.is_active());
+    uart0.set_active(true);
+    REQUIRE(uart0.is_active());
+    uart0.set_active(false);
     auto uart1 = bv.uart_channels[1];
     REQUIRE_FALSE(uart1.exists());
     REQUIRE_FALSE(uart1.rx().exists());
@@ -124,8 +127,8 @@ TEST_CASE("BoardView UART", "[BoardView]") {
     uart1.set_active(false);
     std::this_thread::sleep_for(1ms);
     std::array out = {'H', 'E', 'L', 'L', 'O', ' ', 'U', 'A', 'R', 'T', '\0'};
-    //create an array of 64 bytes to check if max lenght is correct.
-    std::array<char32_t, 64> max_size =  {'E', 'T'};
+    // create an array of 64 bites to check if max lenght is correct.
+    std::array<char32_t, 64> max_size = {'E', 'T'};
     std::array<char, out.size()> in{};
     std::cout << "checking the size" << out.size() << "\n";
     REQUIRE(uart0.rx().write(out) == out.size());
