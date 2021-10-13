@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
-*/
+ */
 
 #ifndef Stream_h
 #define Stream_h
@@ -34,8 +34,10 @@ enum LookaheadMode {
 
 class SMCE__DLL_RT_API Stream : public Print {
     long _timeout{DEFAULT_TIMEOUT};
+
   protected:
     int peekNextDigit(LookaheadMode lookahead, bool detectDecimal);
+
   public:
     virtual int available() = 0;
     virtual int read() = 0;

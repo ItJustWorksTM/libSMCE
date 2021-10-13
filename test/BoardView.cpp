@@ -218,7 +218,9 @@ TEST_CASE("BoardView RGB444 cvt", "[BoardView]") {
         static_assert(in.size() == expected_out.size() / 3 * 2);
 
         fb.set_height(height);
+        REQUIRE(fb.get_height() == height);
         fb.set_width(width);
+        REQUIRE(fb.get_width() == width);
         fb.write_rgb444(in);
 
         std::array<std::byte, std::size(expected_out)> out;
