@@ -124,6 +124,7 @@ TEST_CASE("BoardView UART", "[BoardView]") {
     REQUIRE_FALSE(uart1.is_active());
     uart1.set_active(true);
     REQUIRE_FALSE(uart1.is_active());
+    uart1.set_active(false);
     std::this_thread::sleep_for(1ms);
     std::array out = {'H', 'E', 'L', 'L', 'O', ' ', 'U', 'A', 'R', 'T', '\0'};
     //create an array of 64 bytes to check if max lenght is correct.
