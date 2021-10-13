@@ -37,31 +37,42 @@ TEST_CASE("Toolchain valid", "[Toolchain]") {
 }
 
 TEST_CASE("Sketch compilation valid", "[Toolchain]") {
-    // Setup toolchain
     smce::Toolchain tc{SMCE_PATH};
     REQUIRE(!tc.check_suitable_environment());
     REQUIRE(tc.resource_dir() == SMCE_PATH);
     REQUIRE_FALSE(tc.cmake_path().empty());
 
-    // Compile test sketch
-    smce::Sketch sk{SKETCHES_PATH "uart", {.fqbn = "test-board", .legacy_preproc_libs = {{"WiFi"}, {"MQTT"}}}};
+    smce::Sketch sk{SKETCHES_PATH "uart", {.fqbn = "test_board", .legacy_preproc_libs = {{"WiFi"}, {"MQTT"}}}};
     const auto ec = tc.compile(sk);
     if (ec)
         std::cerr << tc.build_log().second;
     REQUIRE(!ec);
 }
 
-TEST_CASE("Sketch compilation invalid", "[Toolchain]") {
-    // Setup toolchain
+TEST_CASE("Sketch compilation with invalid sketch path", "[Toolchain]") {
     smce::Toolchain tc{SMCE_PATH};
     REQUIRE(!tc.check_suitable_environment());
     REQUIRE(tc.resource_dir() == SMCE_PATH);
     REQUIRE_FALSE(tc.cmake_path().empty());
 
-    // Compile test sketch with empty SketchConfig-object
-    smce::Sketch sk{SKETCHES_PATH "uart", {}};
+    smce::Sketch sk{SKETCHES_PATH "non_existing", {.fqbn = "test_board", .legacy_preproc_libs = {{"WiFi"}, {"MQTT"}}}};
     const auto ec = tc.compile(sk);
     if (ec)
         std::cerr << tc.build_log().second;
-    REQUIRE(ec);
+    // This breaks if return string in Toolchain.cpp changes, smarter way?
+    REQUIRE(ec.message() == "Sketch path is invalid");
+}
+
+TEST_CASE("Sketch compilation with sketch containing non-valid code", "[Toolchain]") {
+    smce::Toolchain tc{SMCE_PATH};
+    REQUIRE(!tc.check_suitable_environment());
+    REQUIRE(tc.resource_dir() == SMCE_PATH);
+    REQUIRE_FALSE(tc.cmake_path().empty());
+
+    smce::Sketch sk{SKETCHES_PATH "uart_invalid", {.fqbn = "test_board", .legacy_preproc_libs = {{"WiFi"}, {"MQTT"}}}};
+    const auto ec = tc.compile(sk);
+    if (ec)
+        std::cerr << tc.build_log().second;
+    // This breaks if return string in Toolchain.cpp changes, smarter way?
+    REQUIRE(ec.message() == "CMake build failed");
 }
