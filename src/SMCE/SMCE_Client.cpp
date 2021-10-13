@@ -2,7 +2,9 @@
  *  SMCE_Client.cpp
  *  Created by Rylander and Mejborn, Team 1, DAT265.
  *
- *  A terminal interface for libSMCE, that allows sketches to be ran without a GUI.
+ *  A terminal interface for libSMCE, that allows sketches to be ran without the use of smce-gd.
+ *  Functionally to test and debug sketches, as GPIO pins can be set with values and
+ *  messages can be sent to board through uart.
  *
 */
 
@@ -10,6 +12,7 @@
 #    error "SMCE_RESOURCES_DIR is not set"
 #endif
 
+#include <bit>
 #include <atomic>
 #include <chrono>
 #include <cstdlib>
@@ -28,20 +31,42 @@
 
 using namespace std::literals;
 
+// automic bool for handling threads
+std::atomic_bool run_threads = true;
+
 void print_help(const char* argv0) {
     std::cout << "Usage: " << argv0 << " <fully-qualified-board-name> <path-to-sketch>" << std::endl;
 }
+void exit_sketch(int t){
+    std::cerr << "Error code:  "<< std::hex << std::bit_cast<std::uint16_t>(static_cast<int16_t>(t)) << std::endl;
+}
 
-// Prints a simple command menu for SMCE_Cli
+//Listen to the uart input from board, writes what it read to terminal
+void uart_listener(auto uart){
+    auto tx = uart.tx();
+    while(run_threads){
+        std::string buffer;
+        buffer.resize(tx.max_size());
+        const auto len = tx.read(buffer);
+        if(len == 0){
+            std::this_thread::sleep_for(1ms);
+            continue;
+        }
+        buffer.resize(len);
+        std::cout << buffer;
+    }
+}
+
+// Prints a command menu for SMCE_Client
 void print_menu(){
     std::cout << "SMCE Client menu:" << std::endl;
-    std::cout << "-h -> see menu" << std::endl;
-    std::cout << "-s -> start/resume" << std::endl;
-    std::cout << "-p -> pause or resume" << std::endl;
-    std::cout << "-r -> reset board" << std::endl;
-    std::cout << "-io <pin> <value> -> set a specific value on pin" << std::endl;
-    std::cout << "-m <message> -> send message to board" << std::endl;
-    std::cout << "-q -> quit" << std::endl;
+    std::cout << "-h -> See menu" << std::endl;
+    std::cout << "-p -> Pause or resume the board" << std::endl;
+    std::cout << "-r -> Reset the board" << std::endl;
+    std::cout << "-wa <pin> <value> -> Set a specific value on a analog pin" << std::endl;
+    std::cout << "-wd <pin> <value> -> Set a specific value on a digital pin" << std::endl;
+    std::cout << "-m <message> -> Send message to board through uart (serial)" << std::endl;
+    std::cout << "-q -> Power off board and quit program" << std::endl;
 }
 
 int main(int argc, char** argv){
@@ -74,8 +99,8 @@ int main(int argc, char** argv){
     }};
     // // clang-format on
 
-    std::cout << "Compiling..." << std::endl;
     // Compile the sketch on the toolchain
+    std::cout << "Compiling..." << std::endl;
     if (const auto ec = toolchain.compile(sketch)) {
         std::cerr << "Error: " << ec.message() << std::endl;
         auto [_, log] = toolchain.build_log();
@@ -84,66 +109,80 @@ int main(int argc, char** argv){
         return EXIT_FAILURE;
     }
 
-    std::cout << "Creating board..." << std::endl;
     // Create the virtual Arduino board
-    smce::Board board;
+    std::cout << "Creating board..." << std::endl;
+    smce::Board board(exit_sketch);
     board.attach_sketch(sketch);
 
-    // clang-format off
+    // Create board config
     smce::BoardConfig board_conf{
-      .uart_channels = { {} },
+      .uart_channels = { {} }, // use standard configuration of uart_channels
       .sd_cards = { smce::BoardConfig::SecureDigitalStorage{ .root_dir = "." } }
     };
     board.configure(std::move(board_conf));
-    // clang-format on
-
     std::cout << "Done" << std::endl;
+
+    //Start board
+    if (!board.start()) {
+        std::cerr << "Error: Board failed to start sketch" << std::endl;
+        return EXIT_FAILURE;
+    }else{
+        std::cout << "Sketch started" << std::endl;
+    }
+
+    //Create view and uart (serial) channels
+    auto board_view = board.view();
+    auto uart0 = board_view.uart_channels[0];
+
+    //start listener thread for uart
+    std::thread uart_thread{[=] {uart_listener(uart0);} };
 
     // Print command menu
     print_menu();
 
     // Main loop, handle the command input
+    bool suspended = false;
     while(true){
-        bool suspended = false;
         std::cout << "$>";
         std::string input;
         std::getline(std::cin,input);
-        //TODO
-            //Split input, check if it has more then one string.
-            // If so its a message, error on more then 2
-        if (input == "-h"){
+        board.tick();
+        if (input == "-h"){ //help menu
             print_menu();
-        }else if (input == "-s"){
-            if(!board.start()){
-                std::cerr << "Error: Board failed to start sketch" << std::endl;
-                return EXIT_FAILURE;
-            }
-        }else if (input == "-p"){
-            suspended = board.suspend();
+        }else if (input == "-p"){ //pause or resume
             if(!suspended){
                 suspended = board.suspend();
-                std::cout << "Board paused" << std::endl;
+                if(suspended)
+                    std::cout << "Board paused" << std::endl;
+                else
+                    std::cout << "Board could not be paused" << std::endl;
             }else if(suspended){
                 board.resume();
                 suspended = false;
                 std::cout << "Board resumed" << std::endl;
             }
-        }else if (input.starts_with("-m ")){
-            //TODO
-            std::cout << "message" << " " << input.substr(2) << std::endl;
-        }else if (input == "-q"){
+        }else if (input == "-r"){ //reset
+            board.reset();
+        }else if (input.starts_with("-m ")){ //send message on uart
+                std::string message = input.substr(3);
+                for(std::span<char> to_write = message; !to_write.empty();){
+                    const auto written_count = uart0.rx().write(to_write);
+                    std::cout << "Bytes written: " << written_count << std::endl;
+                    to_write = to_write.subspan(written_count);
+                }
+        }else if (input == "-q"){ //power off and quit
             std::cout << "Quitting..." << std::endl;
+            run_threads = false;
             board.stop();
+            uart_thread.join();
             break;
-        }else if (input.starts_with("-io ")){
-            //TODO
-            std::cout << "GPIO pins..." << std::endl;
+        }else if (input.starts_with("-wa ")){ //write value on analog pin
+            //TODO implement writing to analog GPIO pin.
+        }else if (input.starts_with("-wd ")){ //write value on digital pin
+            //TODO implement writing to digital GPIO pin.
         }else{
+            //If input don't match with anything.
             std::cout << "Unknown input, try again." << std::endl;
         }
     }
-
-
-
-    std::cout << "END";
 }
