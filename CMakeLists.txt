@@ -66,7 +66,7 @@ target_sources (ArdrivoUDD PRIVATE
     src/Ardrivo/UDDRuntime.cpp
 )
 
-add_library (Ardrivo SHARED)
+add_library (Ardrivo SHARED src/Ardrivo/ArduinoGraphics.cpp src/Ardrivo/ArduinoGraphics.h)
 configure_coverage (Ardrivo)
 set_property (TARGET Ardrivo PROPERTY CXX_EXTENSIONS Off)
 target_include_directories (Ardrivo PRIVATE include/Ardrivo)
