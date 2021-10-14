@@ -25,6 +25,7 @@ endif ()
 
 set (CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}-${SMCE_COMPILER_ID}")
 
+set (CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
 set (CPACK_PACKAGE_VENDOR "ItJustWorksTM")
 set (CPACK_PACKAGE_CONTACT "${CPACK_PACKAGE_VENDOR} <itjustworkstm@aerostun.dev>")
 set (CMAKE_PROJECT_DESCRIPTION "A library to run your Arduino code on a desktop OS")

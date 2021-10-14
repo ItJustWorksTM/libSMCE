@@ -1,5 +1,5 @@
 /*
- *  fwd.hpp
+ *  SMCE_api.hpp
  *  Copyright 2021 ItJustWorksTM
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,23 +16,16 @@
  *
  */
 
-#ifndef SMCE_FWD_HPP
-#define SMCE_FWD_HPP
+#ifndef LIBSMCE_SMCE_API_HPP
+#define LIBSMCE_SMCE_API_HPP
 
-namespace smce {
+#if defined(__has_include) && !__has_include(<SMCE_dll.hpp>)
+#    include <SMCE/SMCE_iface.h>
+#    define SMCE_PROXY_API SMCE_API
 
-struct BoardConfig;
-class Board;
-class BoardView;
-class BoardDeviceSpecification;
-class BoardDeviceView;
-class Sketch;
-class Toolchain;
-struct SketchConfig;
-class Uuid;
+#else
+#    include <SMCE_dll.hpp>
+#    define SMCE_PROXY_API SMCE__DLL_RT_API
+#endif
 
-/// \internal
-struct BoardData;
-} // namespace smce
-
-#endif // SMCE_FWD_HPP
+#endif // LIBSMCE_SKETCH_RT_HPP

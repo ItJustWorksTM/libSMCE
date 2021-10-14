@@ -19,6 +19,7 @@
 #ifndef SMCE_SKETCHCONF_HPP
 #define SMCE_SKETCHCONF_HPP
 
+#include <functional>
 #include <string>
 #include <variant>
 #include <vector>
@@ -45,6 +46,8 @@ struct SMCE_API SketchConfig {
     std::vector<std::string> extra_board_uris;       /// Extra board.txt URIs for ArduinoCLI
     std::vector<ArduinoLibrary> legacy_preproc_libs; /// Libraries to use during legacy preprocessing
     std::vector<PluginManifest> plugins;             /// Plugins to compile with
+    std::vector<std::reference_wrapper<const BoardDeviceSpecification>>
+        genbind_devices; /// Board devices to generate bindings for
 };
 
 } // namespace smce

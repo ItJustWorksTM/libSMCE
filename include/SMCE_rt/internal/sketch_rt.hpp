@@ -1,5 +1,5 @@
 /*
- *  fwd.hpp
+ *  sketch_rt.hpp
  *  Copyright 2021 ItJustWorksTM
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,23 +16,16 @@
  *
  */
 
-#ifndef SMCE_FWD_HPP
-#define SMCE_FWD_HPP
+#ifndef LIBSMCE_SKETCH_RT_HPP
+#define LIBSMCE_SKETCH_RT_HPP
 
-namespace smce {
+#include <SMCE_dll.hpp>
+#include "BoardDeviceAllocationBases.hpp"
 
-struct BoardConfig;
-class Board;
-class BoardView;
-class BoardDeviceSpecification;
-class BoardDeviceView;
-class Sketch;
-class Toolchain;
-struct SketchConfig;
-class Uuid;
+namespace smce_rt {
 
-/// \internal
-struct BoardData;
-} // namespace smce
+SMCE__DLL_RT_API BoardDeviceAllocationPtrBases getBases(const char* name, std::size_t name_len);
 
-#endif // SMCE_FWD_HPP
+}
+
+#endif // LIBSMCE_SKETCH_RT_HPP

@@ -30,9 +30,12 @@ target_sources (ipcSMCE PRIVATE
     src/SMCE/BoardData.cpp
     include/SMCE/BoardView.hpp
     src/SMCE/BoardView.cpp
+    include/SMCE_rt/internal/BoardDeviceAllocationBases.hpp
+    include/SMCE/internal/BoardDeviceView.hpp
+    src/SMCE/BoardDeviceView.cpp
     include/SMCE/internal/SharedBoardData.hpp
     src/SMCE/SharedBoardData.cpp
-)
+    )
 if (NOT MSVC)
   target_compile_options (ipcSMCE PRIVATE "-Wall" "-Wextra" "-Wpedantic" "-Werror" "-Wcast-align")
 else ()

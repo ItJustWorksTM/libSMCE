@@ -20,10 +20,12 @@
 #define SMCE_BOARDCONF_HPP
 
 #include <cstdint>
+#include <functional>
 #include <optional>
 #include <vector>
 #include "SMCE/SMCE_fs.hpp"
 #include "SMCE/SMCE_iface.h"
+#include "SMCE/fwd.hpp"
 
 namespace smce {
 
@@ -76,12 +78,18 @@ struct SMCE_API BoardConfig {
         Direction direction;
     };
 
+    struct BoardDevice {
+        std::reference_wrapper<const BoardDeviceSpecification> spec;
+        std::size_t count;
+    };
+
     std::vector<std::uint16_t> pins;        /// GPIO pins
     std::vector<GpioDrivers> gpio_drivers;  /// GPIO drivers to apply on existing pins
     std::vector<UartChannel> uart_channels; /// UART channels
     // std::vector<I2cBus> i2c_buses;
     std::vector<SecureDigitalStorage> sd_cards;
     std::vector<FrameBuffer> frame_buffers; /// Frame-buffers (cameras & screens)
+    std::vector<BoardDevice> board_devices; /// Board devices to install
 };
 
 } // namespace smce

@@ -39,6 +39,7 @@ class SMCE_API Board {
     enum class Status {
         clean,
         configured,
+        prepared,
         running,
         suspended,
         stopped
@@ -73,6 +74,7 @@ class SMCE_API Board {
 
     bool reset() noexcept;
     bool configure(BoardConfig bconf) noexcept;
+    bool prepare() noexcept;
     bool start() noexcept;
     bool suspend() noexcept;
     bool resume() noexcept;
@@ -85,7 +87,6 @@ class SMCE_API Board {
 
   private:
     struct Internal;
-    enum class Command;
 
     void do_spawn() noexcept;
     void do_sweep() noexcept;

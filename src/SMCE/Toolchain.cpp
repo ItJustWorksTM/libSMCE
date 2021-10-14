@@ -18,6 +18,7 @@
 
 #include <SMCE/Toolchain.hpp>
 
+#include <fstream>
 #include <string>
 #include <system_error>
 #include <boost/predef.h>
@@ -29,6 +30,7 @@
 #include <SMCE/SMCE_iface.h>
 #include <SMCE/Sketch.hpp>
 #include <SMCE/SketchConf.hpp>
+#include <SMCE/internal/BoardDeviceSpecification.hpp>
 #include <SMCE/internal/utils.hpp>
 
 using namespace std::literals;
@@ -130,6 +132,13 @@ SMCE_INTERNAL std::error_code write_manifests(const SketchConfig& skonf, const s
     return {};
 }
 
+SMCE_INTERNAL void write_devices_specs(const SketchConfig& skonf, const stdfs::path& tmpdir) {
+    std::ofstream f{tmpdir / "Devices.cmake"};
+    f << "# HSD generated\ninclude (BindGen)\n";
+    for (const auto& e : skonf.genbind_devices)
+        f << "smce_bindgen_sketch (" << e.get().full_string << ")\n";
+}
+
 Toolchain::Toolchain(stdfs::path resources_dir) noexcept : m_res_dir{std::move(resources_dir)} {
     m_build_log.reserve(4096);
 }
@@ -150,6 +159,8 @@ std::error_code Toolchain::do_configure(Sketch& sketch) noexcept {
     const char* const generator =
         generator_override ? generator_override : (!bp::search_path("ninja").empty() ? "Ninja" : "");
 #endif
+
+    write_devices_specs(sketch.m_conf, sketch.m_tmpdir);
 
     if (const auto ec = write_manifests(sketch.m_conf, sketch.m_tmpdir))
         return ec;
@@ -260,27 +271,23 @@ std::error_code Toolchain::do_build(Sketch& sketch) noexcept {
     }
     bp::ipstream cmake_out;
     // clang-format off
-    bp::child cmake_child{
+    const int cmres = bp::system(
         m_cmake_path,
         "--version",
         bp::std_out > cmake_out
 #if BOOST_OS_WINDOWS
         , bp::windows::create_no_window
 #endif
-    };
+    );
     // clang-format on
 
-    std::string line;
-    while (cmake_child.running() && std::getline(cmake_out, line) && !line.empty()) {
-        if (!line.starts_with("cmake")) {
-            cmake_child.join();
-            return toolchain_error::cmake_unknown_output;
-        }
-        break;
-    }
-    cmake_child.join();
-    if (cmake_child.native_exit_code() != 0)
+    if (cmres != 0)
         return toolchain_error::cmake_failing;
+
+    std::string line;
+    std::getline(cmake_out, line);
+    if (!line.starts_with("cmake"))
+        return toolchain_error::cmake_unknown_output;
 
     return {};
 }

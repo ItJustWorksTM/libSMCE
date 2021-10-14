@@ -21,10 +21,10 @@ include ("${CMAKE_CURRENT_LIST_DIR}/SMCETargets.cmake")
 set_and_check (SMCE_RESOURCES_ARK "${PACKAGE_PREFIX_DIR}/@CMAKE_INSTALL_DATAROOTDIR@/SMCE/SMCE_Resources.zip")
 
 if (NOT SMCE_PROPERTY_RESOURCES_ARCHIVE_DEFINED)
-  define_property (TARGET PROPERTY RESOURCES_ARCHIVE
-    BRIEF_DOCS "The full path to SMCE_Resources.zip"
-    FULL_DOCS "The full path to SMCE_Resources.zip, which contains the runtime files for SMCE"
-  )
+    define_property (TARGET PROPERTY RESOURCES_ARCHIVE
+      BRIEF_DOCS "The full path to SMCE_Resources.zip"
+      FULL_DOCS "The full path to SMCE_Resources.zip, which contains the runtime files for SMCE"
+    )
   set (SMCE_PROPERTY_RESOURCES_ARCHIVE_DEFINED True)
 endif ()
 set_property (TARGET SMCE::SMCE PROPERTY RESOURCES_ARCHIVE "${SMCE_RESOURCES_ARK}")
@@ -41,3 +41,5 @@ endif ()
 set (SMCE_ARDRIVO_OV767X "@SMCE_ARDRIVO_OV767X@")
 
 check_required_components (SMCE)
+
+include ("${CMAKE_CURRENT_LIST_DIR}/BindGen.cmake")

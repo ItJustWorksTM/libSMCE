@@ -1,5 +1,5 @@
 /*
- *  fwd.hpp
+ *  Ardrivo/UDDRuntime.cpp
  *  Copyright 2021 ItJustWorksTM
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,23 +16,20 @@
  *
  */
 
-#ifndef SMCE_FWD_HPP
-#define SMCE_FWD_HPP
+#include "SMCE/BoardView.hpp"
+#include "SMCE/internal/BoardDeviceView.hpp"
+#include "SMCE_rt/internal/sketch_rt.hpp"
 
 namespace smce {
-
-struct BoardConfig;
-class Board;
-class BoardView;
-class BoardDeviceSpecification;
-class BoardDeviceView;
-class Sketch;
-class Toolchain;
-struct SketchConfig;
-class Uuid;
-
-/// \internal
-struct BoardData;
+extern BoardView board_view;
+extern void maybe_init();
 } // namespace smce
 
-#endif // SMCE_FWD_HPP
+namespace smce_rt {
+
+BoardDeviceAllocationPtrBases getBases(const char* name, std::size_t name_len) {
+    smce::maybe_init();
+    return smce::BoardDeviceView{smce::board_view}.getBases({name, name_len});
+}
+
+} // namespace smce_rt

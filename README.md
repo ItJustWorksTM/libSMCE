@@ -14,7 +14,7 @@ Check our [Wiki](https://github.com/ItJustWorksTM/libSMCE/wiki) for more informa
 #### Supported I/O
 - GPIO (Arduino's `digitalRead`, `analogWrite`, etc)
 - UART (Arduino's `Serial` global)
-- SD
+- SD (writes to host's filesystem in a pre-configured root)
 - MQTT (interface of [arduino-mqtt](https://github.com/256dpi/arduino-mqtt)) - Note: cannot be monitored by host application
 - OV767X Camera (interface of [Arduino_OV767X](https://github.com/arduino-libraries/Arduino_OV767X)) - Note: available pixel formats differ
 
@@ -59,7 +59,9 @@ cpack
 - Serve the Doxygen-generated docs
 - Making a proper [Hugo](https://gohugo.io)-generated wiki in Markdown
 - `std::error_code`ify `smce::Board`
-- Removal of the strong dependency on ArduinoCLI (preprocess ourselves)
 - Add more I/O features, in particular the ones that were in [SMartCarEmul](https://github.com/ItJustWorksTM/SmartcarEmul)
 - Add interrupts support
 - Allow consumers to specify toolchain files
+
+### First-party frontend
+See [SMCE-gd](https://github.com/ItJustWorksTM/smce-gd), designed for Arduino RC vehicles.

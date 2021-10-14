@@ -23,6 +23,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <deque>
+#include <functional>
 #include <memory>
 #include <optional>
 #include <vector>
@@ -33,6 +34,7 @@
 #include <boost/atomic/ipc_atomic_flag.hpp>
 #include <boost/interprocess/allocators/allocator.hpp>
 #include <boost/interprocess/containers/deque.hpp>
+#include <boost/interprocess/containers/flat_map.hpp>
 #include <boost/interprocess/containers/string.hpp>
 #include <boost/interprocess/containers/vector.hpp>
 #if BOOST_OS_WINDOWS
@@ -43,6 +45,7 @@
 #include <boost/interprocess/sync/spin/mutex.hpp>
 #include "SMCE/SMCE_iface.h"
 #include "SMCE/fwd.hpp"
+#include "SMCE_rt/internal/BoardDeviceAllocationBases.hpp"
 
 namespace smce {
 
@@ -65,7 +68,7 @@ struct IpcAtomicValue : boost::ipc_atomic<T> {
 };
 
 /// \internal
-struct SMCE_INTERNAL IpcMovableMutex : boost::interprocess::ipcdetail::spin_mutex {
+struct IpcMovableMutex : boost::interprocess::ipcdetail::spin_mutex {
     IpcMovableMutex() noexcept = default;
     IpcMovableMutex(IpcMovableMutex&&) noexcept {}                           // HSD never
     IpcMovableMutex& operator=(IpcMovableMutex&&) noexcept { return *this; } // HSD never
@@ -80,6 +83,12 @@ using Shm = boost::interprocess::managed_shared_memory;
 /// \internal
 template <class T>
 using ShmAllocator = boost::interprocess::allocator<T, Shm::segment_manager>;
+/// \internal
+template <class T>
+using ShmVector = boost::interprocess::vector<T, ShmAllocator<T>>;
+/// \internal
+template <class K, class V>
+using ShmFlatMap = boost::interprocess::flat_map<K, V, std::less<K>, ShmAllocator<std::pair<K, V>>>;
 /// \internal
 template <class T>
 using ShmBasicString = boost::interprocess::basic_string<T, std::char_traits<T>, ShmAllocator<T>>;
@@ -157,15 +166,22 @@ struct SMCE_INTERNAL BoardData {
         IpcAtomicValue<std::uint8_t> freq = 0;    // rw
         IpcAtomicValue<Transform> transform{};    // rw
         IpcMovableMutex data_mut;
-        boost::interprocess::vector<std::byte, ShmAllocator<std::byte>> data; // rw
+        ShmVector<std::byte> data; // rw
         explicit FrameBuffer(const ShmAllocator<void>&);
     };
 
-    boost::interprocess::vector<Pin, ShmAllocator<Pin>> pins; // sorted by id
-    boost::interprocess::vector<UartChannel, ShmAllocator<UartChannel>> uart_channels;
-    boost::interprocess::vector<DirectStorage, ShmAllocator<DirectStorage>> direct_storages;
-    boost::interprocess::vector<FrameBuffer, ShmAllocator<FrameBuffer>> frame_buffers;
+    ShmVector<Pin> pins; // sorted by id
+    ShmVector<UartChannel> uart_channels;
+    ShmVector<DirectStorage> direct_storages;
+    ShmVector<FrameBuffer> frame_buffers;
 
+    ShmFlatMap<ShmString, smce_rt::BoardDeviceAllocationIntBases> device_allocation_map;
+    ShmVector<unsigned char> raw_bank;
+    ShmVector<IpcAtomicValue<std::uint8_t>> a8_bank;
+    ShmVector<IpcAtomicValue<std::uint16_t>> a16_bank;
+    ShmVector<IpcAtomicValue<std::uint32_t>> a32_bank;
+    ShmVector<IpcAtomicValue<std::uint64_t>> a64_bank;
+    ShmVector<IpcMovableMutex> mtx_bank;
     BoardData(const ShmAllocator<void>&, const BoardConfig&) noexcept;
 };
 

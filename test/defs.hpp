@@ -21,6 +21,7 @@
 
 #define SMCE_PATH SMCE_TEST_DIR "/smce_root"
 #define SKETCHES_PATH SMCE_TEST_DIR "/sketches/"
+#define PLUGINS_PATH SMCE_TEST_DIR "/plugins/"
 #define PATCHES_PATH SMCE_TEST_DIR "/patches/"
 #define STORAGE_PATH SMCE_TEST_DIR "/storage/"
 #define MANIFESTS_PATH SMCE_TEST_DIR "/manifests/"

@@ -55,6 +55,7 @@ std::error_code write_manifest(const PluginManifest& manifest, stdfs::path locat
     file << "set (PLUGIN_NAME \"" << manifest.name << "\")\n";
     file << "set (PLUGIN_VERSION \"" << manifest.version << "\")\n";
     file << "set (PLUGIN_DEPENDS " << cmake_list(manifest.depends) << ")\n";
+    file << "set (PLUGIN_NEEDS_DEVICES " << cmake_list(manifest.needs_devices) << ")\n";
     file << "set (PLUGIN_DEV \"" << manifest.development << "\")\n";
     file << "set (PLUGIN_URI \"" << manifest.uri << "\")\n";
     file << "set (PLUGIN_PATCH_URI \"" << manifest.patch_uri << "\")\n";

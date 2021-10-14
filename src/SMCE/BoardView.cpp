@@ -138,8 +138,8 @@ VirtualPin VirtualPins::operator[](std::size_t pin_id) noexcept {
     }();
     if (!mut.timed_lock(microsec_clock::universal_time() + boost::posix_time::seconds{1}))
         return 0;
+    std::lock_guard lg{mut, std::adopt_lock};
     const auto ret = d.size();
-    mut.unlock();
     return ret;
 }
 
@@ -158,10 +158,10 @@ std::size_t VirtualUartBuffer::read(std::span<char> buf) noexcept {
     }();
     if (!mut.timed_lock(microsec_clock::universal_time() + boost::posix_time::seconds{1}))
         return 0;
+    std::lock_guard lg{mut, std::adopt_lock};
     const std::size_t count = std::min(d.size(), buf.size());
     std::copy_n(d.begin(), count, buf.begin());
     d.erase(d.begin(), d.begin() + count);
-    mut.unlock();
     return count;
 }
 
@@ -180,10 +180,10 @@ std::size_t VirtualUartBuffer::write(std::span<const char> buf) noexcept {
     }();
     if (!mut.timed_lock(microsec_clock::universal_time() + boost::posix_time::seconds{1}))
         return 0;
+    std::lock_guard lg{mut, std::adopt_lock};
     const std::size_t count = std::min(
         std::clamp(max_buffered - d.size(), std::size_t{0}, static_cast<std::size_t>(max_buffered)), buf.size());
     std::copy_n(buf.begin(), count, std::back_inserter(d));
-    mut.unlock();
     return count;
 }
 
@@ -202,10 +202,10 @@ std::size_t VirtualUartBuffer::write(std::span<const char> buf) noexcept {
     }();
     if (!mut.timed_lock(microsec_clock::universal_time() + boost::posix_time::seconds{1}))
         return 0;
+    std::lock_guard lg{mut, std::adopt_lock};
     if (d.empty())
         return '\0';
     const char ret = d.front();
-    mut.unlock();
     return ret;
 }
 
@@ -325,20 +325,29 @@ bool FrameBuffer::read_rgb888(std::span<std::byte> buf) {
     return true;
 }
 
+/*
+ * MEDIA_BUS_FMT_RGB444_2X8_PADHI_LE is laid as:
+ * 76543210 | 76543210
+ * GGGGBBBB   0000RRRR
+ */
 bool FrameBuffer::write_rgb444(std::span<const std::byte> buf) {
     if (!exists())
         return false;
 
     auto& frame_buf = m_bdat->frame_buffers[m_idx];
-    if (buf.size() != frame_buf.data.size() / 2)
+    if (buf.size() != frame_buf.data.size() / 3 * 2)
         return false;
 
     [[maybe_unused]] std::lock_guard lk{frame_buf.data_mut};
 
-    auto* to = frame_buf.data.data();
-    for (std::byte from : buf) {
-        *to++ = from & std::byte{0xF};
-        *to++ = from << 4; // Might be a bug there in the case where we have an odd number of pixels in the frame
+    auto from = buf.begin();
+    auto to = frame_buf.data.begin();
+    while (from != buf.end()) {
+        const auto gb = *from++;
+        const auto xr = *from++;
+        *to++ = xr << 4;
+        *to++ = gb & std::byte{0xF0};
+        *to++ = gb << 4;
     }
 
     return true;
@@ -349,14 +358,18 @@ bool FrameBuffer::read_rgb444(std::span<std::byte> buf) {
         return false;
 
     auto& frame_buf = m_bdat->frame_buffers[m_idx];
-    if (buf.size() != frame_buf.data.size())
+    if (buf.size() != frame_buf.data.size() / 3 * 2)
         return false;
     [[maybe_unused]] std::lock_guard lk{frame_buf.data_mut};
 
     const auto* from = frame_buf.data.data();
-    for (std::byte& to : buf) {
-        to = (from[0] & std::byte{0xF}) | (from[1] >> 4);
-        from += 2;
+    auto to = buf.begin();
+    while (to != buf.end()) {
+        const auto r = *from++;
+        const auto g = *from++;
+        const auto b = *from++;
+        *to++ = (g & std::byte{0xF0}) | (b >> 4);
+        *to++ = r >> 4;
     }
 
     return true;
