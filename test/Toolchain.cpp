@@ -42,37 +42,41 @@ TEST_CASE("Sketch compilation valid", "[Toolchain]") {
     REQUIRE(tc.resource_dir() == SMCE_PATH);
     REQUIRE_FALSE(tc.cmake_path().empty());
 
-    smce::Sketch sk{SKETCHES_PATH "uart", {.fqbn = "test_board", .legacy_preproc_libs = {{"WiFi"}, {"MQTT"}}}};
+    smce::Sketch sk{SKETCHES_PATH "uart", {.fqbn = "test_board", .legacy_preproc_libs = {{"WiFi"}}}};
     const auto ec = tc.compile(sk);
     if (ec)
         std::cerr << tc.build_log().second;
     REQUIRE(!ec);
 }
 
-TEST_CASE("Sketch compilation with invalid sketch path", "[Toolchain]") {
+TEST_CASE("Sketch compilation with different toolchain errors", "[Toolchain]") {
     smce::Toolchain tc{SMCE_PATH};
     REQUIRE(!tc.check_suitable_environment());
     REQUIRE(tc.resource_dir() == SMCE_PATH);
     REQUIRE_FALSE(tc.cmake_path().empty());
 
-    smce::Sketch sk{SKETCHES_PATH "non_existing", {.fqbn = "test_board", .legacy_preproc_libs = {{"WiFi"}, {"MQTT"}}}};
-    const auto ec = tc.compile(sk);
-    if (ec)
-        std::cerr << tc.build_log().second;
-    // This breaks if return string in Toolchain.cpp changes, smarter way?
-    REQUIRE(ec.message() == "Sketch path is invalid");
-}
+    SECTION("Invalid sketch path") {
+        smce::Sketch sk{SKETCHES_PATH "non_existing", {.fqbn = "test_board", .legacy_preproc_libs = {{"WiFi"}}}};
+        const auto ec = tc.compile(sk);
+        if (ec)
+            std::cerr << tc.build_log().second;
+        REQUIRE(static_cast<smce::toolchain_error>(ec.value()) == smce::toolchain_error::sketch_invalid);
+    }
 
-TEST_CASE("Sketch compilation with sketch containing non-valid code", "[Toolchain]") {
-    smce::Toolchain tc{SMCE_PATH};
-    REQUIRE(!tc.check_suitable_environment());
-    REQUIRE(tc.resource_dir() == SMCE_PATH);
-    REQUIRE_FALSE(tc.cmake_path().empty());
+    SECTION("Sketch containing invalid syntax") {
+        smce::Sketch sk{SKETCHES_PATH "uart_invalid", {.fqbn = "test_board", .legacy_preproc_libs = {{"WiFi"}}}};
+        const auto ec = tc.compile(sk);
+        if (ec)
+            std::cerr << tc.build_log().second;
+        REQUIRE(static_cast<smce::toolchain_error>(ec.value()) == smce::toolchain_error::build_failed);
+    }
 
-    smce::Sketch sk{SKETCHES_PATH "uart_invalid", {.fqbn = "test_board", .legacy_preproc_libs = {{"WiFi"}, {"MQTT"}}}};
-    const auto ec = tc.compile(sk);
-    if (ec)
-        std::cerr << tc.build_log().second;
-    // This breaks if return string in Toolchain.cpp changes, smarter way?
-    REQUIRE(ec.message() == "CMake build failed");
+    SECTION("Invalid plugin name") {
+        smce::Sketch sk{SKETCHES_PATH "uart",
+                        {.fqbn = "test_board", .legacy_preproc_libs = {{"WiFi"}}, .plugins = {{"/invalid"}}}};
+        const auto ec = tc.compile(sk);
+        if (ec)
+            std::cerr << tc.build_log().second;
+        REQUIRE(static_cast<smce::toolchain_error>(ec.value()) == smce::toolchain_error::invalid_plugin_name);
+    }
 }
