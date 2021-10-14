@@ -104,6 +104,10 @@ function (process_manifests)
 
     foreach(vx ${VERTICES})
       list(APPEND VISIT_LIST VISIT_${vx})
+      if (NOT PLUGIN_${vx}_DEPENDS)
+        list(REMOVE_ITEM VERTICES ${vx})
+        list(INSERT VERTICES 0 ${vx})
+      endif ()
     endforeach()
 
     # DEPTH FIRST SEARCH ---------------------------------------------------------------------
@@ -113,8 +117,6 @@ function (process_manifests)
       set(vx_1 "${${vx1}}")
 
       list (REMOVE_ITEM V_LIST VISIT_${vx_1})
-      message("VISITING NOW: ${vx_1}")
-      message("TO BE VISITED: ${V_LIST}")
       set (${VLIST} ${V_LIST} PARENT_SCOPE)
 
       foreach(vx_2 ${PLUGIN_${vx_1}_DEPENDS})
@@ -127,7 +129,6 @@ function (process_manifests)
       endforeach()
 
       list (APPEND S_LIST ${vx_1})
-      message("APPENDING TO STACK: ${vx_1}")
       set (${VLIST} ${V_LIST} PARENT_SCOPE)
       set (${SLIST} ${S_LIST} PARENT_SCOPE)
     endfunction()
@@ -156,7 +157,6 @@ function (process_manifests)
       math (EXPR ${NEXT_VX}_pos "${IND}")
       math (EXPR IND "${IND}+1")
       list (APPEND TSORT ${NEXT_VX})
-      message("CURRENT TSO: ${TSORT}")
 
     endwhile()
 
@@ -188,7 +188,7 @@ function (process_manifests)
 
   message("TOP START: ${plugins}")
   topological_sort (plugins)
-  message(FATAL_ERROR "TOP END: ${plugins}")
+  message("TOP END: ${plugins}")
 
   # PROCESS PLUGINS
   function (process_plugin plugin)
