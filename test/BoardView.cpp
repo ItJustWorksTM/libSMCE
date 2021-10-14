@@ -187,7 +187,8 @@ TEST_CASE("BoardView RGB444 cvt", "[BoardView]") {
     auto bv = br.view();
     REQUIRE(bv.valid());
     REQUIRE(br.suspend());
-
+    std:uint16_t m_cspin = 0;
+    REQUIRE(bv.storage_get_root(smce::BoardView::Link::SPI, m_cspin=0) == "");
     auto fb = bv.frame_buffers[0];
     REQUIRE(fb.exists());
 
