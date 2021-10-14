@@ -43,13 +43,13 @@ __declspec(dllimport) LONG NTAPI NtSuspendProcess(HANDLE ProcessHandle);
 #include <SMCE/BoardView.hpp>
 #include <SMCE/Toolchain.hpp>
 #include <SMCE/Uuid.hpp>
+#include <SMCE/internal/BoardData.hpp>
 #include <SMCE/internal/SharedBoardData.hpp>
 #include <SMCE/internal/portable/scope.hpp>
 #include <SMCE/internal/utils.hpp>
 #include <boost/process.hpp>
 
 namespace bp = boost::process;
-namespace bip = boost::interprocess;
 
 namespace smce {
 
@@ -193,26 +193,20 @@ bool Board::terminate() noexcept {
     return true;
 }
 
-/*
-bool BoardRunner::stop() noexcept {
+bool Board::stop(std::chrono::milliseconds timeout) noexcept {
     if (m_status != Status::running)
         return false;
 
-    auto& command = m_internal->command;
-    command = Command::stop;
-    command.notify_all();
+    m_internal->sbdata.get_board_data()->stop_requested = true;
 
-    const auto val = command.wait(Command::stop);
-    const bool success = val == Command::stop_ack;
-    if (success)
+    const bool exited = m_internal->sketch.wait_for(timeout);
+    if (exited) {
+        do_reap();
         m_status = Status::stopped;
+    }
 
-    return success;
+    return exited;
 }
-*/
-
-// FIXME
-bool Board::stop() noexcept { return terminate(); }
 
 /**
  * Spawns the child process and its log grabber
