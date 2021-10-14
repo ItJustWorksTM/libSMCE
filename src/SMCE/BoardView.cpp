@@ -30,6 +30,24 @@ using microsec_clock = boost::date_time::microsec_clock<boost::posix_time::ptime
 
 namespace smce {
 
+    static std::tuple<boost::interprocess::deque<char, ShmAllocator<char>>, IpcMovableMutex, std::uint16_t> test (auto m_bdat_pointer, std::size_t index,VirtualUartBuffer::Direction dir){
+        auto& chan = m_bdat_pointer->uart_channels[index];
+        auto [d, mut, max_buffered] = [&] {
+            switch (dir) {
+            case VirtualUartBuffer::Direction::rx:
+                return std::tie(chan.rx, chan.rx_mut, chan.max_buffered_rx);
+            case VirtualUartBuffer::Direction::tx:
+                return std::tie(chan.tx, chan.tx_mut, chan.max_buffered_tx);
+        }
+        unreachable();
+    }();
+    if (!mut.timed_lock(microsec_clock::universal_time() + boost::posix_time::seconds{1})){
+        return std::tuple<boost::interprocess::deque<char, ShmAllocator<char>>, IpcMovableMutex, std::uint16_t>{NULL,NULL,0};
+    }
+    std::lock_guard lg{mut, std::adopt_lock};
+    return std::tie(d, mut, max_buffered);
+    }
+    
 [[nodiscard]] std::string_view BoardView::storage_get_root(Link link, std::uint16_t accessor) noexcept {
     if (!m_bdat)
         return {};
@@ -165,27 +183,18 @@ std::size_t VirtualUartBuffer::read(std::span<char> buf) noexcept {
     return count;
 }
 
-std::size_t VirtualUartBuffer::write(std::span<const char> buf) noexcept {
+	std::size_t VirtualUartBuffer::write(std::span<const char> buf) noexcept {    
     if (!exists())
         return 0;
-    auto& chan = m_bdat->uart_channels[m_index];
-    auto [d, mut, max_buffered] = [&] {
-        switch (m_dir) {
-        case Direction::rx:
-            return std::tie(chan.rx, chan.rx_mut, chan.max_buffered_rx);
-        case Direction::tx:
-            return std::tie(chan.tx, chan.tx_mut, chan.max_buffered_tx);
-        }
-        unreachable();
-    }();
-    if (!mut.timed_lock(microsec_clock::universal_time() + boost::posix_time::seconds{1}))
-        return 0;
-    std::lock_guard lg{mut, std::adopt_lock};
+
+    //auto [d, mut, max_buffered] = test(m_bdat, m_index, m_dir);
+    auto [d,mut, max_buffered] = test(m_bdat, m_index, m_dir);
+
     const std::size_t count = std::min(
         std::clamp(max_buffered - d.size(), std::size_t{0}, static_cast<std::size_t>(max_buffered)), buf.size());
     std::copy_n(buf.begin(), count, std::back_inserter(d));
     return count;
-}
+    }
 
 [[nodiscard]] char VirtualUartBuffer::front() noexcept {
     if (!exists())
@@ -208,6 +217,8 @@ std::size_t VirtualUartBuffer::write(std::span<const char> buf) noexcept {
     const char ret = d.front();
     return ret;
 }
+
+
 
 [[nodiscard]] bool VirtualUart::exists() noexcept { return m_bdat && m_index < m_bdat->uart_channels.size(); }
 
@@ -387,5 +398,9 @@ FrameBuffer FrameBuffers::operator[](std::size_t key) noexcept {
     }
     return {nullptr, std::size_t(-1)};
 }
+
+//std::tie -  A std::tuple object containing lvalue references.
+
+
 
 } // namespace smce

@@ -1,0 +1,7 @@
+organization=group-9-software-evolution
+projectKey=Group-9-Software-Evolution_Group-9-backend-libSMCE
+serverUrl=https://sonarcloud.io
+serverVersion=8.0.0.23810
+dashboardUrl=https://sonarcloud.io/dashboard?id=Group-9-Software-Evolution_Group-9-backend-libSMCE
+ceTaskId=AXxbNUXBBdtLlpiYl-qD
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AXxbNUXBBdtLlpiYl-qD
