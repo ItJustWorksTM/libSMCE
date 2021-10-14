@@ -379,6 +379,7 @@ bool FrameBuffer::read_rgb444(std::span<std::byte> buf) {
     */
     void rgb565ToRgb888(std::span<const std::byte> buf, std::byte * res) {
         // read two bytes
+        // read from rgb565 then write to the rgb888
         for (auto i = buf.begin(); i != buf.end(); ++i) {
             std::byte low = *i;
             *i++;
@@ -388,13 +389,12 @@ bool FrameBuffer::read_rgb444(std::span<std::byte> buf) {
             *res++ = (high & (std::byte)0xF8) | (high >> 5);
             // green
             *res++ = ((high & (std::byte)0x07) << 5) | ((low & (std::byte)0xE0) >> 3) |
-                        ((high & (std::byte)0x06) >> 1);
+                     ((high & (std::byte)0x06) >> 1);
             // blue
-            *res++ = (low << 3) | ((low & (std::byte)0b11100) >> 2);
+            *res++ = (low << 3) | ((low & (std::byte)0x1F) >> 2);
         }
     }
 
-    // Implementation of rgb565. conversion from RGB888 to RGB565
     bool FrameBuffer::write_rgb565(std::span<const std::byte> buf) {
         if (!exists())
             return false;
@@ -402,6 +402,7 @@ bool FrameBuffer::read_rgb444(std::span<std::byte> buf) {
         auto& frame_buf = m_bdat->frame_buffers[m_idx];
         if (buf.size() != frame_buf.data.size() / 3 * 2)
             return false;
+        [[maybe_unused]] std::lock_guard lk{frame_buf.data_mut};
 
         auto* res = frame_buf.data.data();
         rgb565ToRgb888(buf, res);
@@ -413,18 +414,17 @@ bool FrameBuffer::read_rgb444(std::span<std::byte> buf) {
         // read two bytes(16bits)
         for (auto i = res.begin(); i != res.end(); ++i) {
 
-            // 24bits in buffer
+            // pick out 24bits in buffer
             std::byte red = *buf++;
             std::byte green = *buf++;
             std::byte blue = *buf++;
 
-            // read from rgb then write to the res
+            // read from rgb888 then write to the rgb565
             *i++ = ((green & (std::byte)0x1C) << 3) | ((blue & (std::byte)0xF8) >> 3);
             *i = (red & (std::byte)0xF8) | ((green & (std::byte)0xE0) >> 5);
         }
     }
 
-    // read from rgb888 buffer into rg565 buffer
     bool FrameBuffer::read_rgb565(std::span<std::byte> res) {
         if (!exists())
             return false;
@@ -432,6 +432,7 @@ bool FrameBuffer::read_rgb444(std::span<std::byte> buf) {
         auto& frame_buf = m_bdat->frame_buffers[m_idx];
         if (res.size() != frame_buf.data.size() / 3 * 2)
             return false;
+        [[maybe_unused]] std::lock_guard lk{frame_buf.data_mut};
 
         const auto* buf = frame_buf.data.data();
         rgb888ToRgb565(buf, res);
@@ -439,54 +440,11 @@ bool FrameBuffer::read_rgb444(std::span<std::byte> buf) {
         return true;
     }
 
-    void rgb888ToYuv422([[maybe_unused]] const std::byte* buf,
-                                  [[maybe_unused]] std::span<std::byte> res) {
-        // read two pixels, each pixel with g,b,r
-        for (auto i = res.begin(); i != res.end();) {
-
-            std::byte r1 = *buf++;
-            std::byte g1 = *buf++;
-            std::byte b1 = *buf++;
-            std::byte r2 = *buf++;
-            std::byte g2 = *buf++;
-            std::byte b2 = *buf++;
-
-            double y1 = 0.299 * (double)r1 + 0.587 * (double)g1 + 0.114 * (double)b1;
-            double u = ((-0.169 * (double)r1 - 0.331 * (double)g1 + 0.499 * (double)b1 + 128)+
-                       (-0.169 * (double)r2 - 0.331 * (double)g2 + 0.499 * (double)b2 + 128))
-                       / 2;
-            double y2 = 0.299 * (double)r2 + 0.587 * (double)g2 + 0.114 * (double)b2;
-            double v = ((0.499 * (double)r1 - 0.418 * (double)g1 - 0.0813 * (double)b1 + 128)+
-                       (0.499 * (double)r2 - 0.418 * (double)g2 - 0.0813 * (double)b2 + 128))
-                       / 2;
-
-            // write to the res
-            *i = (std::byte)y1;
-            *i++;
-            *i = (std::byte)u;
-            *i++;
-            *i = (std::byte)y2;
-            *i++;
-            *i = (std::byte)v;
-            *i++;
-        }
-    }
-
-
-    bool FrameBuffer::read_yuv422(std::span<std::byte> res) {
-        if (!exists())
-            return false;
-
-        auto& frame_buf = m_bdat->frame_buffers[m_idx];
-        if (res.size() != frame_buf.data.size() / 6 * 4)
-            return false;
-
-        const auto* buf = frame_buf.data.data();
-        rgb888ToYuv422(buf, res);
-
-        return true;
-    }
-
+    /*
+     * R1 G1 B1 R2 G2 B2
+     * Y1   U   Y2   V
+     * keep Y, two Y shared a U and a V so compressing the memory to two-thirds of the original
+     */
     void yuv422ToRgb888(std::span<const std::byte> buf, std::byte* res) {
         // read four bytes
         for (auto i = buf.begin(); i != buf.end();) {
@@ -499,15 +457,19 @@ bool FrameBuffer::read_rgb444(std::span<std::byte> buf) {
             std::byte v = *i;
             *i++;
 
-            // yuv422 to rgb888 of pixel 1 and pixel 2
-            double r1 = (double)y1 + 1.402 * ((double)v - 128);
-            double g1 = (double)y1 - 0.344 * ((double)u - 128) - 0.714 * ((double)v - 128);
-            double b1 = (double)y1 + 1.772 * ((double)u - 128);
-            double r2 = (double)y2 + 1.402 * ((double)v - 128);
-            double g2 = (double)y2 - 0.344 * ((double)u - 128) - 0.714 * ((double)v - 128);
-            double b2 = (double)y2 + 1.772 * ((double)u - 128);
+            /*
+             * convert yuv422 to rgb888 of two pixels
+             * https://zh.wikipedia.org/wiki/YUV
+             * using the formula
+             */
+            double r1 = (double)y1 + 1.13983 * ((double)v - 128);
+            double g1 = (double)y1 - 0.39465 * ((double)u - 128) - 0.58060 * ((double)v - 128);
+            double b1 = (double)y1 + 2.03211 * ((double)u - 128);
+            double r2 = (double)y2 + 1.13983 * ((double)v - 128);
+            double g2 = (double)y2 - 0.39465 * ((double)u - 128) - 0.58060 * ((double)v - 128);
+            double b2 = (double)y2 + 2.03211 * ((double)u - 128);
 
-            // write rgb for pixel 1 and 2
+            // write rgb for two pixels
             *res++ = (std::byte)std::clamp(r1, 0.0, 255.0);
             *res++ = (std::byte)std::clamp(g1, 0.0, 255.0);
             *res++ = (std::byte)std::clamp(b1, 0.0, 255.0);
@@ -517,14 +479,14 @@ bool FrameBuffer::read_rgb444(std::span<std::byte> buf) {
         }
     }
 
-
     bool FrameBuffer::write_yuv422(std::span<const std::byte> buf) {
         if (!exists())
             return false;
 
         auto& frame_buf = m_bdat->frame_buffers[m_idx];
-        if (buf.size() != frame_buf.data.size() / 6 * 4)
+        if (buf.size() != frame_buf.data.size() / 3 * 4)
             return false;
+        [[maybe_unused]] std::lock_guard lk{frame_buf.data_mut};
 
         auto* res = frame_buf.data.data();
         yuv422ToRgb888(buf, res);
@@ -532,6 +494,54 @@ bool FrameBuffer::read_rgb444(std::span<std::byte> buf) {
         return true;
     }
 
+    void rgb888ToYuv422(const std::byte* buf, std::span<std::byte> res) {
+        for (auto i = res.begin(); i != res.end();) {
+            std::byte r1 = *buf++;
+            std::byte g1 = *buf++;
+            std::byte b1 = *buf++;
+            std::byte r2 = *buf++;
+            std::byte g2 = *buf++;
+            std::byte b2 = *buf++;
+
+            // using the formula
+            double y1 = 0.299 * (double)r1 + 0.587 * (double)g1 + 0.114 * (double)b1;
+            double u = ((-0.169 * (double)r1 - 0.331 * (double)g1 + 0.5 * (double)b1 + 128)+
+                       (-0.169 * (double)r2 - 0.331 * (double)g2 + 0.5 * (double)b2 + 128))
+                       / 2;
+            double y2 = 0.299 * (double)r2 + 0.587 * (double)g2 + 0.114 * (double)b2;
+            double v = ((0.5 * (double)r1 - 0.419 * (double)g1 - 0.081 * (double)b1 + 128)+
+                       (0.5 * (double)r2 - 0.419 * (double)g2 - 0.081 * (double)b2 + 128))
+                       / 2;
+            /*
+             * write to the yuv422, two pixels(32bits, 4bits)
+             * y represents black and white,u for luma and v for chroma
+             * https://stackoverflow.com/questions/63213344/how-to-write-a-yuv422-yuv420-video-data-y-u-v-buffers-to-buffer-of-a-video-pla
+             */
+            *i = (std::byte)y1;
+            *i++;
+            *i = (std::byte)u;
+            *i++;
+            *i = (std::byte)y2;
+            *i++;
+            *i = (std::byte)v;
+            *i++;
+        }
+    }
+
+    bool FrameBuffer::read_yuv422(std::span<std::byte> res) {
+        if (!exists())
+            return false;
+
+        auto& frame_buf = m_bdat->frame_buffers[m_idx];
+        if (res.size() != frame_buf.data.size() / 3 * 4)
+            return false;
+        [[maybe_unused]] std::lock_guard lk{frame_buf.data_mut};
+
+        const auto* buf = frame_buf.data.data();
+        rgb888ToYuv422(buf, res);
+
+        return true;
+    }
 
     FrameBuffer FrameBuffers::operator[](std::size_t key) noexcept {
         if (!m_bdat)
