@@ -56,9 +56,25 @@ TEST_CASE("Toolchain empty_dir", "[Toolchain]") {
     smce::Toolchain tc{path};
     int result = tc.check_suitable_environment().value();
     REQUIRE(result == 3);
-    //std::cout<< result<< std::endl;
-    //std::cout<< tc.check_suitable_environment()<< std::endl;
 }
+
+TEST_CASE("Toolchain cmake_path", "[Toolchain]") {
+    smce::Toolchain tc{SMCE_PATH};
+    REQUIRE(tc.cmake_path() == "cmake");
+}
+
+TEST_CASE("Toolchain no_Sketch", "[Toolchain]") {
+    smce::Toolchain tc{SMCE_PATH};
+    smce::Sketch sk{SKETCHES_PATH "noSketch", {.fqbn = "arduino:avr:nano"}};
+    REQUIRE(tc.compile(sk).value() == 8);
+}
+
+TEST_CASE("Toolchain no_fqbn", "[Toolchain]") {
+    smce::Toolchain tc{SMCE_PATH};
+    smce::Sketch sk{SKETCHES_PATH "noop", {}};
+    REQUIRE(tc.compile(sk).value() == 8);
+}
+
 
 
 
