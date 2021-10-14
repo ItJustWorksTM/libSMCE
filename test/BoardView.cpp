@@ -183,9 +183,10 @@ TEST_CASE("BoardView RGB444 cvt", "[BoardView]") {
     smce::Board br{};
     REQUIRE(br.configure({.frame_buffers = {{}}}));
     REQUIRE(br.attach_sketch(sk));
-    REQUIRE(br.start());
+    REQUIRE(br.prepare());
     auto bv = br.view();
     REQUIRE(bv.valid());
+    REQUIRE(br.start());
     REQUIRE(br.suspend());
     std::uint16_t m_cspin = 0;
     REQUIRE(bv.storage_get_root(smce::BoardView::Link::SPI, m_cspin=0) == "");
