@@ -14,6 +14,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
+cmake_policy(VERSION 3.12)
+if (CMAKE_VERSION VERSION_GREATER_EQUAL 3.21)
+  cmake_policy(SET CMP0121 NEW)
+else()
+  cmake_policy(SET CMP0121 OLD)
+endif ()
 
 function (process_manifests)
   file (GLOB manifests "${CMAKE_SOURCE_DIR}/manifests/*.cmake")
@@ -87,84 +93,102 @@ function (process_manifests)
   endforeach ()
 
   # SCAN PLUGIN DEPENDENCIES AND SORT LIST IN REVERSE DEPENDENCY
-  function(topological_sort LIST SUFFIX)
+  function(topological_sort PLUGIN_LIST)
     # Clear the stack and output variable
-    set(VERTICES "${${LIST}}")
+    set(VERTICES "${${PLUGIN_LIST}}")
     set(STACK)
-    set(${LIST})
+    set(TSORT)
+    list(LENGTH VERTICES VERTICES_LENGTH)
+    set(${PLUGIN_LIST})
+    set(VISIT_LIST)
 
-    # Loop over all of the vertices, starting the topological sort from
-    # each one.
-    foreach(VERTEX ${VERTICES})
+    foreach(vx ${VERTICES})
+      list(APPEND VISIT_LIST VISIT_${vx})
+    endforeach()
 
-      # If we haven't already processed this vertex, start a depth-first
-      # search from where.
-      if (NOT FOUND_${VERTEX})
-        # Push this vertex onto the stack with all of its outgoing edges
-        string(REPLACE ";" " " NEW_ELEMENT
-                "${VERTEX};${${VERTEX}${SUFFIX}}")
-        list(APPEND STACK ${NEW_ELEMENT})
+    # DEPTH FIRST SEARCH ---------------------------------------------------------------------
+    function(dfs SLIST VLIST vx1)
+      set(S_LIST "${${SLIST}}")
+      set(V_LIST "${${VLIST}}")
+      set(vx_1 "${${vx1}}")
 
-        # We've now seen this vertex
-        set(FOUND_${VERTEX} TRUE)
+      list (REMOVE_ITEM V_LIST VISIT_${vx_1})
+      message("VISITING NOW: ${vx_1}")
+      message("TO BE VISITED: ${V_LIST}")
+      set (${VLIST} ${V_LIST} PARENT_SCOPE)
 
-        # While the depth-first search stack is not empty
-        list(LENGTH STACK STACK_LENGTH)
-        while(STACK_LENGTH GREATER 0)
-          # Remove the vertex and its remaining out-edges from the top
-          # of the stack
-          list(GET STACK -1 OUT_EDGES)
-          list(REMOVE_AT STACK -1)
+      foreach(vx_2 ${PLUGIN_${vx_1}_DEPENDS})
+        set(i_vx_2)
+        list (FIND V_LIST VISIT_${vx_2} i_vx_2)
 
-          # Get the source vertex and the list of out-edges
-          separate_arguments(OUT_EDGES)
-          list(GET OUT_EDGES 0 SOURCE)
-          list(REMOVE_AT OUT_EDGES 0)
+        if (${i_vx_2} GREATER -1)
+          dfs(S_LIST V_LIST vx_2)
+        endif ()
+      endforeach()
 
-          # While there are still out-edges remaining
-          list(LENGTH OUT_EDGES OUT_DEGREE)
-          while (OUT_DEGREE GREATER 0)
-            # Pull off the first outgoing edge
-            list(GET OUT_EDGES 0 TARGET)
-            list(REMOVE_AT OUT_EDGES 0)
+      list (APPEND S_LIST ${vx_1})
+      message("APPENDING TO STACK: ${vx_1}")
+      set (${VLIST} ${V_LIST} PARENT_SCOPE)
+      set (${SLIST} ${S_LIST} PARENT_SCOPE)
+    endfunction()
+    # END OF DEPTH FIRST SEARCH -------------------------------------------------------------------
 
-            if (NOT FOUND_${TARGET})
-              # We have not seen the target before, so we will traverse
-              # its outgoing edges before coming back to our
-              # source. This is the key to the depth-first traversal.
+    # START DEPTH FIRST SEARCH ON TOPOLOGICAL SORT ------------------------------------------------
+    foreach(vx ${VERTICES})
+      set(i_vx)
+      list (FIND VISIT_LIST VISIT_${vx} i_vx)
+      if (${i_vx} GREATER -1)
+        dfs(STACK VISIT_LIST vx)
+      endif ()
+    endforeach()
+    # END OF DEPTH FIRST SEARCH ON TOPOLOGICAL SORT -----------------------------------------------
 
-              # We've now seen this vertex
-              set(FOUND_${TARGET} TRUE)
+    #CYCLE CHECK -----------------------------------------------------------------------
+    math(EXPR IND "0")
+    list(LENGTH STACK STACK_LENGTH)
 
-              # Push the remaining edges for the current vertex onto the
-              # stack
-              string(REPLACE ";" " " NEW_ELEMENT
-                      "${SOURCE};${OUT_EDGES}")
-              list(APPEND STACK ${NEW_ELEMENT})
+    while(STACK_LENGTH GREATER 0)
+      # Stores the position of
+      # vertex in topological order
+      list (GET STACK -1 NEXT_VX)
+      list (REMOVE_AT STACK -1)
+      list  (LENGTH STACK STACK_LENGTH)
+      math (EXPR ${NEXT_VX}_pos "${IND}")
+      math (EXPR IND "${IND}+1")
+      list (APPEND TSORT ${NEXT_VX})
+      message("CURRENT TSO: ${TSORT}")
 
-              # Setup the new source and outgoing edges
-              set(SOURCE ${TARGET})
-              set(OUT_EDGES
-                      ${${SOURCE}${SUFFIX}})
-            endif(NOT FOUND_${TARGET})
+    endwhile()
 
-            list(LENGTH OUT_EDGES OUT_DEGREE)
-          endwhile (OUT_DEGREE GREATER 0)
+    foreach(it ${VERTICES})
+      foreach(vert_dep ${PLUGIN_${it}_DEPENDS})
+        if (NOT DEFINED ${${vert_dep}_pos})
+          math (EXPR first "0")
+        else()
+          math (EXPR first "${${vert_dep}_pos}")
+        endif ()
 
-          # We have finished all of the outgoing edges for
-          # SOURCE; add it to the resulting list.
-          list(APPEND ${LIST} ${SOURCE})
+        if (NOT DEFINED ${${it}_pos})
+          math (EXPR second "0")
+        else()
+          math (EXPR second "${${it}_pos}")
+        endif ()
 
-          # Check the length of the stack
-          list(LENGTH STACK STACK_LENGTH)
-        endwhile(STACK_LENGTH GREATER 0)
-      endif (NOT FOUND_${VERTEX})
-    endforeach(VERTEX)
+        if(first GREATER second)
+          message(FATAL_ERROR "Plugin dependency cycle detected")
+        endif()
+      endforeach()
+    endforeach()
 
-    set(${LIST} ${${LIST}} PARENT_SCOPE)
+    # END OF CYCLE CHECK ---------------------------------------------------------------
+
+    list(REVERSE TSORT)
+    set(${PLUGIN_LIST} ${TSORT} PARENT_SCOPE)
   endfunction(topological_sort)
 
-  topological_sort (plugins "" _DEPENDS)
+  message("TOP START: ${plugins}")
+  topological_sort (plugins)
+  message(FATAL_ERROR "TOP END: ${plugins}")
 
   # PROCESS PLUGINS
   function (process_plugin plugin)
@@ -236,9 +260,9 @@ function (process_manifests)
           file (ARCHIVE_EXTRACT INPUT "${ark${upatch}_path}" DESTINATION "${${patchu}root}")
         else ()
           execute_process (COMMAND "${CMAKE_COMMAND}" -E tar xf "${CMAKE_MATCH_1}" "${ark${upatch}_path}"
-              WORKING_DIRECTORY "${${patchu}root}"
-              RESULT_VARIABLE ark${upatch}_extract_result
-          )
+                  WORKING_DIRECTORY "${${patchu}root}"
+                  RESULT_VARIABLE ark${upatch}_extract_result
+                  )
           if (ark${upatch}_extract_result)
             message (FATAL_ERROR "[Plugin ${PLUGIN_NAME}] Failed to inflate${spatch} archive")
           endif ()

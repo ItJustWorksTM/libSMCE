@@ -165,6 +165,40 @@ TEST_CASE("Valid manifests processing", "[Plugin]") {
     }
 }
 
+TEST_CASE("Valid plugin dependency processing", "[Plugin]") {
+#if !BOOST_OS_WINDOWS
+    const char* const generator_override = std::getenv("CMAKE_GENERATOR");
+    const char* const generator =
+        generator_override ? generator_override : (!bp::search_path("ninja").empty() ? "Ninja" : "");
+#endif
+
+    constexpr auto module_path = SMCE_PATH "/RtResources/SMCE/share/CMake/Modules/ProcessManifests.cmake";
+    const std::filesystem::path tmproot = SMCE_PATH "/tmp";
+
+    std::string manifests [] {"A","B","C","D","E","F","G"};
+
+    const auto base_dir = tmproot / ("test-manifests");
+    std::filesystem::create_directories(base_dir);
+
+    const auto plugin_root = base_dir / "plugin_root";
+    std::filesystem::create_directory(base_dir / "manifests");
+
+    for (auto m : manifests)
+    {
+        std::filesystem::copy(MANIFESTS_PATH + m + ".cmake", base_dir / "manifests");
+    }
+
+
+    const auto res = bp::system(bp::shell, bp::start_dir(base_dir.generic_string()),
+#if !BOOST_OS_WINDOWS
+                                bp::env["CMAKE_GENERATOR"] = generator,
+#endif
+                                "cmake", "-P", module_path, (bp::std_out & bp::std_err) > stderr);
+
+    REQUIRE(res != 0);
+    [[maybe_unused]] std::error_code ec;
+    std::filesystem::remove_all(base_dir, ec);
+}
 #if SMCE_ARDRIVO_MQTT
 
 TEST_CASE("Board remote preproc lib", "[Board]") {

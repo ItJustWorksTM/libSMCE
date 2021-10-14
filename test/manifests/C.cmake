@@ -1,0 +1,3 @@
+set (PLUGIN_NAME "C")
+set (PLUGIN_VERSION "0")
+set (PLUGIN_DEPENDS "E;F")
