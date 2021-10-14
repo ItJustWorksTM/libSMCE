@@ -16,6 +16,7 @@
  *
  */
 #include <filesystem>
+#include <iostream>
 #include <catch2/catch_test_macros.hpp>
 #include "SMCE/Toolchain.hpp"
 #include "defs.hpp"
@@ -34,3 +35,31 @@ TEST_CASE("Toolchain valid", "[Toolchain]") {
     REQUIRE(tc.resource_dir() == SMCE_PATH);
     REQUIRE_FALSE(tc.cmake_path().empty());
 }
+
+TEST_CASE("Toolchain no_dir", "[Toolchain]") {
+    const auto path =  "/no_dir";
+    smce::Toolchain tc{path};
+    int result = tc.check_suitable_environment().value();
+    REQUIRE(result == 1);
+}
+
+TEST_CASE("Toolchain file_dir", "[Toolchain]") {
+    const auto path = SMCE_TEST_DIR "/sketches/noop/noop.ino";
+    smce::Toolchain tc{path};
+    int result = tc.check_suitable_environment().value();
+    REQUIRE(result == 2);
+}
+
+TEST_CASE("Toolchain empty_dir", "[Toolchain]") {
+    const auto path = SMCE_TEST_DIR "/empty_dir";
+    std::filesystem::create_directory(path);
+    smce::Toolchain tc{path};
+    int result = tc.check_suitable_environment().value();
+    REQUIRE(result == 3);
+    //std::cout<< result<< std::endl;
+    //std::cout<< tc.check_suitable_environment()<< std::endl;
+}
+
+
+
+
