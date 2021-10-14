@@ -271,27 +271,23 @@ std::error_code Toolchain::do_build(Sketch& sketch) noexcept {
     }
     bp::ipstream cmake_out;
     // clang-format off
-    bp::child cmake_child{
+    const int cmres = bp::system(
         m_cmake_path,
         "--version",
         bp::std_out > cmake_out
 #if BOOST_OS_WINDOWS
         , bp::windows::create_no_window
 #endif
-    };
+    );
     // clang-format on
 
-    std::string line;
-    while (cmake_child.running() && std::getline(cmake_out, line) && !line.empty()) {
-        if (!line.starts_with("cmake")) {
-            cmake_child.join();
-            return toolchain_error::cmake_unknown_output;
-        }
-        break;
-    }
-    cmake_child.join();
-    if (cmake_child.native_exit_code() != 0)
+    if (cmres != 0)
         return toolchain_error::cmake_failing;
+
+    std::string line;
+    std::getline(cmake_out, line);
+    if (!line.starts_with("cmake"))
+        return toolchain_error::cmake_unknown_output;
 
     return {};
 }
