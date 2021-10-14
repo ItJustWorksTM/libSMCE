@@ -73,6 +73,11 @@ TEST_CASE("BoardView GPIO", "[BoardView]") {
     pin0.write(true);
     test_pin_delayable(pin2, false, 16384, 1ms);
     REQUIRE(br.stop());
+
+    REQUIRE(bv.pins[1].locked());
+    REQUIRE_FALSE(bv.pins[0].locked());
+
+
 }
 
 TEST_CASE("BoardView UART", "[BoardView]") {
@@ -98,6 +103,16 @@ TEST_CASE("BoardView UART", "[BoardView]") {
     REQUIRE_FALSE(uart1.rx().exists());
     REQUIRE_FALSE(uart1.tx().exists());
     std::this_thread::sleep_for(1ms);
+
+    // Setting a pin to active
+    REQUIRE_FALSE(uart0.is_active());
+    uart0.set_active(true);
+    REQUIRE(uart0.is_active());
+
+    // Setting a non-existent pin to active does not work
+    REQUIRE_FALSE(uart1.is_active());
+    uart1.set_active(true);
+    REQUIRE_FALSE(uart1.is_active());
 
     std::array out = {'H', 'E', 'L', 'L', 'O', ' ', 'U', 'A', 'R', 'T', '\0'};
     std::array<char, out.size()> in{};
