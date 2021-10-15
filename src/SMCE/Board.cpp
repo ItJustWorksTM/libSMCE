@@ -36,27 +36,20 @@ __declspec(dllimport) LONG NTAPI NtSuspendProcess(HANDLE ProcessHandle);
 #    error "Unsupported platform"
 #endif
 
-#if BOOST_OS_LINUX
-extern "C" {
-#    include <pthread.h>
-#    include <unistd.h>
-}
-#    include <array>
-#else
-#    include <type_traits>
-#endif
-
+#include <iostream>
 #include <string>
+#include <type_traits>
 #include <SMCE/BoardConf.hpp>
 #include <SMCE/BoardView.hpp>
 #include <SMCE/Toolchain.hpp>
 #include <SMCE/Uuid.hpp>
+#include <SMCE/internal/BoardData.hpp>
 #include <SMCE/internal/SharedBoardData.hpp>
+#include <SMCE/internal/portable/scope.hpp>
 #include <SMCE/internal/utils.hpp>
 #include <boost/process.hpp>
 
 namespace bp = boost::process;
-namespace bip = boost::interprocess;
 
 namespace smce {
 
@@ -200,26 +193,20 @@ bool Board::terminate() noexcept {
     return true;
 }
 
-/*
-bool BoardRunner::stop() noexcept {
+bool Board::stop(std::chrono::milliseconds timeout) noexcept {
     if (m_status != Status::running)
         return false;
 
-    auto& command = m_internal->command;
-    command = Command::stop;
-    command.notify_all();
+    m_internal->sbdata.get_board_data()->stop_requested = true;
 
-    const auto val = command.wait(Command::stop);
-    const bool success = val == Command::stop_ack;
-    if (success)
+    const bool exited = m_internal->sketch.wait_for(timeout);
+    if (exited) {
+        do_reap();
         m_status = Status::stopped;
+    }
 
-    return success;
+    return exited;
 }
-*/
-
-// FIXME
-bool Board::stop() noexcept { return terminate(); }
 
 /**
  * Spawns the child process and its log grabber
@@ -239,28 +226,10 @@ void Board::do_spawn() noexcept {
     // clang-format on
 
     m_internal->sketch_log_grabber = std::thread{[&] {
+        const smce::portable::scope_fail<void (*)()> exception_detector{
+            [] { std::cerr << "Detected in-flight exception in sketch log grabber\n"; }};
         auto& stream = m_internal->sketch_log;
-
         constexpr size_t buf_len = 1024;
-#if BOOST_OS_LINUX
-        std::array<char, buf_len> buf;
-        for (;;) {
-            const int fd = stream.pipe().native_source();
-            const auto count = ::read(fd, buf.data(), buf_len);
-            if (count == 0) // eof
-                break;
-            if (count == -1) {
-                if (errno == EINTR)
-                    continue;
-                else
-                    break;
-            }
-            [[maybe_unused]] std::lock_guard lk{m_runtime_log_mtx};
-            const auto existing = m_runtime_log.size();
-            m_runtime_log.resize(existing + count);
-            std::memcpy(m_runtime_log.data() + existing, buf.data(), count);
-        }
-#else
         std::string buf;
         buf.reserve(buf_len);
         while (stream.good()) {
@@ -275,7 +244,6 @@ void Board::do_spawn() noexcept {
             m_runtime_log[existing] = static_cast<char>(head);
             std::memcpy(m_runtime_log.data() + existing + 1, buf.data(), count);
         }
-#endif
         stream.pipe().close();
     }};
 }
@@ -305,10 +273,6 @@ void Board::do_reap() noexcept {
     in.sketch.wait(ignored);
     in.sketch = bp::child{}; // clear pid
     if (in.sketch_log_grabber.joinable()) {
-#if BOOST_OS_LINUX
-        ::pthread_cancel(in.sketch_log_grabber.native_handle());
-        in.sketch_log.pipe().close();
-#endif
         in.sketch_log_grabber.join();
     }
 }

@@ -42,8 +42,9 @@ void maybe_init() {
 int SMCE__main([[maybe_unused]] int argc, [[maybe_unused]] char** argv, SetupSig* setup, LoopSig* loop) noexcept try {
     smce::maybe_init();
     setup();
-    for (;;)
+    while (!smce::board_view.stop_requested())
         loop();
+    return EXIT_SUCCESS;
 } catch (const std::exception& e) {
     std::fputs("Exception occurred:", stderr);
     std::fputs(e.what(), stderr);
