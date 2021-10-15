@@ -1,0 +1,22 @@
+// HSD generated
+#ifndef LIBSMCE_GENERATED_@GENERATED_DEVICE@_HPP
+#define LIBSMCE_GENERATED_@GENERATED_DEVICE@_HPP
+
+#include <functional>
+#include <vector>
+#include <SMCE/fwd.hpp>
+#include <SMCE/BoardView.hpp>
+#include <SMCE_rt/SMCE_proxies.hpp>
+
+struct @GENERATED_DEVICE@ /* v@VERSION@ */ {
+
+@GENERATED_DEVICE_FIELDS@
+
+    static std::vector<@GENERATED_DEVICE@> getObjects(smce::BoardView&);
+
+    static const smce::BoardDeviceSpecification& specification;
+  private:
+    @GENERATED_DEVICE@(@GENERATED_DEVICE_CTOR_ARGS@);
+};
+
+#endif
