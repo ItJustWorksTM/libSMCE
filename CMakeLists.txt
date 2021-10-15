@@ -222,7 +222,15 @@ smce_install_config ()
 file (REMOVE_RECURSE "${PROJECT_BINARY_DIR}/packaging")
 file (MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/packaging/include")
 file (COPY "${PROJECT_SOURCE_DIR}/include/SMCE" DESTINATION "${PROJECT_BINARY_DIR}/packaging/include")
-file (REMOVE_RECURSE "${PROJECT_BINARY_DIR}/packaging/include/SMCE/internal")
+file (REMOVE_RECURSE
+    "${PROJECT_BINARY_DIR}/packaging/include/SMCE/internal/portable"
+    "${PROJECT_BINARY_DIR}/packaging/include/SMCE/internal/BoardData.hpp"
+    "${PROJECT_BINARY_DIR}/packaging/include/SMCE/internal/BoardDeviceView.hpp"
+    "${PROJECT_BINARY_DIR}/packaging/include/SMCE/internal/SharedBoardData.hpp"
+    "${PROJECT_BINARY_DIR}/packaging/include/SMCE/internal/utils.hpp"
+)
+file (COPY "${PROJECT_SOURCE_DIR}/include/SMCE_rt" DESTINATION "${PROJECT_BINARY_DIR}/packaging/include")
+file (REMOVE "${PROJECT_BINARY_DIR}/packaging/include/SMCE_rt/internal/sketch_rt.hpp")
 install (DIRECTORY "${PROJECT_BINARY_DIR}/packaging/include" DESTINATION "." ${SMCE_COMPONENT_HEADERS})
 
 install (FILES
