@@ -398,11 +398,14 @@ bool FrameBuffer::write_rgb565(std::span<const std::byte> buf) {
     // time from the buffer  into three bytes in the frame buffer
     for(unsigned long i=0; i<buf.size(); i+=2) {
         *to = buf[i] & std::byte{0xF8};
-        *to++ = reverse_byte(*to) << 3;
+        *to = reverse_byte(*to) << 3;
+        to++;
         *to = buf[i] << 5 | (buf[i+1] & std::byte{0xE0}) >> 3;
-        *to++ = reverse_byte(*to) << 2;
+        *to = reverse_byte(*to) << 2;
+        to++;
         *to = buf[i+1] << 3;
-        *to++ = reverse_byte(*to) << 3;
+        *to = reverse_byte(*to) << 3;
+        to++;
     }
     return true;
 }
