@@ -79,7 +79,7 @@ class SMCE_API Board {
     bool suspend() noexcept;
     bool resume() noexcept;
     bool terminate() noexcept;
-    bool stop() noexcept;
+    bool stop(std::chrono::milliseconds timeout = std::chrono::milliseconds{1000}) noexcept;
 
     [[nodiscard]] inline LockedLog runtime_log() noexcept {
         return {std::unique_lock{m_runtime_log_mtx}, m_runtime_log};
