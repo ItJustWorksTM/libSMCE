@@ -1,6 +1,17 @@
 # The main documents for Group 9 is in smce
 Here: https://github.com/KraftKatten/Group-9-frontend-smce-gd
 
+## Test coverage
+To run a test coverage, do all usual cmake builds (testsuite included), then run ''ctest -T Coverage'' in the build directory. The commands, from scratch, are: 
+```shell
+cmake -S . -B build 
+cd build && cmake --build . 
+cd test && cmake --build . --target SMCE_Tests
+ctest
+cd .. && ctest -T Coverage
+```
+
+
 # libSMCE
 _Spiritual successor to the backend of [SMartCarEmul](https://github.com/ItJustWorksTM/SmartcarEmul)_  
 _Copyright © ItJustWorks™_
