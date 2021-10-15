@@ -137,6 +137,7 @@ target_link_libraries (objSMCE PUBLIC ipcSMCE HostUDD)
 target_sources (objSMCE PRIVATE
     include/SMCE/internal/utils.hpp
     include/SMCE/internal/portable/ostream_joiner.hpp
+    include/SMCE/internal/portable/scope.hpp
     include/SMCE/SMCE_iface.h
     include/SMCE/SMCE_fs.hpp
     include/SMCE/BoardConf.hpp

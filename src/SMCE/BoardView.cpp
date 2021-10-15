@@ -30,6 +30,8 @@ using microsec_clock = boost::date_time::microsec_clock<boost::posix_time::ptime
 
 namespace smce {
 
+[[nodiscard]] bool BoardView::stop_requested() noexcept { return m_bdat && m_bdat->stop_requested.load(); }
+
 [[nodiscard]] std::string_view BoardView::storage_get_root(Link link, std::uint16_t accessor) noexcept {
     if (!m_bdat)
         return {};
