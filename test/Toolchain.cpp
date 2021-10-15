@@ -36,26 +36,46 @@ TEST_CASE("Toolchain valid", "[Toolchain]") {
     REQUIRE_FALSE(tc.cmake_path().empty());
 }
 
-TEST_CASE("Toolchain invalid_no_dir", "[Toolchain]") {
-    const auto path =  "/no_dir";
-    smce::Toolchain tc{path};
-    int result = tc.check_suitable_environment().value();
-    REQUIRE(result == 1);
+TEST_CASE("Toolchain invalid_directory", "[Toolchain]") {
+    SECTION("no directory") {
+        const auto path =  "/no_dir";
+        smce::Toolchain tc{path};
+        int result = tc.check_suitable_environment().value();
+        REQUIRE(result == 1);
+    }
+    SECTION("file directory"){
+        const auto path = SMCE_TEST_DIR "/sketches/noop/noop.ino";
+        smce::Toolchain tc{path};
+        int result = tc.check_suitable_environment().value();
+        REQUIRE(result == 2);
+    }
+
+    SECTION("empty directory") {
+        const auto path = SMCE_TEST_DIR "/empty_dir";
+        std::filesystem::create_directory(path);
+        smce::Toolchain tc{path};
+        int result = tc.check_suitable_environment().value();
+        REQUIRE(result == 3);
+    }
 }
 
-TEST_CASE("Toolchain invalid_file_dir", "[Toolchain]") {
-    const auto path = SMCE_TEST_DIR "/sketches/noop/noop.ino";
-    smce::Toolchain tc{path};
-    int result = tc.check_suitable_environment().value();
-    REQUIRE(result == 2);
-}
 
-TEST_CASE("Toolchain invalid_empty_dir", "[Toolchain]") {
-    const auto path = SMCE_TEST_DIR "/empty_dir";
-    std::filesystem::create_directory(path);
-    smce::Toolchain tc{path};
-    int result = tc.check_suitable_environment().value();
-    REQUIRE(result == 3);
+
+TEST_CASE("Toolchain invalid_sketch_config", "[Toolchain]") {
+
+    SECTION("No Sketch") {
+        smce::Toolchain tc{SMCE_PATH};
+        smce::Sketch sk{SKETCHES_PATH "noSketch", {.fqbn = "arduino:avr:nano"}};
+        REQUIRE(tc.compile(sk).value() == 8);
+        REQUIRE_FALSE(sk.is_compiled());
+    }
+    SECTION("No fqbn") {
+        smce::Toolchain tc{SMCE_PATH};
+        smce::Sketch sk{SKETCHES_PATH "noop", {}};
+        REQUIRE(tc.compile(sk).value() == 8);
+        REQUIRE_FALSE(sk.is_compiled());
+    }
+
 }
 
 TEST_CASE("Toolchain check_cmake_path", "[Toolchain]") {
@@ -63,20 +83,7 @@ TEST_CASE("Toolchain check_cmake_path", "[Toolchain]") {
     REQUIRE(tc.cmake_path() == "cmake");
 }
 
-TEST_CASE("Toolchain invalid_compile_no_Sketch", "[Toolchain]") {
-    smce::Toolchain tc{SMCE_PATH};
-    smce::Sketch sk{SKETCHES_PATH "noSketch", {.fqbn = "arduino:avr:nano"}};
-    REQUIRE(tc.compile(sk).value() == 8);
-    REQUIRE_FALSE(sk.is_compiled());
 
-}
-
-TEST_CASE("Toolchain invalid_compile_no_fqbn", "[Toolchain]") {
-    smce::Toolchain tc{SMCE_PATH};
-    smce::Sketch sk{SKETCHES_PATH "noop", {}};
-    REQUIRE(tc.compile(sk).value() == 8);
-    REQUIRE_FALSE(sk.is_compiled());
-}
 
 
 
