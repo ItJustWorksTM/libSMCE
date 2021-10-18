@@ -100,8 +100,7 @@ class SMCE_API VirtualPins {
 class SMCE_API VirtualUartBuffer {
     friend class VirtualUart;
     // clang-format off
-    public:
-          enum class Direction { rx, tx };  
+    enum class Direction { rx, tx };
     // clang-format on
     BoardData* m_bdat;
     std::size_t m_index;
@@ -117,7 +116,6 @@ class SMCE_API VirtualUartBuffer {
     std::size_t read(std::span<char>) noexcept;
     std::size_t write(std::span<const char>) noexcept;
     [[nodiscard]] char front() noexcept;
-
 };
 
 class SMCE_API VirtualUart {

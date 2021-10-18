@@ -355,6 +355,61 @@ bool FrameBuffer::read_rgb444(std::span<std::byte> buf) {
     return true;
 }
 
+std::byte reverse_byte(std::byte b) {
+    b = (b & std::byte{0xF0}) >> 4 | (b & std::byte{0x0F}) << 4;
+    b = (b & std::byte{0xCC}) >> 2 | (b & std::byte{0x33}) << 2;
+    b = (b & std::byte{0xAA}) >> 1 | (b & std::byte{0x55}) << 1;
+    return b;
+}
+
+bool FrameBuffer::write_rgb565(std::span<const std::byte> buf) {
+    if (!exists())
+        return false;
+
+    auto& frame_buf = m_bdat->frame_buffers[m_idx];
+    if (buf.size() != frame_buf.data.size() / 3 * 2)
+        return false;
+
+    [[maybe_unused]] std::lock_guard lk{frame_buf.data_mut};
+
+    auto* to = frame_buf.data.data();
+
+    //Iterates through the buffer and converts two bytes at a
+    // time from the buffer  into three bytes in the frame buffer
+    for(unsigned long i=0; i<buf.size(); i+=2) {
+        *to = buf[i] & std::byte{0xF8};
+        *to = reverse_byte(*to) << 3;
+        to++;
+        *to = buf[i] << 5 | (buf[i+1] & std::byte{0xE0}) >> 3;
+        *to = reverse_byte(*to) << 2;
+        to++;
+        *to = buf[i+1] << 3;
+        *to = reverse_byte(*to) << 3;
+        to++;
+    }
+    return true;
+}
+
+bool FrameBuffer::read_rgb565(std::span<std::byte> buf) {
+    if (!exists())
+        return false;
+    auto& frame_buf = m_bdat->frame_buffers[m_idx];
+    if (buf.size() != frame_buf.data.size() / 3 * 2)
+        return false;
+    [[maybe_unused]] std::lock_guard lk{frame_buf.data_mut};
+
+    const auto* from = frame_buf.data.data();
+
+    //Iterates through the buffer and converts three
+    // bytes at a time from the framebuffer into two bytes in the buffer
+    for(unsigned long i=0; i < buf.size(); i+=2) {
+        buf[i] = (reverse_byte(from[0] & std::byte{0xF8})<<3) | (reverse_byte(from[1] & std::byte{0x1C}) >> 3);
+        buf[i+1] = (reverse_byte(from[1] & std::byte{0xE0})) << 5 | (reverse_byte(from[2] & std::byte{0xF8}));
+        from += 3;
+    }
+    return true;
+}
+
 FrameBuffer FrameBuffers::operator[](std::size_t key) noexcept {
     if (!m_bdat)
         return {m_bdat, 0};

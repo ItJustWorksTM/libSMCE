@@ -1,0 +1,1993 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="libSMCE"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\_deps\;CMake Files\_deps\catch2-src\;CMake Files\_deps\catch2-src\src\;CMake Files\_deps\catch2-src\CMake\;CMake Files\_deps\catch2-src\extras\;CMake Files\_deps\mosquitto-src\;CMake Files\_deps\mosquitto-src\lib\;CMake Files\CMake\;CMake Files\CMake\Modules\;CMake Files\CMake\PackagingProfiles\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\usr\;CMake Files\..\..\..\..\usr\local\;CMake Files\..\..\..\..\usr\local\lib\;CMake Files\..\..\..\..\usr\local\lib\cmake\;CMake Files\..\..\..\..\usr\local\lib\cmake\Boost-1.77.0\;CMake Files\..\..\..\..\usr\local\lib\cmake\boost_headers-1.77.0\;CMake Files\..\..\..\..\usr\lib\;CMake Files\..\..\..\..\usr\lib\cmake\;CMake Files\..\..\..\..\usr\lib\cmake\boost_atomic-1.77.0\;CMake Files\..\..\..\..\usr\lib\cmake\boost_filesystem-1.77.0\;CMake Files\test\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/strip">
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 install/strip"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="list_install_components">
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 list_install_components"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ArdRtRes">
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 ArdRtRes"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="package">
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 package"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="SMCE_static">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/libSMCE_static.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DSMCE_LIB_BUILD=1"/>
+					<Add option="-DBOOST_ALL_NO_LIB"/>
+					<Add option="-DBOOST_ATOMIC_DYN_LINK"/>
+					<Add option="-DBOOST_FILESYSTEM_DYN_LINK"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 SMCE_static"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="SMCE_static/fast">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/libSMCE_static.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DSMCE_LIB_BUILD=1"/>
+					<Add option="-DBOOST_ALL_NO_LIB"/>
+					<Add option="-DBOOST_ATOMIC_DYN_LINK"/>
+					<Add option="-DBOOST_FILESYSTEM_DYN_LINK"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 SMCE_static/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="SMCE">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/libSMCE.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DSMCE_LIB_BUILD=1"/>
+					<Add option="-DBOOST_ALL_NO_LIB"/>
+					<Add option="-DBOOST_ATOMIC_DYN_LINK"/>
+					<Add option="-DBOOST_FILESYSTEM_DYN_LINK"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 SMCE"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="SMCE/fast">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/libSMCE.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DSMCE_LIB_BUILD=1"/>
+					<Add option="-DBOOST_ALL_NO_LIB"/>
+					<Add option="-DBOOST_ATOMIC_DYN_LINK"/>
+					<Add option="-DBOOST_FILESYSTEM_DYN_LINK"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 SMCE/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/local">
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 install/local"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="package_source">
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 package_source"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ipcSMCE">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/CMakeFiles/ipcSMCE.dir/ipcSMCE.objlib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DSMCE_LIB_BUILD=1"/>
+					<Add option="-DBOOST_ALL_NO_LIB"/>
+					<Add option="-DBOOST_ATOMIC_DYN_LINK"/>
+					<Add option="-DBOOST_FILESYSTEM_DYN_LINK"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 ipcSMCE"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ipcSMCE/fast">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/CMakeFiles/ipcSMCE.dir/ipcSMCE.objlib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DSMCE_LIB_BUILD=1"/>
+					<Add option="-DBOOST_ALL_NO_LIB"/>
+					<Add option="-DBOOST_ATOMIC_DYN_LINK"/>
+					<Add option="-DBOOST_FILESYSTEM_DYN_LINK"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 ipcSMCE/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="BindGenProxies">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/CMakeFiles/BindGenProxies.dir/BindGenProxies.objlib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DSMCE_LIB_BUILD=1"/>
+					<Add option="-DBOOST_ALL_NO_LIB"/>
+					<Add option="-DBOOST_ATOMIC_DYN_LINK"/>
+					<Add option="-DBOOST_FILESYSTEM_DYN_LINK"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 BindGenProxies"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="BindGenProxies/fast">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/CMakeFiles/BindGenProxies.dir/BindGenProxies.objlib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DSMCE_LIB_BUILD=1"/>
+					<Add option="-DBOOST_ALL_NO_LIB"/>
+					<Add option="-DBOOST_ATOMIC_DYN_LINK"/>
+					<Add option="-DBOOST_FILESYSTEM_DYN_LINK"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 BindGenProxies/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install">
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 install"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ArdrivoUDD">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/CMakeFiles/ArdrivoUDD.dir/ArdrivoUDD.objlib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DSMCE_LIB_BUILD=1"/>
+					<Add option="-DBOOST_ALL_NO_LIB"/>
+					<Add option="-DBOOST_ATOMIC_DYN_LINK"/>
+					<Add option="-DBOOST_FILESYSTEM_DYN_LINK"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/include/Ardrivo"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 ArdrivoUDD"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ArdrivoUDD/fast">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/CMakeFiles/ArdrivoUDD.dir/ArdrivoUDD.objlib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DSMCE_LIB_BUILD=1"/>
+					<Add option="-DBOOST_ALL_NO_LIB"/>
+					<Add option="-DBOOST_ATOMIC_DYN_LINK"/>
+					<Add option="-DBOOST_FILESYSTEM_DYN_LINK"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/include/Ardrivo"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 ArdrivoUDD/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Ardrivo">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/libArdrivo.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DSMCE_LIB_BUILD=1"/>
+					<Add option="-DBOOST_ALL_NO_LIB"/>
+					<Add option="-DBOOST_ATOMIC_DYN_LINK"/>
+					<Add option="-DBOOST_FILESYSTEM_DYN_LINK"/>
+					<Add option="-DLIBMOSQUITTO_STATIC"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/include/Ardrivo"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/include"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 Ardrivo"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Ardrivo/fast">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/libArdrivo.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DSMCE_LIB_BUILD=1"/>
+					<Add option="-DBOOST_ALL_NO_LIB"/>
+					<Add option="-DBOOST_ATOMIC_DYN_LINK"/>
+					<Add option="-DBOOST_FILESYSTEM_DYN_LINK"/>
+					<Add option="-DLIBMOSQUITTO_STATIC"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/include/Ardrivo"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/include"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 Ardrivo/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="HostUDD">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/CMakeFiles/HostUDD.dir/HostUDD.objlib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DSMCE_LIB_BUILD=1"/>
+					<Add option="-DBOOST_ALL_NO_LIB"/>
+					<Add option="-DBOOST_ATOMIC_DYN_LINK"/>
+					<Add option="-DBOOST_FILESYSTEM_DYN_LINK"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 HostUDD"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="HostUDD/fast">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/CMakeFiles/HostUDD.dir/HostUDD.objlib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DSMCE_LIB_BUILD=1"/>
+					<Add option="-DBOOST_ALL_NO_LIB"/>
+					<Add option="-DBOOST_ATOMIC_DYN_LINK"/>
+					<Add option="-DBOOST_FILESYSTEM_DYN_LINK"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 HostUDD/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="objSMCE">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/CMakeFiles/objSMCE.dir/objSMCE.objlib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DSMCE_LIB_BUILD=1"/>
+					<Add option="-DBOOST_ALL_NO_LIB"/>
+					<Add option="-DBOOST_ATOMIC_DYN_LINK"/>
+					<Add option="-DBOOST_FILESYSTEM_DYN_LINK"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 objSMCE"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="objSMCE/fast">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/CMakeFiles/objSMCE.dir/objSMCE.objlib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DSMCE_LIB_BUILD=1"/>
+					<Add option="-DBOOST_ALL_NO_LIB"/>
+					<Add option="-DBOOST_ATOMIC_DYN_LINK"/>
+					<Add option="-DBOOST_FILESYSTEM_DYN_LINK"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 objSMCE/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="libmosquitto">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-build/lib/libmosquitto.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-build/lib"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DCMAKE"/>
+					<Add option="-DVERSION=&quot;2.0.10&quot;"/>
+					<Add option="-DWITH_TLS"/>
+					<Add option="-DWITH_TLS_PSK"/>
+					<Add option="-DWITH_EC"/>
+					<Add option="-DWITH_UNIX_SOCKETS"/>
+					<Add option="-DWITH_SOCKS"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/include"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/deps"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-build/lib/Makefile&quot;  VERBOSE=1 libmosquitto"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-build/lib/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-build/lib/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-build/lib/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="libmosquitto/fast">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-build/lib/libmosquitto.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-build/lib"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DCMAKE"/>
+					<Add option="-DVERSION=&quot;2.0.10&quot;"/>
+					<Add option="-DWITH_TLS"/>
+					<Add option="-DWITH_TLS_PSK"/>
+					<Add option="-DWITH_EC"/>
+					<Add option="-DWITH_UNIX_SOCKETS"/>
+					<Add option="-DWITH_SOCKS"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/include"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/deps"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-build/lib/Makefile&quot;  VERBOSE=1 libmosquitto/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-build/lib/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-build/lib/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-build/lib/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="libmosquitto_static">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-build/lib/libmosquitto_static.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-build/lib"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DLIBMOSQUITTO_STATIC"/>
+					<Add option="-DCMAKE"/>
+					<Add option="-DVERSION=&quot;2.0.10&quot;"/>
+					<Add option="-DWITH_TLS"/>
+					<Add option="-DWITH_TLS_PSK"/>
+					<Add option="-DWITH_EC"/>
+					<Add option="-DWITH_UNIX_SOCKETS"/>
+					<Add option="-DWITH_SOCKS"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/include"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/deps"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-build/lib/Makefile&quot;  VERBOSE=1 libmosquitto_static"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-build/lib/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-build/lib/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-build/lib/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="libmosquitto_static/fast">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-build/lib/libmosquitto_static.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-build/lib"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DLIBMOSQUITTO_STATIC"/>
+					<Add option="-DCMAKE"/>
+					<Add option="-DVERSION=&quot;2.0.10&quot;"/>
+					<Add option="-DWITH_TLS"/>
+					<Add option="-DWITH_TLS_PSK"/>
+					<Add option="-DWITH_EC"/>
+					<Add option="-DWITH_UNIX_SOCKETS"/>
+					<Add option="-DWITH_SOCKS"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/include"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/deps"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-build/lib/Makefile&quot;  VERBOSE=1 libmosquitto_static/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-build/lib/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-build/lib/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-build/lib/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="SMCE_Tests_ResDir">
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE/test"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 SMCE_Tests_ResDir"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="TestUDD">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/test/CMakeFiles/TestUDD.dir/TestUDD.objlib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE/test"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DBOOST_ALL_NO_LIB"/>
+					<Add option="-DBOOST_ATOMIC_DYN_LINK"/>
+					<Add option="-DBOOST_FILESYSTEM_DYN_LINK"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/SMCE_Devices/TestUDD/include"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 TestUDD"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="TestUDD/fast">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/test/CMakeFiles/TestUDD.dir/TestUDD.objlib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE/test"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DBOOST_ALL_NO_LIB"/>
+					<Add option="-DBOOST_ATOMIC_DYN_LINK"/>
+					<Add option="-DBOOST_FILESYSTEM_DYN_LINK"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/SMCE_Devices/TestUDD/include"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 TestUDD/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="SMCE_Tests_Assets">
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE/test"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 SMCE_Tests_Assets"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Nightly">
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE/test"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 Nightly"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="SMCE_Tests">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/test/SMCE_Tests" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DSMCE_ARDRIVO_MQTT=1"/>
+					<Add option="-DSMCE_TEST_DIR=&quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/test_dir&quot;"/>
+					<Add option="-DBOOST_ALL_NO_LIB"/>
+					<Add option="-DBOOST_ATOMIC_DYN_LINK"/>
+					<Add option="-DBOOST_FILESYSTEM_DYN_LINK"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/SMCE_Devices/TestUDD/include"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/include"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/.."/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 SMCE_Tests"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="SMCE_Tests/fast">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/test/SMCE_Tests" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DSMCE_ARDRIVO_MQTT=1"/>
+					<Add option="-DSMCE_TEST_DIR=&quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/test_dir&quot;"/>
+					<Add option="-DBOOST_ALL_NO_LIB"/>
+					<Add option="-DBOOST_ATOMIC_DYN_LINK"/>
+					<Add option="-DBOOST_FILESYSTEM_DYN_LINK"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/SMCE_Devices/TestUDD/include"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/include"/>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/.."/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 SMCE_Tests/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Continuous">
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE/test"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 Continuous"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Experimental">
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE/test"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 Experimental"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Catch2WithMain">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-build/src/libCatch2Maind.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-build/src"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/.."/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-build/src/Makefile&quot;  VERBOSE=1 Catch2WithMain"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-build/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-build/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-build/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Catch2WithMain/fast">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-build/src/libCatch2Maind.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-build/src"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/.."/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-build/src/Makefile&quot;  VERBOSE=1 Catch2WithMain/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-build/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-build/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-build/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Catch2">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-build/src/libCatch2d.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-build/src"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/.."/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-build/src/Makefile&quot;  VERBOSE=1 Catch2"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-build/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-build/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-build/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Catch2/fast">
+				<Option output="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-build/src/libCatch2d.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-build/src"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/.."/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-build/src/Makefile&quot;  VERBOSE=1 Catch2/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-build/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-build/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-build/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/CMakeFiles/ArdrivoUDD.dir/src/Ardrivo/UDDRuntime.cpp.o">
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/CMakeFiles/BindGenProxies.dir/src/SMCE_rt/BindGenProxies.cpp.o">
+			<Option target="SMCE_static"/>
+			<Option target="SMCE"/>
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/CMakeFiles/HostUDD.dir/src/SMCE/UDDRuntime.cpp.o">
+			<Option target="SMCE_static"/>
+			<Option target="SMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/CMakeFiles/ipcSMCE.dir/src/SMCE/BoardData.cpp.o">
+			<Option target="SMCE_static"/>
+			<Option target="SMCE"/>
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/CMakeFiles/ipcSMCE.dir/src/SMCE/BoardDeviceView.cpp.o">
+			<Option target="SMCE_static"/>
+			<Option target="SMCE"/>
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/CMakeFiles/ipcSMCE.dir/src/SMCE/BoardView.cpp.o">
+			<Option target="SMCE_static"/>
+			<Option target="SMCE"/>
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/CMakeFiles/ipcSMCE.dir/src/SMCE/SharedBoardData.cpp.o">
+			<Option target="SMCE_static"/>
+			<Option target="SMCE"/>
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/CMakeFiles/objSMCE.dir/src/SMCE/Board.cpp.o">
+			<Option target="SMCE_static"/>
+			<Option target="SMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/CMakeFiles/objSMCE.dir/src/SMCE/PluginManifest.cpp.o">
+			<Option target="SMCE_static"/>
+			<Option target="SMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/CMakeFiles/objSMCE.dir/src/SMCE/Sketch.cpp.o">
+			<Option target="SMCE_static"/>
+			<Option target="SMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/CMakeFiles/objSMCE.dir/src/SMCE/Toolchain.cpp.o">
+			<Option target="SMCE_static"/>
+			<Option target="SMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/CMakeFiles/objSMCE.dir/src/SMCE/Uuid.cpp.o">
+			<Option target="SMCE_static"/>
+			<Option target="SMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/SMCE_Devices/TestUDD/include/TestUDD.hpp">
+			<Option target="TestUDD"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/SMCE_Devices/TestUDD/src/TestUDD.cpp">
+			<Option target="TestUDD"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/benchmark/catch_benchmark.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/benchmark/catch_benchmark_all.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/benchmark/catch_chronometer.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/benchmark/catch_clock.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/benchmark/catch_constructor.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/benchmark/catch_environment.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/benchmark/catch_estimate.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/benchmark/catch_execution_plan.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/benchmark/catch_optimizer.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/benchmark/catch_outlier_classification.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/benchmark/catch_sample_analysis.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/benchmark/detail/catch_analyse.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/benchmark/detail/catch_benchmark_function.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/benchmark/detail/catch_complete_invoke.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/benchmark/detail/catch_estimate_clock.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/benchmark/detail/catch_measure.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/benchmark/detail/catch_repeat.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/benchmark/detail/catch_run_for_at_least.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/benchmark/detail/catch_stats.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/benchmark/detail/catch_stats.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/benchmark/detail/catch_timing.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/benchmark/internal/catch_benchmark_combined_tu.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_all.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_approx.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_approx.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_assertion_info.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_assertion_result.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_assertion_result.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_config.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_config.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_message.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_message.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_registry_hub.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_reporter_registrars.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_section_info.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_session.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_session.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_tag_alias.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_tag_alias_autoregistrar.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_template_test_macros.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_test_case_info.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_test_case_info.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_test_macros.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_test_spec.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_test_spec.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_timer.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_timer.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_tostring.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_tostring.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_totals.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_totals.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_translate_exception.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_version.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_version.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/catch_version_macros.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/generators/catch_generator_exception.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/generators/catch_generators.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/generators/catch_generators_adapters.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/generators/catch_generators_all.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/generators/catch_generators_random.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/generators/catch_generators_range.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/generators/internal/catch_generators_combined_tu.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/interfaces/catch_interfaces_all.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/interfaces/catch_interfaces_capture.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/interfaces/catch_interfaces_combined_tu.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/interfaces/catch_interfaces_config.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/interfaces/catch_interfaces_enum_values_registry.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/interfaces/catch_interfaces_exception.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/interfaces/catch_interfaces_generatortracker.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/interfaces/catch_interfaces_registry_hub.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/interfaces/catch_interfaces_reporter.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/interfaces/catch_interfaces_reporter.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/interfaces/catch_interfaces_reporter_factory.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/interfaces/catch_interfaces_reporter_registry.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/interfaces/catch_interfaces_tag_alias_registry.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/interfaces/catch_interfaces_testcase.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_assertion_handler.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_assertion_handler.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_case_sensitive.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_clara.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_clara.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_combined_tu.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_commandline.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_commandline.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_compiler_capabilities.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_config_android_logwrite.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_config_counter.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_config_uncaught_exceptions.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_config_wchar.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_console_colour.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_console_colour.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_console_width.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_container_nonmembers.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_context.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_context.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_debug_console.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_debug_console.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_debugger.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_debugger.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_decomposer.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_enforce.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_enforce.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_enum_values_registry.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_enum_values_registry.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_errno_guard.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_exception_translator_registry.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_exception_translator_registry.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_fatal_condition_handler.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_fatal_condition_handler.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_floating_point_helpers.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_floating_point_helpers.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_lazy_expr.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_leak_detector.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_list.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_list.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_main.cpp">
+			<Option target="Catch2WithMain"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_message_info.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_meta.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_move_and_forward.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_noncopyable.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_optional.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_output_redirect.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_output_redirect.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_platform.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_polyfills.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_preprocessor.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_random_number_generator.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_random_number_generator.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_random_seed_generation.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_random_seed_generation.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_reporter_registry.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_reporter_registry.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_result_type.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_result_type.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_run_context.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_run_context.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_section.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_section.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_singletons.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_singletons.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_source_line_info.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_source_line_info.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_startup_exception_registry.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_stream.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_stream.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_stream_end_stop.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_string_manip.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_string_manip.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_stringref.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_stringref.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_tag_alias_registry.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_tag_alias_registry.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_template_test_registry.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_test_case_registry_impl.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_test_case_registry_impl.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_test_case_tracker.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_test_case_tracker.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_test_failure_exception.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_test_macro_impl.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_test_registry.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_test_registry.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_test_spec_parser.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_test_spec_parser.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_textflow.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_textflow.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_to_string.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_uncaught_exceptions.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_unique_name.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_unique_ptr.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_wildcard_pattern.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_wildcard_pattern.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_windows_h_proxy.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_xmlwriter.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/internal/catch_xmlwriter.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/matchers/catch_matchers.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/matchers/catch_matchers_all.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/matchers/catch_matchers_container_properties.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/matchers/catch_matchers_contains.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/matchers/catch_matchers_exception.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/matchers/catch_matchers_floating_point.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/matchers/catch_matchers_floating_point.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/matchers/catch_matchers_predicate.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/matchers/catch_matchers_quantifiers.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/matchers/catch_matchers_string.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/matchers/catch_matchers_string.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/matchers/catch_matchers_templated.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/matchers/catch_matchers_templated.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/matchers/catch_matchers_vector.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/matchers/internal/catch_matchers_combined_tu.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/matchers/internal/catch_matchers_impl.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/reporters/catch_reporter_automake.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/reporters/catch_reporter_automake.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/reporters/catch_reporter_combined_tu.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/reporters/catch_reporter_compact.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/reporters/catch_reporter_compact.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/reporters/catch_reporter_console.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/reporters/catch_reporter_console.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/reporters/catch_reporter_cumulative_base.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/reporters/catch_reporter_cumulative_base.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/reporters/catch_reporter_event_listener.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/reporters/catch_reporter_helpers.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/reporters/catch_reporter_junit.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/reporters/catch_reporter_junit.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/reporters/catch_reporter_listening.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/reporters/catch_reporter_listening.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/reporters/catch_reporter_sonarqube.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/reporters/catch_reporter_sonarqube.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/reporters/catch_reporter_streaming_base.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/reporters/catch_reporter_streaming_base.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/reporters/catch_reporter_tap.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/reporters/catch_reporter_tap.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/reporters/catch_reporter_teamcity.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/reporters/catch_reporter_teamcity.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/reporters/catch_reporter_xml.cpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/reporters/catch_reporter_xml.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/catch2/reporters/catch_reporters_all.hpp">
+			<Option target="Catch2"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/include/mosquitto.h">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/include/mqtt_protocol.h">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/actions.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/callbacks.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/connect.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/handle_auth.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/handle_connack.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/handle_disconnect.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/handle_ping.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/handle_pubackcomp.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/handle_publish.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/handle_pubrec.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/handle_pubrel.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/handle_suback.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/handle_unsuback.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/helpers.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/logging_mosq.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/logging_mosq.h">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/loop.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/memory_mosq.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/memory_mosq.h">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/messages_mosq.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/messages_mosq.h">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/misc_mosq.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/misc_mosq.h">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/mosquitto.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/mosquitto_internal.h">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/net_mosq.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/net_mosq.h">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/net_mosq_ocsp.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/options.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/packet_datatypes.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/packet_mosq.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/packet_mosq.h">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/property_mosq.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/property_mosq.h">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/read_handle.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/read_handle.h">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/send_connect.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/send_disconnect.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/send_mosq.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/send_mosq.h">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/send_publish.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/send_subscribe.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/send_unsubscribe.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/socks_mosq.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/socks_mosq.h">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/srv_mosq.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/strings_mosq.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/thread_mosq.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/time_mosq.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/time_mosq.h">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/tls_mosq.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/tls_mosq.h">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/utf8_mosq.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/util_mosq.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/util_mosq.h">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/util_topic.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/will_mosq.c">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/will_mosq.h">
+			<Option target="libmosquitto"/>
+			<Option target="libmosquitto_static"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/Ardrivo/Arduino.h">
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/Ardrivo/Client.h">
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/Ardrivo/HardwareSerial.h">
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/Ardrivo/IPAddress.h">
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/Ardrivo/MQTT.h">
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/Ardrivo/OV767X.h">
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/Ardrivo/Print.h">
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/Ardrivo/SD.h">
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/Ardrivo/SMCE.hpp">
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/Ardrivo/SMCE_dll.hpp">
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/Ardrivo/SMCE_numeric.hpp">
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/Ardrivo/Stream.h">
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/Ardrivo/WString.h">
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/Ardrivo/WiFi.h">
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/Ardrivo/analogWrite.h">
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/SMCE/Board.hpp">
+			<Option target="objSMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/SMCE/BoardConf.hpp">
+			<Option target="objSMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/SMCE/BoardView.hpp">
+			<Option target="ipcSMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/SMCE/PluginManifest.hpp">
+			<Option target="objSMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/SMCE/SMCE_fs.hpp">
+			<Option target="objSMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/SMCE/SMCE_iface.h">
+			<Option target="objSMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/SMCE/Sketch.hpp">
+			<Option target="objSMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/SMCE/SketchConf.hpp">
+			<Option target="objSMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/SMCE/Toolchain.hpp">
+			<Option target="objSMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/SMCE/Uuid.hpp">
+			<Option target="objSMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/SMCE/internal/BoardData.hpp">
+			<Option target="ipcSMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/SMCE/internal/BoardDeviceSpecification.hpp">
+			<Option target="objSMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/SMCE/internal/BoardDeviceView.hpp">
+			<Option target="ipcSMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/SMCE/internal/SharedBoardData.hpp">
+			<Option target="ipcSMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/SMCE/internal/portable/ostream_joiner.hpp">
+			<Option target="objSMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/SMCE/internal/utils.hpp">
+			<Option target="objSMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/SMCE_rt/SMCE_proxies.hpp">
+			<Option target="BindGenProxies"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/SMCE_rt/internal/BoardDeviceAllocationBases.hpp">
+			<Option target="ipcSMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/include/SMCE_rt/internal/sketch_rt.hpp">
+			<Option target="ArdrivoUDD"/>
+			<Option target="HostUDD"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/src/Ardrivo/Arduino.cpp">
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/src/Ardrivo/HardwareSerial.cpp">
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/src/Ardrivo/MQTT.cpp">
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/src/Ardrivo/OV767X.cpp">
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/src/Ardrivo/Print.cpp">
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/src/Ardrivo/SD.cpp">
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/src/Ardrivo/SMCE_main.cpp">
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/src/Ardrivo/Stream.cpp">
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/src/Ardrivo/String.cpp">
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/src/Ardrivo/UDDRuntime.cpp">
+			<Option target="ArdrivoUDD"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/src/Ardrivo/WiFi.cpp">
+			<Option target="Ardrivo"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/src/SMCE/Board.cpp">
+			<Option target="objSMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/src/SMCE/BoardData.cpp">
+			<Option target="ipcSMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/src/SMCE/BoardDeviceView.cpp">
+			<Option target="ipcSMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/src/SMCE/BoardView.cpp">
+			<Option target="ipcSMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/src/SMCE/PluginManifest.cpp">
+			<Option target="objSMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/src/SMCE/SharedBoardData.cpp">
+			<Option target="ipcSMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/src/SMCE/Sketch.cpp">
+			<Option target="objSMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/src/SMCE/Toolchain.cpp">
+			<Option target="objSMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/src/SMCE/UDDRuntime.cpp">
+			<Option target="HostUDD"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/src/SMCE/Uuid.cpp">
+			<Option target="objSMCE"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/src/SMCE_rt/BindGenProxies.cpp">
+			<Option target="BindGenProxies"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/test/Board.cpp">
+			<Option target="SMCE_Tests"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/test/BoardDevice.cpp">
+			<Option target="SMCE_Tests"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/test/BoardView.cpp">
+			<Option target="SMCE_Tests"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/test/CMakeFiles/TestUDD.dir/__/SMCE_Devices/TestUDD/src/TestUDD.cpp.o">
+			<Option target="SMCE_Tests"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/test/LibManagement.cpp">
+			<Option target="SMCE_Tests"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/test/Polyfills.cpp">
+			<Option target="SMCE_Tests"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/test/Toolchain.cpp">
+			<Option target="SMCE_Tests"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/test/defs.hpp">
+			<Option target="SMCE_Tests"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/Config.cmake.in">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/SMCE_BINDGEN_HOST_HEADER.hpp.in">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/SMCE_BINDGEN_HOST_IMPL.cpp.in">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\_deps\catch2-src\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\_deps\catch2-src\src\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/CMake/MiscFunctions.cmake">
+			<Option virtualFolder="CMake Files\_deps\catch2-src\CMake\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/catch2-src/extras/Catch.cmake">
+			<Option virtualFolder="CMake Files\_deps\catch2-src\extras\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\_deps\mosquitto-src\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/libmosquitto.pc.in">
+			<Option virtualFolder="CMake Files\_deps\mosquitto-src\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/libmosquittopp.pc.in">
+			<Option virtualFolder="CMake Files\_deps\mosquitto-src\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/_deps/mosquitto-src/lib/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\_deps\mosquitto-src\lib\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/CMake/Modules/BindGen.cmake">
+			<Option virtualFolder="CMake Files\CMake\Modules\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/CMake/Modules/CPackCommon.cmake">
+			<Option virtualFolder="CMake Files\CMake\Modules\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/CMake/Modules/Coverage.cmake">
+			<Option virtualFolder="CMake Files\CMake\Modules\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/CMake/Modules/InstallFragments.cmake">
+			<Option virtualFolder="CMake Files\CMake\Modules\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/CMake/Modules/RecursiveLocalExport.cmake">
+			<Option virtualFolder="CMake Files\CMake\Modules\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/CMake/Modules/Resources.cmake">
+			<Option virtualFolder="CMake Files\CMake\Modules\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/CMake/Modules/SetupBoost.cmake">
+			<Option virtualFolder="CMake Files\CMake\Modules\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/CMake/Modules/SetupMosquitto.cmake">
+			<Option virtualFolder="CMake Files\CMake\Modules\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/CMake/Modules/UserConfigVars.cmake">
+			<Option virtualFolder="CMake Files\CMake\Modules\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/CMake/Modules/iSMCE.cmake">
+			<Option virtualFolder="CMake Files\CMake\Modules\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/CMake/Modules/ipcSMCE.cmake">
+			<Option virtualFolder="CMake Files\CMake\Modules\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/CMake/PackagingProfiles/Archive.cmake">
+			<Option virtualFolder="CMake Files\CMake\PackagingProfiles\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/../../../../usr/local/lib/cmake/Boost-1.77.0/BoostConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\Boost-1.77.0\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/../../../../usr/local/lib/cmake/Boost-1.77.0/BoostConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\Boost-1.77.0\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/../../../../usr/local/lib/cmake/boost_headers-1.77.0/boost_headers-config-version.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\boost_headers-1.77.0\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/../../../../usr/local/lib/cmake/boost_headers-1.77.0/boost_headers-config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\boost_headers-1.77.0\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/../../../../usr/lib/cmake/BoostDetectToolset-1.77.0.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\lib\cmake\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/../../../../usr/lib/cmake/boost_atomic-1.77.0/boost_atomic-config-version.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\lib\cmake\boost_atomic-1.77.0\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/../../../../usr/lib/cmake/boost_atomic-1.77.0/boost_atomic-config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\lib\cmake\boost_atomic-1.77.0\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/../../../../usr/lib/cmake/boost_atomic-1.77.0/libboost_atomic-variant-shared.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\lib\cmake\boost_atomic-1.77.0\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/../../../../usr/lib/cmake/boost_filesystem-1.77.0/boost_filesystem-config-version.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\lib\cmake\boost_filesystem-1.77.0\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/../../../../usr/lib/cmake/boost_filesystem-1.77.0/boost_filesystem-config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\lib\cmake\boost_filesystem-1.77.0\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/../../../../usr/lib/cmake/boost_filesystem-1.77.0/libboost_filesystem-variant-shared.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\lib\cmake\boost_filesystem-1.77.0\"/>
+		</Unit>
+		<Unit filename="/home/ludvig/programs/Group-9-backend-libSMCE/test/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\test\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

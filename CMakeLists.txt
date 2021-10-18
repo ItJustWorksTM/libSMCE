@@ -20,6 +20,9 @@ cmake_policy (SET CMP0022 NEW)
 
 project (libSMCE VERSION 1.4.0.5)
 list (APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/CMake/Modules")
+include(CodeCoverage) # for code coverage
+APPEND_COVERAGE_COMPILER_FLAGS() # for code coverage
+
 include (UserConfigVars)
 
 if (DEFINED SMCE_BUILD_PROFILE)
@@ -222,7 +225,15 @@ smce_install_config ()
 file (REMOVE_RECURSE "${PROJECT_BINARY_DIR}/packaging")
 file (MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/packaging/include")
 file (COPY "${PROJECT_SOURCE_DIR}/include/SMCE" DESTINATION "${PROJECT_BINARY_DIR}/packaging/include")
-file (REMOVE_RECURSE "${PROJECT_BINARY_DIR}/packaging/include/SMCE/internal")
+file (REMOVE_RECURSE
+    "${PROJECT_BINARY_DIR}/packaging/include/SMCE/internal/portable"
+    "${PROJECT_BINARY_DIR}/packaging/include/SMCE/internal/BoardData.hpp"
+    "${PROJECT_BINARY_DIR}/packaging/include/SMCE/internal/BoardDeviceView.hpp"
+    "${PROJECT_BINARY_DIR}/packaging/include/SMCE/internal/SharedBoardData.hpp"
+    "${PROJECT_BINARY_DIR}/packaging/include/SMCE/internal/utils.hpp"
+)
+file (COPY "${PROJECT_SOURCE_DIR}/include/SMCE_rt" DESTINATION "${PROJECT_BINARY_DIR}/packaging/include")
+file (REMOVE "${PROJECT_BINARY_DIR}/packaging/include/SMCE_rt/internal/sketch_rt.hpp")
 install (DIRECTORY "${PROJECT_BINARY_DIR}/packaging/include" DESTINATION "." ${SMCE_COMPONENT_HEADERS})
 
 install (FILES
