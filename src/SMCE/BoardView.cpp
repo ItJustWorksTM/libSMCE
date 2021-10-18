@@ -29,19 +29,19 @@
 using microsec_clock = boost::date_time::microsec_clock<boost::posix_time::ptime>;
 
 namespace smce {
-    //TODO: possibly rename this function
-    static auto get_communication_direction (auto m_bdat_pointer, std::size_t index,VirtualUartBuffer::Direction dir){
-        auto& chan = m_bdat_pointer->uart_channels[index];
-            switch (dir) {
-            case VirtualUartBuffer::Direction::rx:
-                return std::tie(chan.rx, chan.rx_mut, chan.max_buffered_rx);
-            case VirtualUartBuffer::Direction::tx:
-                return std::tie(chan.tx, chan.tx_mut, chan.max_buffered_tx);
-        }
-        unreachable();
+// TODO: possibly rename this function
+static auto get_communication_direction(BoardData* bdat_pointer, std::size_t get_index,
+                                        VirtualUartBuffer::Direction get_dir) {
+    auto& chan = bdat_pointer->uart_channels[get_index];
+    switch (get_dir) {
+    case VirtualUartBuffer::Direction::rx:
+        return std::tie(chan.rx, chan.rx_mut, chan.max_buffered_rx);
+    case VirtualUartBuffer::Direction::tx:
+        return std::tie(chan.tx, chan.tx_mut, chan.max_buffered_tx);
     }
+    unreachable();
+}
 
-    
 [[nodiscard]] std::string_view BoardView::storage_get_root(Link link, std::uint16_t accessor) noexcept {
     if (!m_bdat)
         return {};
@@ -138,8 +138,8 @@ VirtualPin VirtualPins::operator[](std::size_t pin_id) noexcept {
 [[nodiscard]] std::size_t VirtualUartBuffer::size() noexcept {
     if (!exists())
         return 0;
-  
-    auto[d, mut, max_buffered] = get_communication_direction(m_bdat, m_index, m_dir);
+
+    auto [d, mut, max_buffered] = get_communication_direction(m_bdat, m_index, m_dir);
     if (!mut.timed_lock(microsec_clock::universal_time() + boost::posix_time::seconds{1}))
         return 0;
     std::lock_guard lg{mut, std::adopt_lock};
@@ -150,7 +150,7 @@ VirtualPin VirtualPins::operator[](std::size_t pin_id) noexcept {
 std::size_t VirtualUartBuffer::read(std::span<char> buf) noexcept {
     if (!exists())
         return 0;
-    auto [d, mut, max_buffered] = get_communication_direction(m_bdat, m_index, m_dir);     
+    auto [d, mut, max_buffered] = get_communication_direction(m_bdat, m_index, m_dir);
     if (!mut.timed_lock(microsec_clock::universal_time() + boost::posix_time::seconds{1}))
         return 0;
     std::lock_guard lg{mut, std::adopt_lock};
@@ -160,7 +160,7 @@ std::size_t VirtualUartBuffer::read(std::span<char> buf) noexcept {
     return count;
 }
 
-	std::size_t VirtualUartBuffer::write(std::span<const char> buf) noexcept {    
+std::size_t VirtualUartBuffer::write(std::span<const char> buf) noexcept {
     if (!exists())
         return 0;
 
@@ -172,12 +172,12 @@ std::size_t VirtualUartBuffer::read(std::span<char> buf) noexcept {
         std::clamp(max_buffered - d.size(), std::size_t{0}, static_cast<std::size_t>(max_buffered)), buf.size());
     std::copy_n(buf.begin(), count, std::back_inserter(d));
     return count;
-    }
+}
 
 [[nodiscard]] char VirtualUartBuffer::front() noexcept {
     if (!exists())
         return '\0';
-    auto[d, mut, max_buffered] = get_communication_direction(m_bdat, m_index, m_dir);
+    auto [d, mut, max_buffered] = get_communication_direction(m_bdat, m_index, m_dir);
 
     if (!mut.timed_lock(microsec_clock::universal_time() + boost::posix_time::seconds{1}))
         return 0;
@@ -187,7 +187,6 @@ std::size_t VirtualUartBuffer::read(std::span<char> buf) noexcept {
     const char ret = d.front();
     return ret;
 }
-
 
 [[nodiscard]] bool VirtualUart::exists() noexcept { return m_bdat && m_index < m_bdat->uart_channels.size(); }
 
@@ -374,16 +373,16 @@ bool FrameBuffer::write_rgb565(std::span<const std::byte> buf) {
 
     auto* to = frame_buf.data.data();
 
-    //Iterates through the buffer and converts two bytes at a
-    // time from the buffer  into three bytes in the frame buffer
-    for(unsigned long i=0; i<buf.size(); i+=2) {
+    // Iterates through the buffer and converts two bytes at a
+    //  time from the buffer  into three bytes in the frame buffer
+    for (unsigned long i = 0; i < buf.size(); i += 2) {
         *to = buf[i] & std::byte{0xF8};
         *to = reverse_byte(*to) << 3;
         to++;
-        *to = buf[i] << 5 | (buf[i+1] & std::byte{0xE0}) >> 3;
+        *to = buf[i] << 5 | (buf[i + 1] & std::byte{0xE0}) >> 3;
         *to = reverse_byte(*to) << 2;
         to++;
-        *to = buf[i+1] << 3;
+        *to = buf[i + 1] << 3;
         *to = reverse_byte(*to) << 3;
         to++;
     }
@@ -400,11 +399,11 @@ bool FrameBuffer::read_rgb565(std::span<std::byte> buf) {
 
     const auto* from = frame_buf.data.data();
 
-    //Iterates through the buffer and converts three
-    // bytes at a time from the framebuffer into two bytes in the buffer
-    for(unsigned long i=0; i < buf.size(); i+=2) {
-        buf[i] = (reverse_byte(from[0] & std::byte{0xF8})<<3) | (reverse_byte(from[1] & std::byte{0x1C}) >> 3);
-        buf[i+1] = (reverse_byte(from[1] & std::byte{0xE0})) << 5 | (reverse_byte(from[2] & std::byte{0xF8}));
+    // Iterates through the buffer and converts three
+    //  bytes at a time from the framebuffer into two bytes in the buffer
+    for (unsigned long i = 0; i < buf.size(); i += 2) {
+        buf[i] = (reverse_byte(from[0] & std::byte{0xF8}) << 3) | (reverse_byte(from[1] & std::byte{0x1C}) >> 3);
+        buf[i + 1] = (reverse_byte(from[1] & std::byte{0xE0})) << 5 | (reverse_byte(from[2] & std::byte{0xF8}));
         from += 3;
     }
     return true;
@@ -423,8 +422,6 @@ FrameBuffer FrameBuffers::operator[](std::size_t key) noexcept {
     return {nullptr, std::size_t(-1)};
 }
 
-//std::tie -  A std::tuple object containing lvalue references.
-
-
+// std::tie -  A std::tuple object containing lvalue references.
 
 } // namespace smce
