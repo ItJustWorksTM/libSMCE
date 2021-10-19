@@ -20,6 +20,13 @@
 #include "SMCE/Toolchain.hpp"
 #include "defs.hpp"
 
+/**
+ * Tests whether a non suitable environment is detected
+ * when the toolchain is NOT configured correctly.
+ *
+ * For that, a toolchain is created that refers to an empty directory,
+ * so the necessary resources are not available.
+ */
 TEST_CASE("Toolchain invalid", "[Toolchain]") {
     const auto path = SMCE_TEST_DIR "/empty_dir";
     std::filesystem::create_directory(path);
@@ -28,6 +35,10 @@ TEST_CASE("Toolchain invalid", "[Toolchain]") {
     REQUIRE(tc.resource_dir() == path);
 }
 
+/**
+ * Tests whether a suitable environment is detected
+ * when the toolchain is configured correctly.
+ */
 TEST_CASE("Toolchain valid", "[Toolchain]") {
     smce::Toolchain tc{SMCE_PATH};
     REQUIRE(!tc.check_suitable_environment());
