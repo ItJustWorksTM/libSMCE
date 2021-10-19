@@ -36,6 +36,8 @@ constexpr SMCE__HEX HEX{};
 
 class SMCE__DLL_RT_API String {
     struct InternalTag {};
+    template <class T>
+    struct ConvTTag {};
     struct ConvTag {};
     constexpr static ConvTag conv_tag{};
 
@@ -71,17 +73,45 @@ class SMCE__DLL_RT_API String {
     /* explicit(false) */ String(const char* cstr);
     explicit String(char c);
 
-    template <class T, class = typename std::enable_if<std::is_integral<T>::value>::type>
-    explicit String(T val) : m_u{std::to_string(val)} {}
-    template <class T, class = typename std::enable_if<std::is_integral<T>::value>::type>
-    String(T val, SMCE__BIN) : String{conv_tag, SMCE__bit_cast<typename std::make_unsigned<T>::type>(val), BIN} {}
-    template <class T, class = typename std::enable_if<std::is_integral<T>::value>::type>
-    String(T val, SMCE__DEC) : String{val} {}
-    template <class T, class = typename std::enable_if<std::is_integral<T>::value>::type>
-    String(T val, SMCE__HEX) : String{conv_tag, SMCE__bit_cast<typename std::make_unsigned<T>::type>(val), HEX} {}
+    template <class T>
+    explicit String(T val,
+                    typename std::enable_if<SMCE__decays_to_integral<T>::value, ConvTTag<T>>::type = ConvTTag<T>{})
+        : m_u{std::to_string(val)} {}
+    template <class T>
+    String(T val, SMCE__BIN,
+           typename std::enable_if<SMCE__decays_to_integral<T>::value, ConvTTag<T>>::type = ConvTTag<T>{})
+        : String{conv_tag, SMCE__bit_cast<typename std::make_unsigned<T>::type>(val), BIN} {}
+    template <class T>
+    String(T val, SMCE__DEC,
+           typename std::enable_if<SMCE__decays_to_integral<T>::value, ConvTTag<T>>::type = ConvTTag<T>{})
+        : String{val} {}
+    template <class T>
+    String(T val, SMCE__HEX,
+           typename std::enable_if<SMCE__decays_to_integral<T>::value, ConvTTag<T>>::type = ConvTTag<T>{})
+        : String{conv_tag, SMCE__bit_cast<typename std::make_unsigned<T>::type>(val), HEX} {}
+    template <class T>
+    String(T val, int base,
+           typename std::enable_if<SMCE__decays_to_integral<T>::value, ConvTTag<T>>::type = ConvTTag<T>{}) {
+        switch (base) {
+        case 2:
+            *this = String{conv_tag, val, BIN};
+            break;
+        case 10:
+            *this = String{val};
+            break;
+        case 16:
+            *this = String{conv_tag, val, HEX};
+            break;
+        default:
+            throw std::runtime_error{"ERROR: String::String(?, ?): Unsupported base for numeric conversion\n"};
+        }
+    }
 
-    template <class T, class = std::enable_if_t<std::is_floating_point<T>::value>>
-    explicit String(T val, [[maybe_unused]] int precision = -1) : m_u{std::to_string(val)} {}
+    template <class T>
+    explicit String(
+        T val, [[maybe_unused]] int precision = -1,
+        typename std::enable_if<SMCE__decays_to_floating_point<T>::value, ConvTTag<T>>::type = ConvTTag<T>{})
+        : m_u{std::to_string(val)} {}
 
     [[nodiscard]] const char* c_str() const noexcept;
     [[nodiscard]] std::size_t length() const noexcept;
