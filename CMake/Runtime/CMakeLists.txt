@@ -62,5 +62,6 @@ include (ProcessManifests)
 
 if (NOT DEFINED ENV{SMCE_LEGACY_PREPROCESSING} OR NOT "$ENV{SMCE_LEGACY_PREPROCESSING}")
   include (Preprocessing)
+else ()
+  target_sources (Sketch PRIVATE "${PROJECT_SOURCE_DIR}/sketch.cpp")
 endif ()
-target_sources (Sketch PRIVATE "${PROJECT_SOURCE_DIR}/sketch.cpp")
