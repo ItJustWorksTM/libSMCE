@@ -40,6 +40,8 @@ jobs:
           apt-get install -y lcov curl wget git cmake ninja-build g++ libboost-all-dev libmosquitto-dev pkg-config jq perl-base
           ninja --version
           cmake --version
+          wget -O Juniper.deb https://www.juniper-lang.org/installers/Juniper-3.0.0.deb
+          apt-get install ./Juniper.deb
       - name: Setup global CMake interceptor
         run: ci/setup-cmake-interceptor.sh
       - name: CMake configure
@@ -51,6 +53,7 @@ jobs:
           -DSMCE_CXXRT_LINKING=SHARED \
           -DSMCE_BOOST_LINKING=SHARED \
           -DSMCE_MOSQUITTO_LINKING=SHARED \
+          -DSMCE_TEST_JUNIPER=On \
           -B ./build
       - name: CMake build
         run: cmake --build ./build
