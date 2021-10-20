@@ -94,6 +94,79 @@ TEST_CASE("Mixed INO/C++ sources", "[Board]") {
 }
 
 /**
+ * Tests whether the Characters functions in Ardrivo works.
+ *
+ * Uses the file characters.ino to test the Ardrivo functions on the board.
+ * Values, for the board, are printed to a pin and checked in this test case.
+ *
+ */
+TEST_CASE("Arduino Characters", "[Board]") {
+    smce::Toolchain tc{SMCE_PATH};
+    REQUIRE(!tc.check_suitable_environment());
+    smce::Sketch sk{SKETCHES_PATH "characters", {.fqbn = "arduino:avr:nano"}};
+    const auto ec = tc.compile(sk);
+    if (ec)
+        std::cerr << tc.build_log().second;
+    REQUIRE_FALSE(ec);
+    smce::Board br{};
+
+    // Creating a board configuration with two digital pins (0 and 2).
+
+    // clang-format off
+    smce::BoardConfig bc{
+        /* .pins = */{0, 2},
+        /* .gpio_drivers = */{
+            smce::BoardConfig::GpioDrivers{
+                0,
+                smce::BoardConfig::GpioDrivers::DigitalDriver{false, true}
+            },
+            smce::BoardConfig::GpioDrivers{
+                2,
+                smce::BoardConfig::GpioDrivers::DigitalDriver{false, true}
+            },
+        }
+    };
+    // clang-format on
+    REQUIRE(br.configure(std::move(bc)));
+    REQUIRE(br.attach_sketch(sk));
+    REQUIRE(br.start());
+
+    // Check that the pins exists and works as expected. I.e. if they are digital and can read/write if they should.
+
+    auto bv = br.view();
+    auto pin2 = bv.pins[2];
+    REQUIRE(pin2.exists());
+    auto pin2d = pin2.digital();
+    REQUIRE(pin2d.exists());
+    REQUIRE_FALSE(pin2d.can_read());
+    REQUIRE(pin2d.can_write());
+
+    /*
+     * The result from the Characters functions with CORRECT values are written to pin 2.
+     * This test will check that the written value is the expected (true).
+     */
+
+    test_pin_delayable(pin2d, true, 16384, 1ms);
+
+    // Checking the configuration on pin 0.
+
+    auto pin0 = bv.pins[0];
+    REQUIRE(pin0.exists());
+    auto pin0d = pin0.digital();
+    REQUIRE(pin0d.exists());
+    REQUIRE_FALSE(pin0d.can_read());
+    REQUIRE(pin0d.can_write());
+
+    /*
+     * The result from the Characters functions with WRONG values are written to pin 0.
+     * This test will check that the written value is the expected.
+     * Returns true if all the functions in characters.ino returned false.
+     */
+    test_pin_delayable(pin0d, true, 16384, 1ms);
+    REQUIRE(br.stop());
+}
+
+ /** 
  * Test that attaching sketches to the board and resetting of the board only works
  * when the board is not running and not suspended.
  */
