@@ -1,5 +1,5 @@
 /*
- *  SMCE_Client.cpp
+ *  client/SMCE_Client.cpp
  *  Created by Rylander and Mejborn, Team 1, DAT265.
  *
  *  A terminal interface for libSMCE, that allows sketches to be ran without the use of smce-gd.
