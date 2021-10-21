@@ -22,4 +22,4 @@ execute_process (COMMAND "${CMAKE_COMMAND}" -E tar xf "${SMCE_RESOURCES_ARK}"
 
 add_custom_command (TARGET SMCE_client POST_BUILD
         COMMAND "${CMAKE_COMMAND}" -E copy "$ENV{SMCE_ROOT}/bin/SMCE.dll" "${PROJECT_BINARY_DIR}/Debug"
-)
+) 
