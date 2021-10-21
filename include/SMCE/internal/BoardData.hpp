@@ -183,6 +183,13 @@ struct SMCE_INTERNAL BoardData {
     ShmVector<IpcAtomicValue<std::uint64_t>> a64_bank;
     ShmVector<IpcMovableMutex> mtx_bank;
     BoardData(const ShmAllocator<void>&, const BoardConfig&) noexcept;
+
+  private:
+    void configure_pins(const BoardConfig& c);
+    void configure_uart_channels(const ShmAllocator<void>& shm_valloc, const BoardConfig& c);
+    void configure_direct_storages(const ShmAllocator<void>& shm_valloc, const BoardConfig& c);
+    void configure_frame_buffers(const ShmAllocator<void>& shm_valloc, const BoardConfig& c);
+    void calculate_device_memory_allocations(const ShmAllocator<void>& shm_valloc, const BoardConfig& c);
 };
 
 } // namespace smce
