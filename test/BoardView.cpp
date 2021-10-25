@@ -79,7 +79,7 @@ TEST_CASE("BoardView GPIO", "[BoardView]") {
     smce::VirtualPin::DataDirection dir = smce::VirtualPin::DataDirection::in;
     pin2.set_direction(dir);
     REQUIRE(pin2.get_direction() == dir);
-    auto pin2d = pin2.digital();
+    auto pin2d = pin2.digital();//Front end
     REQUIRE(pin2d.exists());
     REQUIRE_FALSE(pin2d.can_read());
     REQUIRE(pin2d.can_write());
@@ -111,6 +111,7 @@ TEST_CASE("BoardView UART", "[BoardView]") {
     REQUIRE(bv.valid());
     auto uart0 = bv.uart_channels[0];
     REQUIRE(uart0.exists());
+    REQUIRE(uart0.rx().exists());
     REQUIRE(uart0.rx().exists());
     REQUIRE(uart0.tx().exists());
     REQUIRE_FALSE(uart0.is_active());
@@ -188,8 +189,10 @@ TEST_CASE("BoardView RGB444 cvt", "[BoardView]") {
     REQUIRE(bv.valid());
     REQUIRE(br.start());
     REQUIRE(br.suspend());
+    //Add test for storage get root
     std::uint16_t m_cspin = 0;
-    REQUIRE(bv.storage_get_root(smce::BoardView::Link::SPI, m_cspin=0) == "");
+    REQUIRE_FALSE( bv.storage_get_root(smce::BoardView::Link::SPI, m_cspin) == "{}");
+
     auto fb = bv.frame_buffers[0];
     REQUIRE(fb.exists());
 
