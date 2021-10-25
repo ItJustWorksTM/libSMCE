@@ -93,6 +93,16 @@ TEST_CASE("Mixed INO/C++ sources", "[Board]") {
     REQUIRE_FALSE(ec);
 }
 
+TEST_CASE("Start the camera", "[Board]") {
+    smce::Toolchain tc{SMCE_PATH};
+    REQUIRE(!tc.check_suitable_environment());
+    smce::Sketch sk{SKETCHES_PATH "camera", {.fqbn = "arduino:avr:nano"}};
+    const auto ec = tc.compile(sk);
+    if (ec)
+        std::cerr << tc.build_log().second;
+    REQUIRE_FALSE(ec);
+}
+
 /**
  * Tests whether the Characters functions in Ardrivo works.
  *
@@ -132,7 +142,6 @@ TEST_CASE("Arduino Characters", "[Board]") {
     REQUIRE(br.start());
 
     // Check that the pins exists and works as expected. I.e. if they are digital and can read/write if they should.
-
     auto bv = br.view();
     auto pin2 = bv.pins[2];
     REQUIRE(pin2.exists());
@@ -145,11 +154,9 @@ TEST_CASE("Arduino Characters", "[Board]") {
      * The result from the Characters functions with CORRECT values are written to pin 2.
      * This test will check that the written value is the expected (true).
      */
-
     test_pin_delayable(pin2d, true, 16384, 1ms);
 
     // Checking the configuration on pin 0.
-
     auto pin0 = bv.pins[0];
     REQUIRE(pin0.exists());
     auto pin0d = pin0.digital();
@@ -166,7 +173,7 @@ TEST_CASE("Arduino Characters", "[Board]") {
     REQUIRE(br.stop());
 }
 
- /** 
+/**
  * Test that attaching sketches to the board and resetting of the board only works
  * when the board is not running and not suspended.
  */
