@@ -45,11 +45,9 @@ TEST_CASE("Toolchain valid", "[Toolchain]") {
     REQUIRE_FALSE(tc.cmake_path().empty());
 }
 
-TEST_CASE("Toolchain sketch_invalid","[Toolchain]"){
-
-
-    REQUIRE(smce::toolchain_error::resdir_absent );
-}
+//TEST_CASE("Toolchain sketch_invalid","[Toolchain]"){
+//    REQUIRE(smce::toolchain_error::resdir_absent );
+//}
 //    const auto path = SMCE_TEST_DIR "/empty_dir";
 //    std::filesystem::create_directory(path);
 //    smce::Toolchain tc{path};
