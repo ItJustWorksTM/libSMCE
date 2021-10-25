@@ -34,11 +34,11 @@ using namespace std::literals;
 // automic bool for handling threads
 std::atomic_bool run_threads = true;
 
-void print_help(const char* argv0) {
+void print_help(const char* argv0){
     std::cout << "Usage: " << argv0 << " <fully-qualified-board-name> <path-to-sketch>" << std::endl;
 }
-void exit_sketch(int t){
-    std::cerr << "Error code:  "<< std::hex << std::bit_cast<std::uint16_t>(static_cast<int16_t>(t)) << std::endl;
+void exit_sketch(int code){
+    std::cerr << "Error code:  "<< std::hex << std::bit_cast<std::uint16_t>(static_cast<int16_t>(code)) << std::endl;
 }
 
 //Listen to the uart input from board, writes what it read to terminal
@@ -66,7 +66,7 @@ void print_menu(){
     std::cout << "-wa <pin> <value> -> Set a specific value on a analog pin" << std::endl;
     std::cout << "-wd <pin> <value> -> Set a specific value on a digital pin" << std::endl;
     std::cout << "-m <message> -> Send message to board through uart (serial)" << std::endl;
-    std::cout << "-q -> Power off board and quit program" << std::endl;
+    std::cout << "-q -> Power off board and quit program" << std::endl << std::endl;
 }
 
 int main(int argc, char** argv){
@@ -83,6 +83,7 @@ int main(int argc, char** argv){
 
     std::cout << std::endl << "Starting SMCE Client" << std::endl;
     std::cout << "Given Fqbn: " << fqbn << "\n" << "Given path to sketch: " << path_to_sketch << std::endl;
+
 
     // Create the toolchain
     smce::Toolchain toolchain{SMCE_RESOURCES_DIR};
