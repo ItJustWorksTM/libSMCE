@@ -183,9 +183,10 @@ TEST_CASE("BoardView RGB444 cvt", "[BoardView]") {
     smce::Board br{};
     REQUIRE(br.configure({.frame_buffers = {{}}}));
     REQUIRE(br.attach_sketch(sk));
-    REQUIRE(br.start());
+    REQUIRE(br.prepare());
     auto bv = br.view();
     REQUIRE(bv.valid());
+    REQUIRE(br.start());
     REQUIRE(br.suspend());
 
     auto fb = bv.frame_buffers[0];
