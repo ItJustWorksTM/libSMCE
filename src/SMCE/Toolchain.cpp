@@ -37,11 +37,6 @@ using namespace std::literals;
 
 namespace bp = boost::process;
 
-namespace std {
-template <>
-struct is_error_code_enum<smce::toolchain_error> : std::bool_constant<true> {};
-} // namespace std
-
 namespace smce {
 namespace detail {
 
@@ -92,7 +87,7 @@ const std::error_category& get_exec_ctx_error_category() noexcept {
 
 } // namespace detail
 
-inline std::error_code make_error_code(toolchain_error ev) {
+std::error_code make_error_code(toolchain_error ev) noexcept {
     return std::error_code{static_cast<std::underlying_type<toolchain_error>::type>(ev),
                            detail::get_exec_ctx_error_category()};
 }

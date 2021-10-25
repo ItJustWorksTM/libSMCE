@@ -32,4 +32,13 @@ To SMCE__bit_cast(const From& value) noexcept {
     return ret;
 }
 
+template <class T, template <class> class Trait>
+struct SMCE__decays_to_trait
+    : std::bool_constant<Trait<typename std::remove_cv<typename std::remove_reference<T>::type>::type>::value> {};
+
+template <class T>
+using SMCE__decays_to_integral = SMCE__decays_to_trait<T, std::is_integral>;
+template <class T>
+using SMCE__decays_to_floating_point = SMCE__decays_to_trait<T, std::is_floating_point>;
+
 #endif // SMCE_ARDRIVO_SMCE_NUMERIC_HPP
