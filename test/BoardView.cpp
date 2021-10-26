@@ -119,6 +119,7 @@ TEST_CASE("BoardView UART", "[BoardView]") {
     auto uart0 = bv.uart_channels[0];
     REQUIRE(uart0.exists());
     REQUIRE(uart0.rx().exists());
+    REQUIRE(uart0.rx().exists());
     REQUIRE(uart0.tx().exists());
     // do we only have the one uart channel since we only set one in uart.ino?
     auto uart1 = bv.uart_channels[1];
@@ -186,12 +187,15 @@ TEST_CASE("BoardView RGB444 cvt", "[BoardView]") {
     smce::Board br{};
     REQUIRE(br.configure({.frame_buffers = {{}}}));
     REQUIRE(br.attach_sketch(sk));
-    REQUIRE(br.start());
+    REQUIRE(br.prepare());
     auto bv = br.view();
     REQUIRE(bv.valid());
+    REQUIRE(br.start());
     REQUIRE(br.suspend());
+    //Add test for storage get root
     std::uint16_t m_cspin = 0;
-    REQUIRE(bv.storage_get_root(smce::BoardView::Link::SPI, m_cspin=0) == "");
+    REQUIRE_FALSE( bv.storage_get_root(smce::BoardView::Link::SPI, m_cspin) == "{}");
+
     auto fb = bv.frame_buffers[0];
     REQUIRE(fb.exists());
 

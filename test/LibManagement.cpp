@@ -151,7 +151,7 @@ TEST_CASE("Valid manifests processing", "[Plugin]") {
             loader << "project (Test)\n";
             loader << "add_library (Ardrivo INTERFACE)\n";
             loader << "add_executable (Sketch empty.cxx)\n";
-            loader << "include (" << module_path << ")\n";
+            loader << "include (\"" << module_path << "\")\n";
             loader << cmake_require_target("smce_plugin_ESP32_AnalogWrite");
         }
 

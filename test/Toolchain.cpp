@@ -28,14 +28,17 @@ TEST_CASE("Toolchain invalid", "[Toolchain]") {
     REQUIRE(tc.check_suitable_environment());
 }
 
-// TEST_CASE("Toolchain error","[Toolchain]"){
-//    const auto path = SMCE_TEST_DIR "/empty_dir";
+//TEST_CASE("Toolchain error","[Toolchain]"){
+//    const auto path = SMCE_TEST_DIR "";
+//    std::string m_cmake_path = "cmake";
+//    std::string m_build_log;
+//    std::mutex m_build_log_mtx;
 //    std::filesystem::create_directory(path);
 //    smce::Toolchain tc{path};
 //    REQUIRE(tc.resource_dir() == path);
 //    REQUIRE(tc.check_suitable_environment());
 //    std::error_code code;
-//    REQUIRE(code.message() == "The operation completed successfully.");
+//    REQUIRE(code.message() == "resdir_empty");
 //}
 
 TEST_CASE("Toolchain valid", "[Toolchain]") {
