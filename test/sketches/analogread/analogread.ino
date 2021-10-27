@@ -1,9 +1,9 @@
 void setup() {
     pinMode(0, INPUT);
     pinMode(2, OUTPUT);
+    analogWrite(2, analogRead(0));
 }
 
 void loop() {
-    analogWrite(2, analogRead(0));
     delayMicroseconds(1000);
 }
