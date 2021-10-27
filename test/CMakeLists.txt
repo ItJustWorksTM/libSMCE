@@ -71,6 +71,9 @@ target_compile_definitions (SMCE_Tests PUBLIC SMCE_ARDRIVO_MQTT=$<BOOL:${SMCE_AR
 if (MSVC)
   target_compile_definitions (SMCE_Tests PUBLIC MSVC_DEBUG=$<CONFIG:Debug>)
 endif ()
+if (SMCE_TEST_JUNIPER)
+  target_compile_definitions (SMCE_Tests PUBLIC SMCE_TEST_JUNIPER=1)
+endif ()
 catch_discover_tests (SMCE_Tests)
 
 if (WIN32 AND SMCE_BUILD_SHARED)

@@ -52,12 +52,29 @@ class SMCE__DLL_RT_API Print {
     std::size_t print(const String& s);
     std::size_t print(const char* czstr);
     std::size_t print(char c);
-    template <class Int, class Base = SMCE__DEC, class = typename std::enable_if<std::is_integral<Int>::value>::type>
-    inline std::size_t print(Int val, Base = DEC) {
-        return print(String{val, Base{}});
+    template <class Int>
+    inline auto print(Int val, int base) ->
+        typename std::enable_if<SMCE__decays_to_integral<Int>::value, std::size_t>::type {
+        return print(String{val, base});
     }
-    template <class Fp, class = typename std::enable_if<std::is_floating_point<Fp>::value>::type>
-    inline std::size_t print(Fp val, int prec = 2) {
+    template <class Int>
+    inline auto print(Int val, SMCE__BIN) ->
+        typename std::enable_if<SMCE__decays_to_integral<Int>::value, std::size_t>::type {
+        return print(String{val, BIN});
+    }
+    template <class Int>
+    inline auto print(Int val, SMCE__DEC = DEC) ->
+        typename std::enable_if<SMCE__decays_to_integral<Int>::value, std::size_t>::type {
+        return print(String{val, DEC});
+    }
+    template <class Int>
+    inline auto print(Int val, SMCE__HEX) ->
+        typename std::enable_if<SMCE__decays_to_integral<Int>::value, std::size_t>::type {
+        return print(String{val, HEX});
+    }
+    template <class Fp>
+    inline auto print(Fp val, int prec = 2) ->
+        typename std::enable_if<SMCE__decays_to_floating_point<Fp>::value, std::size_t>::type {
         return print(String{val, prec});
     }
     // std::size_t print(const struct Printable&); // FIXME: implement base Printable

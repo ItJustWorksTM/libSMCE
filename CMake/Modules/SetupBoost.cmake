@@ -95,3 +95,34 @@ endif ()
 add_library (Boost::ipc ALIAS Boost_ipc)
 
 target_link_libraries (SMCE_Boost INTERFACE Boost_ipc)
+
+### Version/Platform-specific workarounds
+
+if (Boost_VERSION VERSION_LESS 1.78)
+  include (CheckCXXSymbolExists)
+  check_cxx_symbol_exists ("_LIBCPP_VERSION" "ciso646" HAS_LIBCPP) # Would use <version> but not all platforms have it
+  if (HAS_LIBCPP)
+    file (MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/LibcppVersion")
+    file (WRITE "${PROJECT_BINARY_DIR}/LibcppVersion/LibcppVersion.cxx" [[
+      #include <cstdio>
+      #define XSTR(s) #s
+      #define STR(s) XSTR(s)
+      int main() {
+        std::puts(STR(_LIBCPP_VERSION));
+      }
+    ]])
+    try_run (LIBCPP_VERCHK_RUN_RESULT LIBCPP_VERCHK_COMPILED "${PROJECT_BINARY_DIR}/LibcppVersion" "${PROJECT_BINARY_DIR}/LibcppVersion/LibcppVersion.cxx"
+        RUN_OUTPUT_VARIABLE LIBCPP_VER
+    )
+    if (NOT LIBCPP_VERCHK_COMPILED)
+      message (FATAL_ERROR "Failed to determine libc++ version: try_run failed to compile")
+    elseif (LIBCPP_VERCHK_RUN_RESULT STREQUAL "FAILED_TO_RUN")
+      message (FATAL_ERROR "Failed to determine libc++ version: try_run failed to run")
+    endif ()
+
+    if (LIBCPP_VER GREATER_EQUAL 13000)
+      target_compile_definitions (SMCE_Boost INTERFACE BOOST_ASIO_HAS_STD_INVOKE_RESULT=1)
+      message (WARNING "Your version of Boost is too old to know about libc++ >= 13; consider updating Boost to 1.78 or above")
+    endif ()
+  endif ()
+endif ()

@@ -272,19 +272,8 @@ TEST_CASE("BoardView RGB444 cvt", "[BoardView]") {
         REQUIRE(out == expected_out);
     }
 
-    {
-        constexpr std::size_t height = 1;
-        constexpr std::size_t width = 2;
 
-        fb.set_height(height);
-        fb.set_width(width);
-
-        fb.needs_vertical_flip(true);
-        REQUIRE(fb.needs_vertical_flip());
-        fb.needs_horizontal_flip(true);
-        REQUIRE(fb.needs_horizontal_flip());
-    }
-
+    REQUIRE(br.resume());
     REQUIRE(br.stop());
 }
 

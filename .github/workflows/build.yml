@@ -40,11 +40,10 @@ jobs:
           apt-get install -y lcov curl wget git cmake ninja-build g++ libboost-all-dev libmosquitto-dev pkg-config jq perl-base
           ninja --version
           cmake --version
+          wget -O Juniper.deb https://www.juniper-lang.org/installers/Juniper-3.0.0.deb
+          apt-get install ./Juniper.deb
       - name: Setup global CMake interceptor
-        run: |
-          mv /usr/bin/cmake /usr/bin/cmake-real
-          cp ci/cmake-interceptor.sh /usr/bin/cmake
-          chmod +x /usr/bin/cmake
+        run: ci/setup-cmake-interceptor.sh
       - name: CMake configure
         run: |
           cmake -G Ninja \
@@ -54,6 +53,7 @@ jobs:
           -DSMCE_CXXRT_LINKING=SHARED \
           -DSMCE_BOOST_LINKING=SHARED \
           -DSMCE_MOSQUITTO_LINKING=SHARED \
+          -DSMCE_TEST_JUNIPER=On \
           -B ./build
       - name: CMake build
         run: cmake --build ./build
@@ -163,11 +163,11 @@ jobs:
             slug: gcc
             c: gcc-10
             cxx: g++-10
-          - name: Clang/LLVM 12
+          - name: Clang/LLVM 13
             release: true
             slug: clang
-            c: clang-12
-            cxx: clang++-12
+            c: clang-13
+            cxx: clang++-13
           - name: AppleClang 12
             release: true
             slug: appleclang
@@ -180,7 +180,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Check deps
         run: |
-          brew install ninja openssl
+          brew install ninja openssl bash
           ninja --version # technically not a dependency, but used to speedup builds
           cmake --version
       - name: Cache Boost with GCC
@@ -202,6 +202,8 @@ jobs:
       - name: Install Boost with Clang
         if: (!startsWith(matrix.compiler.name, 'GCC'))
         run: brew install boost
+      - name: Setup global CMake interceptor
+        run: ci/setup-cmake-interceptor.sh
       - name: CMake configure
         run: |
           [ "${{ matrix.compiler.slug }}" = "clang" ] && export CC="$(brew --prefix llvm)/bin/clang -stdlib=libc++ -nostdinc++ -I/usr/local/opt/llvm/include/c++/v1 -L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib -Wno-unused-command-line-argument"
@@ -233,6 +235,12 @@ jobs:
         with:
           name: libSMCE-macos-${{ matrix.compiler.slug }}
           path: build/packages/*
+      - name: Collect CMake coverage information
+        run: ci/scan-cmake-commands.sh
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          files: ./cmake-codecov-report.json
 
   build-windows:
     name: libSMCE - Windows ${{ matrix.build_type }} (${{ matrix.compiler.name }} & Boost ${{ matrix.boost.version }})
@@ -493,6 +501,7 @@ jobs:
         run: |
           apt-get update -y
           apt-get install -y file dpkg-dev pkg-config wget # CMake's dpkg-shlibdeps support needs 'file'
+          apt-get install -y perl jq # For cmcov
           git --version || apt-get install -y git
           ninja --version || apt-get install -y ninja-build
           wget https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION-linux-x86_64.sh
@@ -518,6 +527,8 @@ jobs:
         run: |
           apt-get install -y wget
           ci/build-static-boost.sh 1.76.0
+      - name: Setup global CMake interceptor
+        run: ci/setup-cmake-interceptor.sh
       - name: CMake Configure
         run: BOOST_ROOT="$(pwd)/boost_root" cmake -G Ninja  -DSMCE_BUILD_PROFILE=${{ matrix.os.name }}${{ matrix.os.codename }} -S ./ -B ./build
       - name: CMake Build
@@ -537,6 +548,12 @@ jobs:
         with:
           name: libSMCE-DEB-${{ matrix.os.name }}${{ matrix.os.codename }}
           path: build/*.deb
+      - name: Collect CMake coverage information
+        run: ci/scan-cmake-commands.sh
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          files: ./cmake-codecov-report.json
   package-rpm:
     name: Package per-distro RPMs (${{ matrix.os.name }} ${{ matrix.os.codename }})
     runs-on: ubuntu-latest
@@ -581,10 +598,12 @@ jobs:
           echo ::set-output name=SNAKE::$(zypper info boost-devel | grep -oP 'Version\s*: \K\d+\.\d+\.\d+' | sed 's/\./_/g')
        - name: Fetch deps
          run: |
-           [[ '${{ matrix.os.name }}' == 'Fedora' ]] && dnf install -y tar git cmake rpmdevtools rpmlint ninja-build gcc-c++ boost-devel openssl-devel || true
-           [[ '${{ matrix.os.name }}' == 'openSUSE' ]] && zypper install -y tar git cmake rpmdevtools rpm-build rpmlint ninja gcc-c++ boost-devel libboost_atomic${{ steps.boost-ver.outputs.SNAKE }}-devel libboost_filesystem${{ steps.boost-ver.outputs.SNAKE }}-devel libopenssl-devel || true
-           [[ '${{ matrix.os.name }}' == 'OpenMandriva' ]] && dnf install -y tar git cmake rpmdevtools rpm-build rpmlint ninja gcc-c++ glibc-devel lib64boost-devel lib64openssl-devel || true
+           [[ '${{ matrix.os.name }}' == 'Fedora' ]] && dnf install -y perl jq which tar git cmake rpmdevtools rpmlint ninja-build gcc-c++ boost-devel openssl-devel || true
+           [[ '${{ matrix.os.name }}' == 'openSUSE' ]] && zypper install -y perl jq which tar git cmake rpmdevtools rpm-build rpmlint ninja gcc-c++ boost-devel libboost_atomic${{ steps.boost-ver.outputs.SNAKE }}-devel libboost_filesystem${{ steps.boost-ver.outputs.SNAKE }}-devel libopenssl-devel || true
+           [[ '${{ matrix.os.name }}' == 'OpenMandriva' ]] && dnf install -y perl jq which tar git cmake rpmdevtools rpm-build rpmlint ninja gcc-c++ glibc-devel lib64boost-devel lib64openssl-devel || true
        - uses: actions/checkout@v2
+       - name: Setup global CMake interceptor
+         run: ci/setup-cmake-interceptor.sh
        - name: CMake Configure
          run: cmake -G Ninja -DSMCE_BUILD_PROFILE=${{ matrix.os.profile }} -S ./ -B ./build
        - name: CMake Build
@@ -613,3 +632,9 @@ jobs:
          with:
            name: libSMCE-RPM-${{ matrix.os.name }}${{ matrix.os.codename }}
            path: build/*.rpm
+       - name: Collect CMake coverage information
+         run: ci/scan-cmake-commands.sh
+       - name: Upload coverage to Codecov
+         uses: codecov/codecov-action@v2
+         with:
+           files: ./cmake-codecov-report.json
