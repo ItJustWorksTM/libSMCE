@@ -336,7 +336,7 @@ TEST_CASE("BoardView GPIO Analog", "[BoardView]") {
     REQUIRE(br.stop());
 }
 
-/*TEST_CASE("BoardView UART Write", "[BoardView]") {
+TEST_CASE("BoardView UART Write", "[BoardView]") {
     // Initialize toolchain and set the path to smce_root(SMCE recourse directory)
     // is the resources_dir in variable m_res_dir?
     smce::Toolchain tc{SMCE_PATH};
@@ -415,4 +415,3 @@ TEST_CASE("BoardView GPIO Analog", "[BoardView]") {
 
     REQUIRE(br.stop());
 }
-*/
