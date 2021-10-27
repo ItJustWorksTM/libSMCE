@@ -30,6 +30,8 @@ using microsec_clock = boost::date_time::microsec_clock<boost::posix_time::ptime
 
 namespace smce {
 
+[[nodiscard]] bool BoardView::stop_requested() noexcept { return m_bdat && m_bdat->stop_requested.load(); }
+
 [[nodiscard]] std::string_view BoardView::storage_get_root(Link link, std::uint16_t accessor) noexcept {
     if (!m_bdat)
         return {};
@@ -134,7 +136,7 @@ VirtualPin VirtualPins::operator[](std::size_t pin_id) noexcept {
         case Direction::tx:
             return std::tie(chan.tx, chan.tx_mut);
         }
-        unreachable();
+        unreachable(); // GCOV_EXCL_LINE
     }();
     if (!mut.timed_lock(microsec_clock::universal_time() + boost::posix_time::seconds{1}))
         return 0;
@@ -154,7 +156,7 @@ std::size_t VirtualUartBuffer::read(std::span<char> buf) noexcept {
         case Direction::tx:
             return std::tie(chan.tx, chan.tx_mut, chan.max_buffered_tx);
         }
-        unreachable();
+        unreachable(); // GCOV_EXCL_LINE
     }();
     if (!mut.timed_lock(microsec_clock::universal_time() + boost::posix_time::seconds{1}))
         return 0;
@@ -176,7 +178,7 @@ std::size_t VirtualUartBuffer::write(std::span<const char> buf) noexcept {
         case Direction::tx:
             return std::tie(chan.tx, chan.tx_mut, chan.max_buffered_tx);
         }
-        unreachable();
+        unreachable(); // GCOV_EXCL_LINE
     }();
     if (!mut.timed_lock(microsec_clock::universal_time() + boost::posix_time::seconds{1}))
         return 0;
@@ -198,7 +200,7 @@ std::size_t VirtualUartBuffer::write(std::span<const char> buf) noexcept {
         case Direction::tx:
             return std::tie(chan.tx, chan.tx_mut);
         }
-        unreachable();
+        unreachable(); // GCOV_EXCL_LINE
     }();
     if (!mut.timed_lock(microsec_clock::universal_time() + boost::posix_time::seconds{1}))
         return 0;

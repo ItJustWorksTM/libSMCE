@@ -1,5 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 base="${GITHUB_WORKSPACE}"
+
+INJECTION-POINT
 
 echo "$@" >> "$base/CMakeCalls.log"
 case "$1" in
@@ -12,7 +14,7 @@ case "$1" in
   --version)
     ;&
   --find-package)
-    exec -a /usr/bin/cmake /usr/bin/cmake-real "$@"
+    exec -a "$cmake_bindir/cmake" "$cmake_bindir/cmake-real" "$@"
     ;;
   *)
     if ! [[ -d "$base/CMakeTrace" ]]; then
@@ -23,5 +25,5 @@ case "$1" in
     idx=$(<$base/CMakeTrace/.count)
     echo $((idx+1)) > "$base/CMakeTrace/.count"
     flock -u "$base/CMakeTrace/.lock" true
-    exec -a /usr/bin/cmake /usr/bin/cmake-real --trace-format=json-v1 "--trace-redirect=${base}/CMakeTrace/${idx}.json" "$@"
+    exec -a "$cmake_bindir/cmake" "$cmake_bindir/cmake-real" --trace-format=json-v1 "--trace-redirect=${base}/CMakeTrace/${idx}.json" "$@"
 esac

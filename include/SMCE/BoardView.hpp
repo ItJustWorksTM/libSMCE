@@ -253,6 +253,9 @@ class SMCE_API BoardView {
     /// Object validity check
     [[nodiscard]] bool valid() noexcept { return m_bdat; }
 
+    /// Whether or not there is an active stop request from the host
+    [[nodiscard]] bool stop_requested() noexcept;
+
     /// Obtain the path to the root file of a storage device
     [[nodiscard]] std::string_view storage_get_root(Link link, std::uint16_t accessor) noexcept;
 };
