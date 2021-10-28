@@ -209,7 +209,7 @@ TEST_CASE("Valid plugin dependency processing", "[Plugin]") {
     REQUIRE_FALSE(ec);
 }
 
-TEST_CASE("Invalid plugin dependency processing", "[Plugin]") {
+TEST_CASE("Invalid plugin dependency processing (cycle check)", "[Plugin]") {
 #if !BOOST_OS_WINDOWS
     const char* const generator_override = std::getenv("CMAKE_GENERATOR");
     const char* const generator =

@@ -182,9 +182,7 @@ function (process_manifests)
     set(${PLUGIN_LIST} ${TSORT} PARENT_SCOPE)
   endfunction(topological_sort)
 
-  message("TOP START: ${plugins}")
   topological_sort (plugins)
-  message("TOP END: ${plugins}")
 
   # PROCESS PLUGINS
   function (process_plugin plugin)

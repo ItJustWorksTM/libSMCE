@@ -1,3 +1,0 @@
-set (PLUGIN_NAME "E")
-set (PLUGIN_VERSION "0")
-set (PLUGIN_DEPENDS )
