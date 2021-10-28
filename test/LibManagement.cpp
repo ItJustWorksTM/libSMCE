@@ -48,6 +48,7 @@
 #include "SMCE/SketchConf.hpp"
 #include "SMCE/Toolchain.hpp"
 #include "defs.hpp"
+#include <vector>
 
 namespace bp = boost::process;
 using namespace std::literals;
@@ -172,33 +173,89 @@ TEST_CASE("Valid plugin dependency processing", "[Plugin]") {
         generator_override ? generator_override : (!bp::search_path("ninja").empty() ? "Ninja" : "");
 #endif
 
-    constexpr auto module_path = SMCE_PATH "/RtResources/SMCE/share/CMake/Modules/ProcessManifests.cmake";
-    const std::filesystem::path tmproot = SMCE_PATH "/tmp";
+    smce::Toolchain tc{SMCE_PATH};
+    REQUIRE(!tc.check_suitable_environment());
 
-    std::string manifests [] {"A","B","C","D","E","F","G"};
+    std::vector<std::string> manifests_name = {"A","B","C","D","E","F","G"};
+    std::vector<std::vector<std::string>> manifests_deps = {{}, {"C", "D"}, {"E", "F"},
+                                                           {"F", "G"}, {},{},{}};
+    std::vector<smce::PluginManifest> plugins;
 
-    const auto base_dir = tmproot / ("test-manifests");
-    std::filesystem::create_directories(base_dir);
-
-    const auto plugin_root = base_dir / "plugin_root";
-    std::filesystem::create_directory(base_dir / "manifests");
-
-    for (auto m : manifests)
+    for(int i = 0; i < manifests_name.size(); i++)
     {
-        std::filesystem::copy(MANIFESTS_PATH + m + ".cmake", base_dir / "manifests");
+        smce::PluginManifest pm{
+            .name = manifests_name[i],
+            .version = "0",
+            .depends = manifests_deps[i],
+            .uri = "file://" SMCE_PATH,
+            .defaults = smce::PluginManifest::Defaults::none
+        };
+        plugins.push_back(pm);
     }
+    smce::SketchConfig skc{
+        "arduino:avr:nano",
+        {},
+        {},
+        std::move(plugins),
+        {}
+    };
 
+    smce::Sketch sk{SKETCHES_PATH "noop", std::move(skc)};
 
-    const auto res = bp::system(bp::shell, bp::start_dir(base_dir.generic_string()),
-#if !BOOST_OS_WINDOWS
-                                bp::env["CMAKE_GENERATOR"] = generator,
-#endif
-                                "cmake", "-P", module_path, (bp::std_out & bp::std_err) > stderr);
+    const auto ec = tc.compile(sk);
+    if (ec)
+        std::cerr << tc.build_log().second;
 
-    REQUIRE(res != 0);
-    [[maybe_unused]] std::error_code ec;
-    std::filesystem::remove_all(base_dir, ec);
+    REQUIRE_FALSE(ec);
 }
+
+TEST_CASE("Invalid plugin dependency processing", "[Plugin]") {
+#if !BOOST_OS_WINDOWS
+    const char* const generator_override = std::getenv("CMAKE_GENERATOR");
+    const char* const generator =
+        generator_override ? generator_override : (!bp::search_path("ninja").empty() ? "Ninja" : "");
+#endif
+
+    smce::Toolchain tc{SMCE_PATH};
+    REQUIRE(!tc.check_suitable_environment());
+
+    std::vector<std::string> manifests_name = {"A","B","C"};
+    std::vector<std::vector<std::string>> manifests_deps = {{"B"},{"C"},{"A"}};
+    std::vector<smce::PluginManifest> plugins;
+
+    for(int i = 0; i < manifests_name.size(); i++)
+    {
+        smce::PluginManifest pm{
+            .name = manifests_name[i],
+            .version = "0",
+            .depends = manifests_deps[i],
+            .uri = "file://" SMCE_PATH,
+            .defaults = smce::PluginManifest::Defaults::none
+        };
+        plugins.push_back(pm);
+    }
+    smce::SketchConfig skc{
+        "arduino:avr:nano",
+        {},
+        {},
+        std::move(plugins),
+        {}
+    };
+
+    smce::Sketch sk{SKETCHES_PATH "noop", std::move(skc)};
+
+    const auto ec = tc.compile(sk);
+    [[maybe_unused]] std::size_t found;
+    [[maybe_unused]] std::string s;
+    if(ec) {
+        s = tc.build_log().second;
+        std::cerr << s;
+        found = s.find("Plugin dependency cycle detected!");
+    }
+    REQUIRE(ec);
+    REQUIRE(found!=std::string::npos);
+}
+
 #if SMCE_ARDRIVO_MQTT
 
 TEST_CASE("Board remote preproc lib", "[Board]") {
