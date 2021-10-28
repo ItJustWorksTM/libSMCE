@@ -277,3 +277,142 @@ TEST_CASE("BoardView RGB444 cvt", "[BoardView]") {
     REQUIRE(br.stop());
 }
 
+TEST_CASE("BoardView GPIO Analog", "[BoardView]") {
+    smce::Toolchain tc{SMCE_PATH};
+    REQUIRE(!tc.check_suitable_environment());
+    smce::Sketch sk{SKETCHES_PATH "analogread", {.fqbn = "arduino:avr:nano"}};
+    const auto ec = tc.compile(sk);
+    if (ec)
+        std::cerr << tc.build_log().second;
+    REQUIRE_FALSE(ec);
+    smce::Board br{};
+    // clang-format off
+    smce::BoardConfig bc{
+        /* .pins = */{0, 2},
+        /* .gpio_drivers = */{
+            smce::BoardConfig::GpioDrivers{
+                0,
+                smce::BoardConfig::GpioDrivers::DigitalDriver{true, false},
+                smce::BoardConfig::GpioDrivers::AnalogDriver{true, false}
+            },
+            smce::BoardConfig::GpioDrivers{
+                2,
+                smce::BoardConfig::GpioDrivers::DigitalDriver{false, true},
+                smce::BoardConfig::GpioDrivers::AnalogDriver{false, true}
+            },
+        }
+    };
+    // clang-format on
+    REQUIRE(br.configure(std::move(bc)));
+    REQUIRE(br.attach_sketch(sk));
+    REQUIRE(br.start());
+    auto bv = br.view();
+    REQUIRE(bv.valid());
+    auto pin0 = bv.pins[0];
+    REQUIRE(pin0.exists());
+    // Just testing analogRead and AnalogWrite
+    auto pin0a = pin0.analog();
+    REQUIRE(pin0a.exists());
+    REQUIRE(pin0a.can_read());
+    REQUIRE_FALSE(pin0a.can_write());
+    auto pin1 = bv.pins[1];
+    REQUIRE_FALSE(pin1.exists());
+    auto pin2 = bv.pins[2];
+    REQUIRE(pin2.exists());
+    auto pin2a = pin2.analog();
+    REQUIRE(pin2a.exists());
+    REQUIRE_FALSE(pin2a.can_read());
+    REQUIRE(pin2a.can_write());
+    smce::VirtualPin::DataDirection dir = smce::VirtualPin::DataDirection::in;
+    REQUIRE(pin2.get_direction() == dir);
+    std::this_thread::sleep_for(1ms);
+    pin0a.write(42);
+    // Checking if the information read from analogPin 0 that is used to write
+    // to analogPin 2 are correct. We expect the value in analogPin 2
+    // to be 42.
+    test_pin_delayable(pin2a, 42, 16384, 1ms);
+    pin0a.write(64);
+    test_pin_delayable(pin2a, 64, 16384, 1ms);
+    REQUIRE(br.stop());
+}
+
+TEST_CASE("BoardView UART Write", "[BoardView]") {
+    // Initialize toolchain and set the path to smce_root(SMCE recourse directory)
+    // is the resources_dir in variable m_res_dir?
+    smce::Toolchain tc{SMCE_PATH};
+    // Checking that we have a sutable environment? returns something if
+    // that is not the case?
+    REQUIRE(!tc.check_suitable_environment());
+    //The sketch is in /sketches/uart is the source in m_source? and conf in m_conf?
+    smce::Sketch sk{SKETCHES_PATH "serial", {.fqbn = "arduino:avr:nano"}};
+    //compile the provided sketch. check if tha path exists, then configure, then build
+    // where do we get the plugins?
+    const auto ec = tc.compile(sk);
+    if (ec)
+        std::cerr << tc.build_log().second;
+    REQUIRE_FALSE(ec);
+    //Initialize a board
+    smce::Board br{};
+    // ask about configure()
+    REQUIRE(br.configure({.uart_channels = {{}}}));
+    // attach the sketch to the board
+    REQUIRE(br.attach_sketch(sk));
+    // the sketch is now running if br.start() returns true
+    REQUIRE(br.start());
+    // create a new boardView for the board. Sharedboarddata?
+    auto bv = br.view();
+    REQUIRE(bv.valid());
+    // Setting up the uart buffer
+    auto uart0 = bv.uart_channels[0];
+    REQUIRE(uart0.exists());
+    REQUIRE(uart0.rx().exists());
+    REQUIRE(uart0.rx().exists());
+    REQUIRE(uart0.tx().exists());
+    // do we only have the one uart channel since we only set one in uart.ino?
+    auto uart1 = bv.uart_channels[1];
+    REQUIRE_FALSE(uart1.exists());
+    REQUIRE_FALSE(uart1.rx().exists());
+    REQUIRE_FALSE(uart1.tx().exists());
+    std::this_thread::sleep_for(1ms);
+    // The data we want to send to the board
+    std::array out = {'H', 'E', 'L', 'L', 'O', ' ', 'U', 'A', 'R', 'T', '\0'};
+    // create an array of 64 bites to check if max lenght is correct.
+    std::array<char, out.size()> in{};
+    // Send data to the board, Serial.readString() is used to read it
+    REQUIRE(uart0.rx().write(out) == out.size());
+    //   Add test for rx size
+    // REQUIRE(uart0.rx().size() != 0);
+    int ticks = 16'000;
+    do {
+        if (ticks-- == 0)
+            FAIL("Timed out");
+        std::this_thread::sleep_for(1ms);
+    } while (uart0.tx().size() != in.size());
+    // Now we have recieved the same data from the board, serial.print()
+    //check if the letter at the front is H
+    REQUIRE(uart0.tx().front() == 'H');
+    // read the data from the uart channel and the data is erased after reading.
+    REQUIRE(uart0.tx().read(in) == in.size());
+    // front returns "\0" if it is empty
+    REQUIRE(uart0.tx().front() == '\0');
+    REQUIRE(uart0.tx().size() == 0);
+    // now both in and out should be the same size
+    REQUIRE(in == out);
+
+#if !MSVC_DEBUG
+    std::reverse(out.begin(), out.end());
+    REQUIRE(uart0.rx().write(out) == out.size());
+    ticks = 16'000;
+    do {
+        if (ticks-- == 0)
+            FAIL("Timed out");
+        std::this_thread::sleep_for(1ms);
+    } while (uart0.tx().size() != in.size());
+    REQUIRE(uart0.tx().read(in) == in.size());
+    REQUIRE(uart0.tx().size() == 0);
+    REQUIRE(in == out);
+#endif
+
+    REQUIRE(br.stop());
+}
+
