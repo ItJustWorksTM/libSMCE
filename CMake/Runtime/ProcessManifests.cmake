@@ -98,19 +98,20 @@ function (process_manifests)
     set(VERTICES "${${PLUGIN_LIST}}")
     set(STACK)
     set(TSORT)
-    list(LENGTH VERTICES VERTICES_LENGTH)
     set(${PLUGIN_LIST})
     set(VISIT_LIST)
 
+    #ADD ALL VERTICES TO A TO-VISIT LIST
     foreach(vx ${VERTICES})
       list(APPEND VISIT_LIST VISIT_${vx})
+      #IF VERTEX HAS NO DEPEND, PLACE AT BEGINNING OF LIST
       if (NOT PLUGIN_${vx}_DEPENDS)
         list(REMOVE_ITEM VERTICES ${vx})
         list(INSERT VERTICES 0 ${vx})
       endif ()
     endforeach()
 
-    # DEPTH FIRST SEARCH ---------------------------------------------------------------------
+    # DEPTH FIRST SEARCH
     function(dfs SLIST VLIST vx1)
       set(S_LIST "${${SLIST}}")
       set(V_LIST "${${VLIST}}")
@@ -132,9 +133,8 @@ function (process_manifests)
       set (${VLIST} ${V_LIST} PARENT_SCOPE)
       set (${SLIST} ${S_LIST} PARENT_SCOPE)
     endfunction()
-    # END OF DEPTH FIRST SEARCH -------------------------------------------------------------------
 
-    # START DEPTH FIRST SEARCH ON TOPOLOGICAL SORT ------------------------------------------------
+    # START DEPTH FIRST SEARCH ON TOPOLOGICAL SORT
     foreach(vx ${VERTICES})
       set(i_vx)
       list (FIND VISIT_LIST VISIT_${vx} i_vx)
@@ -142,9 +142,8 @@ function (process_manifests)
         dfs(STACK VISIT_LIST vx)
       endif ()
     endforeach()
-    # END OF DEPTH FIRST SEARCH ON TOPOLOGICAL SORT -----------------------------------------------
 
-    #CYCLE CHECK -----------------------------------------------------------------------
+    #CYCLE CHECK
     math(EXPR IND "0")
     list(LENGTH STACK STACK_LENGTH)
 
@@ -153,7 +152,7 @@ function (process_manifests)
       # vertex in topological order
       list (GET STACK -1 NEXT_VX)
       list (REMOVE_AT STACK -1)
-      list  (LENGTH STACK STACK_LENGTH)
+      list (LENGTH STACK STACK_LENGTH)
       math (EXPR ${NEXT_VX}_pos "${IND}")
       math (EXPR IND "${IND}+1")
       list (APPEND TSORT ${NEXT_VX})
@@ -162,26 +161,23 @@ function (process_manifests)
 
     foreach(it ${VERTICES})
       foreach(vert_dep ${PLUGIN_${it}_DEPENDS})
-        if (NOT DEFINED ${${vert_dep}_pos})
+        if (NOT DEFINED ${it}_pos)
           math (EXPR first "0")
         else()
-          math (EXPR first "${${vert_dep}_pos}")
+          math (EXPR first "${${it}_pos}")
         endif ()
-
-        if (NOT DEFINED ${${it}_pos})
+        if (NOT DEFINED ${vert_dep}_pos)
           math (EXPR second "0")
         else()
-          math (EXPR second "${${it}_pos}")
+          math (EXPR second "${${vert_dep}_pos}")
         endif ()
-
         if(first GREATER second)
-          message(FATAL_ERROR "Plugin dependency cycle detected")
+          message(FATAL_ERROR "Plugin dependency cycle detected!")
         endif()
       endforeach()
     endforeach()
 
-    # END OF CYCLE CHECK ---------------------------------------------------------------
-
+    # REVERSE LIST OF DEPENDENCIES AND RETURN
     list(REVERSE TSORT)
     set(${PLUGIN_LIST} ${TSORT} PARENT_SCOPE)
   endfunction(topological_sort)
@@ -397,6 +393,7 @@ function (process_manifests)
     if (sources)
       message (DEBUG "[Plugin ${PLUGIN_NAME}] Declaring OBJECT target")
       add_library (smce_plugin_${PLUGIN_NAME} OBJECT ${sources})
+      target_include_directories (smce_plugin_${PLUGIN_NAME} SYSTEM PRIVATE "${SMCE_DIR}/RtResources/Ardrivo/include" "${PROJECT_BINARY_DIR}/SMCE_Devices/include")
       set (visibility PUBLIC)
     else ()
       message (DEBUG "[Plugin ${PLUGIN_NAME}] Declaring INTERFACE target")
@@ -404,7 +401,6 @@ function (process_manifests)
       set (visibility INTERFACE)
     endif ()
 
-    target_include_directories (smce_plugin_${PLUGIN_NAME} SYSTEM PRIVATE "${SMCE_DIR}/RtResources/Ardrivo/include" "${PROJECT_BINARY_DIR}/SMCE_Devices/include")
     target_include_directories (smce_plugin_${PLUGIN_NAME} ${visibility} ${incdirs})
     target_link_directories (smce_plugin_${PLUGIN_NAME} ${visibility} ${linkdirs})
     target_link_libraries (smce_plugin_${PLUGIN_NAME} ${visibility} ${linklibs})
