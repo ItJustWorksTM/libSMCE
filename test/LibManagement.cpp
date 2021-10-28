@@ -37,6 +37,7 @@
 #if !BOOST_OS_WINDOWS
 #    include <boost/process/search_path.hpp>
 #endif
+#include <vector>
 #include <boost/process/start_dir.hpp>
 #include <boost/process/system.hpp>
 #include <catch2/catch_test_macros.hpp>
@@ -48,7 +49,6 @@
 #include "SMCE/SketchConf.hpp"
 #include "SMCE/Toolchain.hpp"
 #include "defs.hpp"
-#include <vector>
 
 namespace bp = boost::process;
 using namespace std::literals;
@@ -171,28 +171,18 @@ TEST_CASE("Valid plugin dependency processing", "[Plugin]") {
     REQUIRE(!tc.check_suitable_environment());
 
     std::vector<std::string> manifests_name = {"A", "B", "C", "D", "E", "F", "G"};
-    std::vector<std::vector<std::string>> manifests_deps = {{}, {"C", "D"}, {"E", "F"},
-                                                           {"F", "G"}, {}, {}, {}};
+    std::vector<std::vector<std::string>> manifests_deps = {{}, {"C", "D"}, {"E", "F"}, {"F", "G"}, {}, {}, {}};
     std::vector<smce::PluginManifest> plugins;
 
-    for (int i = 0; i < manifests_name.size(); i++)
-    {
-        smce::PluginManifest pm {
-            .name = manifests_name[i],
-            .version = "0",
-            .depends = manifests_deps[i],
-            .uri = "file://" SMCE_PATH,
-            .defaults = smce::PluginManifest::Defaults::none
-        };
+    for (int i = 0; i < manifests_name.size(); i++) {
+        smce::PluginManifest pm{.name = manifests_name[i],
+                                .version = "0",
+                                .depends = manifests_deps[i],
+                                .uri = "file://" SMCE_PATH,
+                                .defaults = smce::PluginManifest::Defaults::none};
         plugins.push_back(pm);
     }
-    smce::SketchConfig skc {
-        "arduino:avr:nano",
-        {},
-        {},
-        std::move(plugins),
-        {}
-    };
+    smce::SketchConfig skc{"arduino:avr:nano", {}, {}, std::move(plugins), {}};
 
     smce::Sketch sk{SKETCHES_PATH "noop", std::move(skc)};
 
@@ -212,22 +202,14 @@ TEST_CASE("Invalid plugin dependency processing (cycle check)", "[Plugin]") {
     std::vector<smce::PluginManifest> plugins;
 
     for (int i = 0; i < manifests_name.size(); i++) {
-        smce::PluginManifest pm {
-            .name = manifests_name[i],
-            .version = "0",
-            .depends = manifests_deps[i],
-            .uri = "file://" SMCE_PATH,
-            .defaults = smce::PluginManifest::Defaults::none
-        };
+        smce::PluginManifest pm{.name = manifests_name[i],
+                                .version = "0",
+                                .depends = manifests_deps[i],
+                                .uri = "file://" SMCE_PATH,
+                                .defaults = smce::PluginManifest::Defaults::none};
         plugins.push_back(pm);
     }
-    smce::SketchConfig skc {
-        "arduino:avr:nano",
-        {},
-        {},
-        std::move(plugins),
-        {}
-    };
+    smce::SketchConfig skc{"arduino:avr:nano", {}, {}, std::move(plugins), {}};
 
     smce::Sketch sk{SKETCHES_PATH "noop", std::move(skc)};
 
