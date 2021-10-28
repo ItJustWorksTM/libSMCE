@@ -5,9 +5,9 @@ void setup() {
 
 void loop() {
     if(Serial.availableForWrite() > 0) {
-        if (Serial.peek() == 'H')
-            Serial.print(Serial.readString());
-        else if(Serial.peek() == '\0')
-            Serial.print(Serial.readString());
+        if (Serial.peek() == 'H') {
+            Serial.readString();
+            Serial.print('H');
+        }
     }
 }

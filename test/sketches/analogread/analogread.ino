@@ -5,5 +5,5 @@ void setup() {
 
 void loop() {
     analogWrite(2, analogRead(0));
-    delay(1);
+    delayMicroseconds(1000);
 }

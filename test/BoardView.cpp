@@ -315,8 +315,6 @@ TEST_CASE("BoardView GPIO Analog", "[BoardView]") {
     REQUIRE(pin0a.exists());
     REQUIRE(pin0a.can_read());
     REQUIRE_FALSE(pin0a.can_write());
-    auto pin1 = bv.pins[1];
-    REQUIRE_FALSE(pin1.exists());
     auto pin2 = bv.pins[2];
     REQUIRE(pin2.exists());
     auto pin2a = pin2.analog();
@@ -366,53 +364,27 @@ TEST_CASE("BoardView UART Write", "[BoardView]") {
     auto uart0 = bv.uart_channels[0];
     REQUIRE(uart0.exists());
     REQUIRE(uart0.rx().exists());
-    REQUIRE(uart0.rx().exists());
     REQUIRE(uart0.tx().exists());
     // do we only have the one uart channel since we only set one in uart.ino?
-    auto uart1 = bv.uart_channels[1];
-    REQUIRE_FALSE(uart1.exists());
-    REQUIRE_FALSE(uart1.rx().exists());
-    REQUIRE_FALSE(uart1.tx().exists());
     std::this_thread::sleep_for(1ms);
     // The data we want to send to the board
-    std::array out = {'H', 'E', 'L', 'L', 'O', ' ', 'U', 'A', 'R', 'T', '\0'};
+    std::array out = {'H'};
     // create an array of 64 bites to check if max lenght is correct.
     std::array<char, out.size()> in{};
     // Send data to the board, Serial.readString() is used to read it
     REQUIRE(uart0.rx().write(out) == out.size());
     //   Add test for rx size
-    // REQUIRE(uart0.rx().size() != 0);
+    REQUIRE(uart0.rx().size() == 1);
     int ticks = 16'000;
     do {
         if (ticks-- == 0)
             FAIL("Timed out");
         std::this_thread::sleep_for(1ms);
     } while (uart0.tx().size() != in.size());
-    // Now we have recieved the same data from the board, serial.print()
-    //check if the letter at the front is H
-    REQUIRE(uart0.tx().front() == 'H');
-    // read the data from the uart channel and the data is erased after reading.
     REQUIRE(uart0.tx().read(in) == in.size());
-    // front returns "\0" if it is empty
-    REQUIRE(uart0.tx().front() == '\0');
-    REQUIRE(uart0.tx().size() == 0);
     // now both in and out should be the same size
+    REQUIRE(in.size() == 1);
     REQUIRE(in == out);
-
-#if !MSVC_DEBUG
-    std::reverse(out.begin(), out.end());
-    REQUIRE(uart0.rx().write(out) == out.size());
-    ticks = 16'000;
-    do {
-        if (ticks-- == 0)
-            FAIL("Timed out");
-        std::this_thread::sleep_for(1ms);
-    } while (uart0.tx().size() != in.size());
-    REQUIRE(uart0.tx().read(in) == in.size());
-    REQUIRE(uart0.tx().size() == 0);
-    REQUIRE(in == out);
-#endif
-
     REQUIRE(br.stop());
 }
 
