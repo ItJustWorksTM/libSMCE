@@ -17,8 +17,6 @@
 cmake_policy(VERSION 3.12)
 if (CMAKE_VERSION VERSION_GREATER_EQUAL 3.21)
   cmake_policy(SET CMP0121 NEW)
-else()
-  cmake_policy(SET CMP0121 OLD)
 endif ()
 
 function (process_manifests)
@@ -92,60 +90,60 @@ function (process_manifests)
     unset (PLUGIN_NAME)
   endforeach ()
 
-  # SCAN PLUGIN DEPENDENCIES AND SORT LIST IN REVERSE DEPENDENCY
-  function(topological_sort PLUGIN_LIST)
-    # Clear the stack and output variable
-    set(VERTICES "${${PLUGIN_LIST}}")
-    set(STACK)
-    set(TSORT)
-    set(${PLUGIN_LIST})
-    set(VISIT_LIST)
+  # DEPTH FIRST SEARCH
+  function (dfs SLIST VLIST VX1)
+    set (S_LIST "${${SLIST}}")
+    set (V_LIST "${${VLIST}}")
+    set (VX_1 "${${VX1}}")
 
-    #ADD ALL VERTICES TO A TO-VISIT LIST
-    foreach(vx ${VERTICES})
-      list(APPEND VISIT_LIST VISIT_${vx})
-      #IF VERTEX HAS NO DEPEND, PLACE AT BEGINNING OF LIST
-      if (NOT PLUGIN_${vx}_DEPENDS)
-        list(REMOVE_ITEM VERTICES ${vx})
-        list(INSERT VERTICES 0 ${vx})
+    list (REMOVE_ITEM V_LIST VISIT_${VX_1})
+    set (${VLIST} ${V_LIST} PARENT_SCOPE)
+
+    foreach (VX_2 ${PLUGIN_${VX_1}_DEPENDS})
+      set (I_VX_2)
+      list (FIND V_LIST VISIT_${VX_2} I_VX_2)
+
+      if (${I_VX_2} GREATER -1)
+        dfs (S_LIST V_LIST VX_2)
       endif ()
     endforeach()
 
-    # DEPTH FIRST SEARCH
-    function(dfs SLIST VLIST vx1)
-      set(S_LIST "${${SLIST}}")
-      set(V_LIST "${${VLIST}}")
-      set(vx_1 "${${vx1}}")
+    list (APPEND S_LIST ${VX_1})
+    set (${VLIST} ${V_LIST} PARENT_SCOPE)
+    set (${SLIST} ${S_LIST} PARENT_SCOPE)
+  endfunction()
 
-      list (REMOVE_ITEM V_LIST VISIT_${vx_1})
-      set (${VLIST} ${V_LIST} PARENT_SCOPE)
+  # SCAN PLUGIN DEPENDENCIES AND SORT LIST IN REVERSE DEPENDENCY
+  function(topological_sort PLUGIN_LIST)
+    # Clear the stack and output variable
+    set (VERTICES "${${PLUGIN_LIST}}")
+    set (STACK)
+    set (TSORT)
+    set (${PLUGIN_LIST})
+    set (VISIT_LIST)
 
-      foreach(vx_2 ${PLUGIN_${vx_1}_DEPENDS})
-        set(i_vx_2)
-        list (FIND V_LIST VISIT_${vx_2} i_vx_2)
-
-        if (${i_vx_2} GREATER -1)
-          dfs(S_LIST V_LIST vx_2)
-        endif ()
-      endforeach()
-
-      list (APPEND S_LIST ${vx_1})
-      set (${VLIST} ${V_LIST} PARENT_SCOPE)
-      set (${SLIST} ${S_LIST} PARENT_SCOPE)
-    endfunction()
+    #ADD ALL VERTICES TO A TO-VISIT LIST
+    foreach (VX ${VERTICES})
+      list (APPEND VISIT_LIST VISIT_${VX})
+      #IF VERTEX HAS NO DEPEND, PLACE AT BEGINNING OF LIST
+      if (NOT PLUGIN_${VX}_DEPENDS)
+        list (REMOVE_ITEM VERTICES ${VX})
+        list (INSERT VERTICES 0 ${VX})
+      endif ()
+    endforeach()
 
     # START DEPTH FIRST SEARCH ON TOPOLOGICAL SORT
-    foreach(vx ${VERTICES})
-      set(i_vx)
-      list (FIND VISIT_LIST VISIT_${vx} i_vx)
-      if (${i_vx} GREATER -1)
-        dfs(STACK VISIT_LIST vx)
+    foreach (VX ${VERTICES})
+      set (I_VX)
+      list (FIND VISIT_LIST VISIT_${VX} I_VX)
+      if (${I_VX} GREATER -1)
+        dfs (STACK VISIT_LIST VX)
       endif ()
     endforeach()
 
     #CYCLE CHECK
-    math(EXPR IND "0")
-    list(LENGTH STACK STACK_LENGTH)
+    set (IND 0)
+    list (LENGTH STACK STACK_LENGTH)
 
     while(STACK_LENGTH GREATER 0)
       # Stores the position of
@@ -153,34 +151,34 @@ function (process_manifests)
       list (GET STACK -1 NEXT_VX)
       list (REMOVE_AT STACK -1)
       list (LENGTH STACK STACK_LENGTH)
-      math (EXPR ${NEXT_VX}_pos "${IND}")
+      set (${NEXT_VX}_POS ${IND})
       math (EXPR IND "${IND}+1")
       list (APPEND TSORT ${NEXT_VX})
 
     endwhile()
 
-    foreach(it ${VERTICES})
-      foreach(vert_dep ${PLUGIN_${it}_DEPENDS})
-        if (NOT DEFINED ${it}_pos)
-          math (EXPR first "0")
+    foreach (VX ${VERTICES})
+      foreach (VX_DEP ${PLUGIN_${VX}_DEPENDS})
+        if (NOT DEFINED ${VX}_POS)
+          set (FIRST 0)
         else()
-          math (EXPR first "${${it}_pos}")
+          set (FIRST ${${VX}_POS})
         endif ()
-        if (NOT DEFINED ${vert_dep}_pos)
-          math (EXPR second "0")
+        if (NOT DEFINED ${VX_DEP}_POS)
+          set (SECOND 0)
         else()
-          math (EXPR second "${${vert_dep}_pos}")
+          set (SECOND ${${VX_DEP}_POS})
         endif ()
-        if(first GREATER second)
-          message(FATAL_ERROR "Plugin dependency cycle detected!")
+        if (FIRST GREATER SECOND)
+          message (FATAL_ERROR "Plugin dependency cycle detected!")
         endif()
       endforeach()
     endforeach()
 
     # REVERSE LIST OF DEPENDENCIES AND RETURN
-    list(REVERSE TSORT)
-    set(${PLUGIN_LIST} ${TSORT} PARENT_SCOPE)
-  endfunction(topological_sort)
+    list (REVERSE TSORT)
+    set (${PLUGIN_LIST} ${TSORT} PARENT_SCOPE)
+  endfunction (topological_sort)
 
   topological_sort (plugins)
 

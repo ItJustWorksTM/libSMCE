@@ -17,14 +17,12 @@
  */
 
 #if defined(WIN32)
-#    define BOOST_USE_WINDOWS_H
 #    define WIN32_LEAN_AND_MEAN
 #    define NOMINMAX
 #endif
 
 #include <chrono>
 #include <cstdio>
-#include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -42,10 +40,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
 #include "SMCE/Board.hpp"
-#include "SMCE/BoardView.hpp"
-#include "SMCE/PluginManifest.hpp"
 #include "SMCE/Sketch.hpp"
-#include "SMCE/SketchConf.hpp"
 #include "SMCE/Toolchain.hpp"
 #include "defs.hpp"
 #include <vector>
@@ -167,12 +162,6 @@ TEST_CASE("Valid manifests processing", "[Plugin]") {
 }
 
 TEST_CASE("Valid plugin dependency processing", "[Plugin]") {
-#if !BOOST_OS_WINDOWS
-    const char* const generator_override = std::getenv("CMAKE_GENERATOR");
-    const char* const generator =
-        generator_override ? generator_override : (!bp::search_path("ninja").empty() ? "Ninja" : "");
-#endif
-
     smce::Toolchain tc{SMCE_PATH};
     REQUIRE(!tc.check_suitable_environment());
 
@@ -210,12 +199,6 @@ TEST_CASE("Valid plugin dependency processing", "[Plugin]") {
 }
 
 TEST_CASE("Invalid plugin dependency processing (cycle check)", "[Plugin]") {
-#if !BOOST_OS_WINDOWS
-    const char* const generator_override = std::getenv("CMAKE_GENERATOR");
-    const char* const generator =
-        generator_override ? generator_override : (!bp::search_path("ninja").empty() ? "Ninja" : "");
-#endif
-
     smce::Toolchain tc{SMCE_PATH};
     REQUIRE(!tc.check_suitable_environment());
 
@@ -245,10 +228,9 @@ TEST_CASE("Invalid plugin dependency processing (cycle check)", "[Plugin]") {
     smce::Sketch sk{SKETCHES_PATH "noop", std::move(skc)};
 
     const auto ec = tc.compile(sk);
-    [[maybe_unused]] std::size_t found;
-    [[maybe_unused]] std::string s;
+    std::size_t found = 0;
     if(ec) {
-        s = tc.build_log().second;
+        std::string s = std::move(tc.build_log().second);
         std::cerr << s;
         found = s.find("Plugin dependency cycle detected!");
     }
