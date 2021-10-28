@@ -17,12 +17,14 @@
  */
 
 #if defined(WIN32)
+#    define BOOST_USE_WINDOWS_H
 #    define WIN32_LEAN_AND_MEAN
 #    define NOMINMAX
 #endif
 
 #include <chrono>
 #include <cstdio>
+#include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -40,7 +42,10 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
 #include "SMCE/Board.hpp"
+#include "SMCE/BoardView.hpp"
+#include "SMCE/PluginManifest.hpp"
 #include "SMCE/Sketch.hpp"
+#include "SMCE/SketchConf.hpp"
 #include "SMCE/Toolchain.hpp"
 #include "defs.hpp"
 #include <vector>
