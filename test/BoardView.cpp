@@ -399,20 +399,3 @@ TEST_CASE("BoardView UART Write", "[BoardView]") {
     // now both in and out should be the same size
     REQUIRE(in == out);
 
-#if !MSVC_DEBUG
-    std::reverse(out.begin(), out.end());
-    REQUIRE(uart0.rx().write(out) == out.size());
-    ticks = 16'000;
-    do {
-        if (ticks-- == 0)
-            FAIL("Timed out");
-        std::this_thread::sleep_for(1ms);
-    } while (uart0.tx().size() != in.size());
-    REQUIRE(uart0.tx().read(in) == in.size());
-    REQUIRE(uart0.tx().size() == 0);
-    REQUIRE(in == out);
-#endif
-
-    REQUIRE(br.stop());
-}
-
