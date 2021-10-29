@@ -321,6 +321,9 @@ class SMCE_API VirtualUarts::Iterator {
     friend constexpr bool operator==(const VirtualUarts::Iterator& lhs, const VirtualUarts::Iterator& rhs) noexcept;
 
   public:
+    using value_type = VirtualUart;
+    using difference_type = int;
+
     [[nodiscard]] VirtualUart operator*() noexcept;
     constexpr Iterator& operator++() noexcept {
         ++m_index;
