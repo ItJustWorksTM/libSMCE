@@ -19,18 +19,13 @@
 #include <catch2/catch_test_macros.hpp>
 #include "SMCE/Toolchain.hpp"
 #include "defs.hpp"
-#include <iostream>
 
 TEST_CASE("Toolchain invalid", "[Toolchain]") {
     const auto path = SMCE_TEST_DIR "/empty_dir";
     std::filesystem::create_directory(path);
     smce::Toolchain tc{path};
     REQUIRE(tc.resource_dir() == path);
-
-    const auto e = tc.check_suitable_environment();
-    std::cout << "Hello \0";
-    std::cout << e;
-    REQUIRE(!tc.check_suitable_environment());
+    REQUIRE(tc.check_suitable_environment());
 }
 
 // TEST_CASE("Toolchain error","[Toolchain]"){

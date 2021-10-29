@@ -8,7 +8,7 @@ void loop() {
         Serial.print(Serial.readString());
 
     if(Serial.available() == 12) {
-        const char expected[] = "HELLO WORLD\0";
+        const char expected[12] = "HELLO WORLD";
         char toWrite[12];
         if(Serial.availableForWrite() == 64) {
             for (int i = 0; i < sizeof(expected); i++) {
