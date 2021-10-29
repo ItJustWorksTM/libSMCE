@@ -196,6 +196,7 @@ constexpr std::size_t bpp_888 = 8 + 8 + 8;
 TEST_CASE("BoardView RGB444 cvt", "[BoardView]") {
     smce::Toolchain tc{SMCE_PATH};
     REQUIRE(!tc.check_suitable_environment());
+    REQUIRE_FALSE(tc.check_suitable_environment() == smce::toolchain_error::resdir_absent);
     smce::Sketch sk{SKETCHES_PATH "noop", {.fqbn = "arduino:avr:nano"}};
     const auto ec = tc.compile(sk);
     if (ec)
