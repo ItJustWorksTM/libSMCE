@@ -28,7 +28,7 @@ TEST_CASE("Toolchain invalid", "[Toolchain]") {
     REQUIRE(tc.check_suitable_environment());
 }
 
-//TEST_CASE("Toolchain error","[Toolchain]"){
+// TEST_CASE("Toolchain error","[Toolchain]"){
 //    const auto path = SMCE_TEST_DIR "";
 //    std::string m_cmake_path = "cmake";
 //    std::string m_build_log;
@@ -48,7 +48,7 @@ TEST_CASE("Toolchain valid", "[Toolchain]") {
     REQUIRE_FALSE(tc.cmake_path().empty());
 }
 
-//TEST_CASE("Toolchain sketch_invalid","[Toolchain]"){
+// TEST_CASE("Toolchain sketch_invalid","[Toolchain]"){
 //    REQUIRE(smce::toolchain_error::resdir_absent );
 //}
 //    const auto path = SMCE_TEST_DIR "/empty_dir";
