@@ -141,7 +141,7 @@ Toolchain::Toolchain(stdfs::path resources_dir) noexcept : m_res_dir{std::move(r
 
 std::error_code Toolchain::do_configure(Sketch& sketch) noexcept {
     const auto sketch_hexid = sketch.m_uuid.to_hex();
-    //smce_root/temp
+    // smce_root/temp
     sketch.m_tmpdir = this->m_res_dir / "tmp" / sketch_hexid;
 
     {

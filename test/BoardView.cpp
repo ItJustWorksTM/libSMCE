@@ -93,7 +93,7 @@ TEST_CASE("BoardView GPIO", "[BoardView]") {
     REQUIRE_FALSE(pin2a.can_read());
     REQUIRE(pin2a.can_write());
     auto pin3 = bv.pins[3];
-    REQUIRE(pin0.exists());
+    REQUIRE(pin3.exists());
     auto pin3a = pin3.analog();
     REQUIRE(pin3a.exists());
     REQUIRE(pin3a.can_read());
@@ -104,8 +104,6 @@ TEST_CASE("BoardView GPIO", "[BoardView]") {
     REQUIRE(pin4a.exists());
     REQUIRE_FALSE(pin4a.can_read());
     REQUIRE(pin4a.can_write());
-    smce::VirtualPin::DataDirection dir = smce::VirtualPin::DataDirection::in;
-    REQUIRE(pin2.get_direction() == dir);
     std::this_thread::sleep_for(1ms);
     pin0d.write(false);
     test_pin_delayable(pin2d, true, 16384, 1ms);
@@ -134,7 +132,6 @@ TEST_CASE("BoardView UART", "[BoardView]") {
     REQUIRE(bv.valid());
     auto uart0 = bv.uart_channels[0];
     REQUIRE(uart0.exists());
-    REQUIRE(uart0.rx().exists());
     REQUIRE(uart0.rx().exists());
     REQUIRE(uart0.tx().exists());
     auto uart1 = bv.uart_channels[1];
@@ -209,10 +206,6 @@ TEST_CASE("BoardView RGB444 cvt", "[BoardView]") {
     REQUIRE(bv.valid());
     REQUIRE(br.start());
     REQUIRE(br.suspend());
-    // Add test for storage get root
-    std::uint16_t m_cspin = 0;
-    REQUIRE_FALSE(bv.storage_get_root(smce::BoardView::Link::SPI, m_cspin) == "{}");
-
     auto fb = bv.frame_buffers[0];
     REQUIRE(fb.exists());
 
