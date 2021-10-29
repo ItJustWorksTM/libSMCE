@@ -99,6 +99,8 @@ jobs:
             release: false
           - version: 1.76.0
             release: false
+          - version: 1.77.0
+            release: false
     env:
       CC: ${{ matrix.compiler.c }}
       CXX: ${{ matrix.compiler.cxx }}
@@ -265,6 +267,9 @@ jobs:
             release: false
           - version: 1.76.0
             slug: 1_76_0
+            release: false
+          - version: 1.77.0
+            slug: 1_77_0
             release: true
 #   env:
 #     CC: ${{ matrix.compiler.c }}
@@ -521,12 +526,12 @@ jobs:
         uses: actions/cache@v2
         with:
           path: boost_root
-          key: ${{ matrix.os.name }}${{ matrix.os.codename }}-boost-1.76.0-static
+          key: ${{ matrix.os.name }}${{ matrix.os.codename }}-boost-1.77.0-static
       - name: Install Boost
         if: steps.deps.outputs.BUILD_BOOST == 'true' && steps.cache-boost.outputs.cache-hit != 'true'
         run: |
           apt-get install -y wget
-          ci/build-static-boost.sh 1.76.0
+          ci/build-static-boost.sh 1.77.0
       - name: Setup global CMake interceptor
         run: ci/setup-cmake-interceptor.sh
       - name: CMake Configure

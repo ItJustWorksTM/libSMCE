@@ -141,6 +141,7 @@ target_sources (objSMCE PRIVATE
     include/SMCE/SMCE_iface.h
     include/SMCE/SMCE_fs.hpp
     include/SMCE/BoardConf.hpp
+    src/SMCE/BoardConf.cpp
     include/SMCE/Board.hpp
     src/SMCE/Board.cpp
     include/SMCE/Toolchain.hpp
