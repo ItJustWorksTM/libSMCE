@@ -42,7 +42,7 @@ else ()
     message ("Downloading Boost")
     FetchContent_Declare (Boost
         GIT_REPOSITORY "https://github.com/boostorg/boost"
-        GIT_TAG "boost-1.76.0"
+        GIT_TAG "boost-1.77.0"
         GIT_SHALLOW On
         GIT_PROGRESS On
     )

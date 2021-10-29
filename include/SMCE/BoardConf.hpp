@@ -92,6 +92,17 @@ struct SMCE_API BoardConfig {
     std::vector<BoardDevice> board_devices; /// Board devices to install
 };
 
+[[nodiscard]] SMCE_API bool operator==(const BoardConfig::GpioDrivers&, const BoardConfig::GpioDrivers&) noexcept;
+[[nodiscard]] SMCE_API bool operator==(const BoardConfig::GpioDrivers::DigitalDriver&,
+                                       const BoardConfig::GpioDrivers::DigitalDriver&) noexcept;
+[[nodiscard]] SMCE_API bool operator==(const BoardConfig::GpioDrivers::AnalogDriver&,
+                                       const BoardConfig::GpioDrivers::AnalogDriver&) noexcept;
+[[nodiscard]] SMCE_API bool operator==(const BoardConfig::UartChannel&, const BoardConfig::UartChannel&) noexcept;
+[[nodiscard]] SMCE_API bool operator==(const BoardConfig::SecureDigitalStorage&,
+                                       const BoardConfig::SecureDigitalStorage&) noexcept;
+[[nodiscard]] SMCE_API bool operator==(const BoardConfig::FrameBuffer&, const BoardConfig::FrameBuffer&) noexcept;
+[[nodiscard]] SMCE_API bool operator==(const BoardConfig::BoardDevice&, const BoardConfig::BoardDevice&) noexcept;
+
 } // namespace smce
 
 #endif // SMCE_BOARDCONF_HPP
