@@ -5,7 +5,6 @@ void setup() {
 void loop() {
     if(Serial.available() == 11)
         Serial.print(Serial.readString());
-
     if(Serial.available() == 12) {
         const char expected[12] = "HELLO WORLD";
         char toWrite[12];
