@@ -133,7 +133,6 @@ TEST_CASE("BoardView UART", "[BoardView]") {
     auto uart0 = bv.uart_channels[0];
     REQUIRE(uart0.exists());
     REQUIRE(uart0.rx().exists());
-    REQUIRE(uart0.tx().exists());
     auto uart1 = bv.uart_channels[1];
     REQUIRE_FALSE(uart1.exists());
     REQUIRE_FALSE(uart1.rx().exists());
@@ -193,7 +192,6 @@ constexpr std::size_t bpp_888 = 8 + 8 + 8;
 TEST_CASE("BoardView RGB444 cvt", "[BoardView]") {
     smce::Toolchain tc{SMCE_PATH};
     REQUIRE(!tc.check_suitable_environment());
-    REQUIRE_FALSE(tc.check_suitable_environment() == smce::toolchain_error::resdir_absent);
     smce::Sketch sk{SKETCHES_PATH "noop", {.fqbn = "arduino:avr:nano"}};
     const auto ec = tc.compile(sk);
     if (ec)
