@@ -16,7 +16,10 @@ void loop() {
                     toWrite[i] = Serial.read();
                 }
             }
+            for (int i = 0; i < sizeof(toWrite); i++){
+                Serial.print(toWrite[i]);
+            }
         }
-        Serial.print(toWrite);
+        //Serial.print(toWrite);
     }
 }

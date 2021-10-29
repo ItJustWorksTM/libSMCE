@@ -171,7 +171,7 @@ TEST_CASE("BoardView UART", "[BoardView]") {
     REQUIRE(in == out);
 #endif
     std::this_thread::sleep_for(1ms);
-    std::array out2 = {'H', 'E', 'L', 'L', 'O', ' ', 'W', 'O', 'R', 'L', 'D','\0'};
+    std::array out2 = {'H', 'E', 'L', 'L', 'O', ' ', 'W', 'O', 'R', 'L', 'D', '\0'};
     std::array<char, out2.size()> in2{};
     REQUIRE(uart0.rx().write(out2) == out2.size());
     ticks = 16'000;
@@ -209,9 +209,9 @@ TEST_CASE("BoardView RGB444 cvt", "[BoardView]") {
     REQUIRE(bv.valid());
     REQUIRE(br.start());
     REQUIRE(br.suspend());
-    //Add test for storage get root
+    // Add test for storage get root
     std::uint16_t m_cspin = 0;
-    REQUIRE_FALSE( bv.storage_get_root(smce::BoardView::Link::SPI, m_cspin) == "{}");
+    REQUIRE_FALSE(bv.storage_get_root(smce::BoardView::Link::SPI, m_cspin) == "{}");
 
     auto fb = bv.frame_buffers[0];
     REQUIRE(fb.exists());
@@ -288,8 +288,6 @@ TEST_CASE("BoardView RGB444 cvt", "[BoardView]") {
         fb.read_rgb444(out);
         REQUIRE(out == expected_out);
     }
-
-
     REQUIRE(br.resume());
     REQUIRE(br.stop());
 }
