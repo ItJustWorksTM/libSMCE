@@ -104,6 +104,7 @@ TEST_CASE("BoardView GPIO", "[BoardView]") {
     REQUIRE(pin4a.exists());
     REQUIRE_FALSE(pin4a.can_read());
     REQUIRE(pin4a.can_write());
+    REQUIRE(pin2.get_direction() == smce::VirtualPin::DataDirection::in);
     std::this_thread::sleep_for(1ms);
     pin0d.write(false);
     test_pin_delayable(pin2d, true, 16384, 1ms);

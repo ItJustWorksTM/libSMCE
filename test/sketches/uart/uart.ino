@@ -20,6 +20,5 @@ void loop() {
                 Serial.print(toWrite[i]);
             }
         }
-        //Serial.print(toWrite);
     }
 }
