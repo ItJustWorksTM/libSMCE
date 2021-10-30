@@ -23,73 +23,63 @@
 #include <fstream>
 
 TEST_CASE("Toolchain invalid", "[Toolchain]") {
-    // Empty directory
-    const auto path = SMCE_TEST_DIR "/empty_dir";
-    std::filesystem::create_directory(path);
-    smce::Toolchain tc{path};
-    REQUIRE(tc.resource_dir() == path);
-    REQUIRE(tc.check_suitable_environment() == smce::toolchain_error::resdir_empty);
-    // Absent directory
-    const auto path2 = SMCE_TEST_DIR "/absent_dir";
-    smce::Toolchain tc2{path2};
-    REQUIRE(tc2.resource_dir() == path2);
-    REQUIRE(tc2.check_suitable_environment() == smce::toolchain_error::resdir_absent);
-    // Directory is file
-    const auto dir3 = SMCE_TEST_DIR "/dir_is_file";
-    std::filesystem::create_directory(dir3);
-    const auto dirfile = SMCE_TEST_DIR "/dir_is_file/file.txt";
-    std::ofstream output(dirfile);
-    smce::Toolchain tc3{dirfile};
-    REQUIRE(tc3.resource_dir() == dirfile);
-    REQUIRE(tc3.check_suitable_environment() == smce::toolchain_error::resdir_file);
-    // Invalid sketch path
-    smce::Toolchain tc4{SMCE_PATH};
-    REQUIRE(!tc4.check_suitable_environment());
-    smce::Sketch sk{SKETCHES_PATH "invalid", {.fqbn = "arduino:avr:nano"}};
-    const auto ec4 = tc4.compile(sk);
-    REQUIRE(ec4 == smce::toolchain_error::sketch_invalid);
-    // Invalid plugin
-    smce::Toolchain tc5{SMCE_PATH};
-    REQUIRE(!tc5.check_suitable_environment());
-    // clang-format off
-    smce::PluginManifest invalid_pl{
-        ".",
-        "0.0",
-        {},
-        {},
-        "..",
-        "file://" PATCHES_PATH "invalid",
-        smce::PluginManifest::Defaults::arduino,
-        {},
-        {},
-        {},
-        {}
-    };
+    SECTION("empty directory"){
+        const auto path = SMCE_TEST_DIR "/empty_dir";
+        std::filesystem::create_directory(path);
+        smce::Toolchain tc{path};
+        REQUIRE(tc.resource_dir() == path);
+        REQUIRE(tc.check_suitable_environment() == smce::toolchain_error::resdir_empty);
+    }
+    SECTION("absent directory"){
+        const auto path = SMCE_TEST_DIR "/absent_dir";
+        smce::Toolchain tc{path};
+        REQUIRE(tc.resource_dir() == path);
+        REQUIRE(tc.check_suitable_environment() == smce::toolchain_error::resdir_absent);
+    }
+    SECTION("directory is file"){
+        const auto dir = SMCE_TEST_DIR "/dir_is_file";
+        std::filesystem::create_directory(dir);
+        const auto path = SMCE_TEST_DIR "/dir_is_file/file.txt";
+        std::ofstream output(path);
+        smce::Toolchain tc{path};
+        REQUIRE(tc.resource_dir() == path);
+        REQUIRE(tc.check_suitable_environment() == smce::toolchain_error::resdir_file);
+    }
+    SECTION("invalid sketch path"){
+        smce::Toolchain tc{SMCE_PATH};
+        REQUIRE(!tc.check_suitable_environment());
+        smce::Sketch sk{SKETCHES_PATH "invalid", {.fqbn = "arduino:avr:nano"}};
+        REQUIRE(tc.compile(sk) == smce::toolchain_error::sketch_invalid);
+    }
+    SECTION("invalid plugin"){
+        smce::Toolchain tc{SMCE_PATH};
+        REQUIRE(!tc.check_suitable_environment());
+        // clang-format off
+        smce::PluginManifest invalid_pl{
+            ".",
+            "0.0",
+            {},
+            {},
+            "..",
+            "file://" PATCHES_PATH "invalid",
+            smce::PluginManifest::Defaults::arduino,
+            {},
+            {},
+            {},
+            {}
+        };
 
-    smce::SketchConfig skc{
-        "arduino:avr:nano",
-        {},
-        { smce::SketchConfig::ArduinoLibrary{"."} },
-        { std::move(invalid_pl) }
-    };
-    // clang-format on
-    smce::Sketch sk5{SKETCHES_PATH "patch", std::move(skc)};
-    const auto ec5 = tc5.compile(sk5);
-    REQUIRE(ec5 == smce::toolchain_error::invalid_plugin_name);
+        smce::SketchConfig skc{
+            "arduino:avr:nano",
+            {},
+            { smce::SketchConfig::ArduinoLibrary{"."} },
+            { std::move(invalid_pl) }
+        };
+        // clang-format on
+        smce::Sketch sk{SKETCHES_PATH "patch", std::move(skc)};
+        REQUIRE(tc.compile(sk) == smce::toolchain_error::invalid_plugin_name);
+    }
 }
-
-// TEST_CASE("Toolchain error","[Toolchain]"){
-//    const auto path = SMCE_TEST_DIR "";
-//    std::string m_cmake_path = "cmake";
-//    std::string m_build_log;
-//    std::mutex m_build_log_mtx;
-//    std::filesystem::create_directory(path);
-//    smce::Toolchain tc{path};
-//    REQUIRE(tc.resource_dir() == path);
-//    REQUIRE(tc.check_suitable_environment());
-//    std::error_code code;
-//    REQUIRE(code.message() == "resdir_empty");
-//}
 
 TEST_CASE("Toolchain valid", "[Toolchain]") {
     smce::Toolchain tc{SMCE_PATH};
@@ -97,15 +87,3 @@ TEST_CASE("Toolchain valid", "[Toolchain]") {
     REQUIRE(tc.resource_dir() == SMCE_PATH);
     REQUIRE_FALSE(tc.cmake_path().empty());
 }
-
-// TEST_CASE("Toolchain sketch_invalid","[Toolchain]"){
-//    REQUIRE(smce::toolchain_error::resdir_absent );
-//}
-//    const auto path = SMCE_TEST_DIR "/empty_dir";
-//    std::filesystem::create_directory(path);
-//    smce::Toolchain tc{path};
-//    REQUIRE(tc.resource_dir() == path);
-//    REQUIRE(tc.check_suitable_environment());
-//    std::error_code code;
-//    REQUIRE(code.message() == "The operation completed successfully.");
-//}
