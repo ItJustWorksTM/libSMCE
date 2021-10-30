@@ -20,6 +20,7 @@
 #include "SMCE/Toolchain.hpp"
 #include "defs.hpp"
 #include <iostream>
+#include <fstream>
 
 TEST_CASE("Toolchain invalid", "[Toolchain]") {
     // Empty directory
@@ -34,14 +35,13 @@ TEST_CASE("Toolchain invalid", "[Toolchain]") {
     REQUIRE(tc2.resource_dir() == path2);
     REQUIRE(tc2.check_suitable_environment() == smce::toolchain_error::resdir_absent);
     // Directory is file
-    const auto path3 = SMCE_TEST_DIR "/dir_is_file/is_file.txt";
-    smce::Toolchain tc3{path3};
-    REQUIRE(tc3.resource_dir() == path3);
-    const auto ec = tc3.check_suitable_environment();
-    std::string error_mes = ec.message();
-    std::cout << "Hello \n";
-    std::cout << error_mes;
-    REQUIRE(ec == smce::toolchain_error::resdir_file);
+    const auto dir3 = SMCE_TEST_DIR "/dir_is_file";
+    std::filesystem::create_directory(dir3);
+    const auto dirfile = SMCE_TEST_DIR "/dir_is_file/file.txt";
+    std::ofstream output(dirfile);
+    smce::Toolchain tc3{dirfile};
+    REQUIRE(tc3.resource_dir() == dirfile);
+    REQUIRE(tc3.check_suitable_environment() == smce::toolchain_error::resdir_file);
     // Invalid sketch path
     smce::Toolchain tc4{SMCE_PATH};
     REQUIRE(!tc4.check_suitable_environment());
@@ -76,7 +76,6 @@ TEST_CASE("Toolchain invalid", "[Toolchain]") {
     smce::Sketch sk5{SKETCHES_PATH "patch", std::move(skc)};
     const auto ec5 = tc5.compile(sk5);
     REQUIRE(ec5 == smce::toolchain_error::invalid_plugin_name);
-    //REQUIRE(tc.check_suitable_environment() == smce::toolchain_error::resdir_absent);
 }
 
 // TEST_CASE("Toolchain error","[Toolchain]"){
