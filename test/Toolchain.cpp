@@ -15,6 +15,7 @@
  *  limitations under the License.
  *
  */
+
 #include <filesystem>
 #include <catch2/catch_test_macros.hpp>
 #include "SMCE/Toolchain.hpp"
@@ -23,20 +24,20 @@
 #include <fstream>
 
 TEST_CASE("Toolchain invalid", "[Toolchain]") {
-    SECTION("empty directory"){
+    SECTION("empty directory") {
         const auto path = SMCE_TEST_DIR "/empty_dir";
         std::filesystem::create_directory(path);
         smce::Toolchain tc{path};
         REQUIRE(tc.resource_dir() == path);
         REQUIRE(tc.check_suitable_environment() == smce::toolchain_error::resdir_empty);
     }
-    SECTION("absent directory"){
+    SECTION("absent directory") {
         const auto path = SMCE_TEST_DIR "/absent_dir";
         smce::Toolchain tc{path};
         REQUIRE(tc.resource_dir() == path);
         REQUIRE(tc.check_suitable_environment() == smce::toolchain_error::resdir_absent);
     }
-    SECTION("directory is file"){
+    SECTION("directory is file") {
         const auto dir = SMCE_TEST_DIR "/dir_is_file";
         std::filesystem::create_directory(dir);
         const auto path = SMCE_TEST_DIR "/dir_is_file/file.txt";
@@ -45,13 +46,13 @@ TEST_CASE("Toolchain invalid", "[Toolchain]") {
         REQUIRE(tc.resource_dir() == path);
         REQUIRE(tc.check_suitable_environment() == smce::toolchain_error::resdir_file);
     }
-    SECTION("invalid sketch path"){
+    SECTION("invalid sketch path") {
         smce::Toolchain tc{SMCE_PATH};
         REQUIRE(!tc.check_suitable_environment());
         smce::Sketch sk{SKETCHES_PATH "invalid", {.fqbn = "arduino:avr:nano"}};
         REQUIRE(tc.compile(sk) == smce::toolchain_error::sketch_invalid);
     }
-    SECTION("invalid plugin"){
+    SECTION("invalid plugin") {
         smce::Toolchain tc{SMCE_PATH};
         REQUIRE(!tc.check_suitable_environment());
         // clang-format off
