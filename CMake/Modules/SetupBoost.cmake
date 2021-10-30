@@ -15,55 +15,93 @@
 #  limitations under the License.
 #
 
+message (STATUS "SMCE_BOOST_LINKING: ${SMCE_BOOST_LINKING}")
+
 add_library (SMCE_Boost INTERFACE)
+
+set (SMCE_BOOST_MINVER 1.74)
+set (SMCE_BOOST_COMPONENTS atomic filesystem)
+if (MSVC)
+  list (APPEND SMCE_BOOST_COMPONENTS date_time)
+endif ()
+
 if ("${SMCE_BOOST_LINKING}" STREQUAL "STATIC")
   set (Boost_USE_STATIC_LIBS True)
 else ()
   set (Boost_USE_STATIC_LIBS False)
 endif ()
-
 if (MSVC)
-  find_package (Boost 1.74 COMPONENTS atomic filesystem date_time)
-else ()
-  find_package (Boost 1.74 COMPONENTS atomic filesystem)
+  if ("${SMCE_CXXRT_LINKING}" STREQUAL "STATIC")
+    set (Boost_USE_STATIC_RUNTIME True)
+  else ()
+    set (Boost_USE_STATIC_RUNTIME False)
+  endif ()
 endif ()
-if (Boost_FOUND)
+
+if ("${SMCE_BOOST_LINKING}" STREQUAL "AUTO")
+  find_package (Boost "${SMCE_BOOST_MINVER}" COMPONENTS ${SMCE_BOOST_COMPONENTS})
+  if (Boost_FOUND)
+    set (SMCE_BOOST_LINKING "SHARED")
+  else ()
+    set (SMCE_BOOST_LINKING "SOURCE")
+  endif ()
+  message (STATUS "Resolved SMCE_BOOST_LINKING: AUTO -> ${SMCE_BOOST_LINKING}")
+endif ()
+
+if ("${SMCE_BOOST_LINKING}" IN_LIST SMCE_LIBRARY_TYPES)
+  find_package (Boost "${SMCE_BOOST_MINVER}" REQUIRED COMPONENTS ${SMCE_BOOST_COMPONENTS})
   target_link_libraries (SMCE_Boost INTERFACE Boost::headers Boost::atomic Boost::filesystem)
   target_include_directories (SMCE_Boost SYSTEM INTERFACE ${Boost_INCLUDE_DIRS})
   target_link_directories (SMCE_Boost INTERFACE ${Boost_LIBRARY_DIRS})
-else ()
+elseif ("${SMCE_BOOST_LINKING}" STREQUAL "SOURCE")
 # set (Boost_DEBUG True)
   set (BOOST_ENABLE_CMAKE True)
 
-  if (EXISTS "${PROJECT_SOURCE_DIR}/ext_deps/boost")
-    set (boost_SOURCE_DIR ext_deps/boost)
+  if (DEFINED BOOST_SOURCE_ROOT)
+    set (boost_SOURCE_DIR "${BOOST_SOURCE_ROOT}")
   else ()
     include (FetchContent)
-    message ("Downloading Boost")
-    FetchContent_Declare (Boost
-        GIT_REPOSITORY "https://github.com/boostorg/boost"
-        GIT_TAG "boost-1.77.0"
-        GIT_SHALLOW On
-        GIT_PROGRESS On
-    )
+    # Can't reasonably default to Git until https://gitlab.kitware.com/cmake/cmake/-/issues/16144 is fixed
+    if (NOT BOOST_SOURCE_USE_GIT)
+      # Skip 1.77 because of the Boost.CMake issue mentioned below
+      if (NOT WIN32)
+        FetchContent_Declare (Boost
+            URL "https://boostorg.jfrog.io/artifactory/main/release/1.76.0/source/boost_1_76_0.tar.gz"
+            URL_HASH SHA256=7bd7ddceec1a1dfdcbdb3e609b60d01739c38390a5f956385a12f3122049f0ca
+        )
+      else ()
+        FetchContent_Declare (Boost
+            URL "https://boostorg.jfrog.io/artifactory/main/release/1.76.0/source/boost_1_76_0.7z"
+            URL_HASH SHA256=88782714f8701b6965f3fce087a66a1262601dd5ccd5b2e5305021beb53042a1
+        )
+      endif ()
+    else ()
+      FetchContent_Declare (Boost
+          GIT_REPOSITORY "https://github.com/boostorg/boost"
+          GIT_TAG "boost-1.77.0"
+          GIT_SHALLOW On
+          GIT_PROGRESS On
+      )
+    endif ()
     FetchContent_GetProperties (Boost)
     if (NOT boost_POPULATED)
+      message ("Downloading Boost")
       FetchContent_Populate (Boost)
 
-      # The following two commands can be dropped once we use GIT_TAG boost-1.78.0 (which will be released end of Dec 2021)
-      find_package (Git REQUIRED)
-      execute_process (COMMAND "${GIT_EXECUTABLE}" checkout develop
-          WORKING_DIRECTORY "${boost_SOURCE_DIR}/tools/cmake"
-      )
+      if (NOT EXISTS "${boost_SOURCE_DIR}/CMakeLists.txt")
+        file (DOWNLOAD "https://github.com/boostorg/boost/raw/boost-1.76.0/CMakeLists.txt" "${boost_SOURCE_DIR}/CMakeLists.txt")
+      else ()
+        # The following two commands can be dropped once we use GIT_TAG boost-1.78.0 (which will be released end of Dec 2021)
+        find_package (Git REQUIRED)
+        execute_process (COMMAND "${GIT_EXECUTABLE}" checkout develop
+            WORKING_DIRECTORY "${boost_SOURCE_DIR}/tools/cmake"
+        )
+      endif ()
     endif ()
   endif ()
 
   set (PREV_BUILD_SHARED_LIBS "${BUILD_SHARED_LIBS}")
-  if ("${SMCE_BOOST_LINKING}" STREQUAL "SHARED")
-    set (BUILD_SHARED_LIBS True)
-  else ()
-    set (BUILD_SHARED_LIBS False)
-  endif ()
+  set (BUILD_SHARED_LIBS False)
 
   set (PREV_CMAKE_POSITION_INDEPENDENT_CODE "${CMAKE_POSITION_INDEPENDENT_CODE}")
   set (CMAKE_POSITION_INDEPENDENT_CODE On)
@@ -72,6 +110,11 @@ else ()
 
   if (NOT DEFINED BOOST_EXCLUDE_LIBRARIES)
     set (BOOST_EXCLUDE_LIBRARIES compute)
+  endif ()
+  string (TOLOWER "${SMCE_CXXRT_LINKING}" BOOST_RUNTIME_LINK)
+
+  if (EXISTS "${boost_SOURCE_DIR}/boost")
+    include_directories (SYSTEM "${boost_SOURCE_DIR}")
   endif ()
 
   add_subdirectory ("${boost_SOURCE_DIR}" "${boost_BINARY_DIR}" EXCLUDE_FROM_ALL)
@@ -95,6 +138,10 @@ else ()
       "${boost_SOURCE_DIR}/libs/range/include" # Dependency of Interprocess
       "${boost_SOURCE_DIR}/libs/numeric/conversion/include" # Dependency of Interprocess
   )
+  if (EXISTS "${boost_SOURCE_DIR}/boost")
+    message (STATUS "Detected \"${boost_SOURCE_DIR}/boost\" - using as Boost headers incdir")
+    target_include_directories (SMCE_Boost SYSTEM INTERFACE "${boost_SOURCE_DIR}")
+  endif ()
 endif ()
 
 add_library (Boost_ipc INTERFACE)
