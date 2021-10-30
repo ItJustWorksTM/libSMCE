@@ -49,6 +49,12 @@ else ()
     FetchContent_GetProperties (Boost)
     if (NOT boost_POPULATED)
       FetchContent_Populate (Boost)
+
+      # The following two commands can be dropped once we use GIT_TAG boost-1.78.0 (which will be released end of Dec 2021)
+      find_package (Git REQUIRED)
+      execute_process (COMMAND "${GIT_EXECUTABLE}" checkout develop
+          WORKING_DIRECTORY "${boost_SOURCE_DIR}/tools/cmake"
+      )
     endif ()
   endif ()
 
@@ -63,6 +69,11 @@ else ()
   set (CMAKE_POSITION_INDEPENDENT_CODE On)
 
   set (BUILD_TESTING Off)
+
+  if (NOT DEFINED BOOST_EXCLUDE_LIBRARIES)
+    set (BOOST_EXCLUDE_LIBRARIES compute)
+  endif ()
+
   add_subdirectory ("${boost_SOURCE_DIR}" "${boost_BINARY_DIR}" EXCLUDE_FROM_ALL)
 
   set (CMAKE_POSITION_INDEPENDENT_CODE "${PREV_CMAKE_POSITION_INDEPENDENT_CODE}")
