@@ -167,19 +167,6 @@ TEST_CASE("BoardView UART", "[BoardView]") {
     REQUIRE(uart0.tx().size() == 0);
     REQUIRE(in == out);
 #endif
-    std::this_thread::sleep_for(1ms);
-    std::array out2 = {'H', 'E', 'L', 'L', 'O', ' ', 'W', 'O', 'R', 'L', 'D', '\0'};
-    std::array<char, out2.size()> in2{};
-    REQUIRE(uart0.rx().write(out2) == out2.size());
-    ticks = 16'000;
-    do {
-        if (ticks-- == 0)
-            FAIL("Timed out");
-        std::this_thread::sleep_for(1ms);
-    } while (uart0.tx().size() != in2.size());
-    REQUIRE(uart0.tx().read(in2) == in2.size());
-    REQUIRE(uart0.tx().size() == 0);
-    REQUIRE(in2 == out2);
     REQUIRE(br.stop());
 }
 

@@ -132,7 +132,6 @@ SMCE_INTERNAL std::error_code write_manifests(const SketchConfig& skonf, const s
 SMCE_INTERNAL void write_devices_specs(const SketchConfig& skonf, const stdfs::path& tmpdir) {
     std::ofstream f{tmpdir / "Devices.cmake"};
     f << "# HSD generated\ninclude (BindGen)\n";
-    // --where do we set genbind_devices?
     for (const auto& e : skonf.genbind_devices)
         f << "smce_bindgen_sketch (" << e.get().full_string << ")\n";
 }
@@ -143,7 +142,6 @@ Toolchain::Toolchain(stdfs::path resources_dir) noexcept : m_res_dir{std::move(r
 
 std::error_code Toolchain::do_configure(Sketch& sketch) noexcept {
     const auto sketch_hexid = sketch.m_uuid.to_hex();
-    // smce_root/temp
     sketch.m_tmpdir = this->m_res_dir / "tmp" / sketch_hexid;
 
     {
