@@ -19,12 +19,9 @@ void loop() {
             }
             Serial.print(rest);
         }
-        else if(Serial.peek() == '\0'){
-            Serial.print(Serial.readString());
-        }
         else
             Serial.print(Serial.readString());
     }
-    else
+    else if (Serial.available() > 0)
         Serial.print(Serial.readString());
 }
