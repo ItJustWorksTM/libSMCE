@@ -18,8 +18,18 @@
 
 #include <SMCE/Toolchain.hpp>
 
+#include <cstdio>
+#include <memory>
+#include <stdexcept>
+#include <string>
+#include <array>
+#include <stdio.h>
+#include <stdlib.h>
+
 #include <fstream>
 #include <string>
+#include <vector>
+#include <iostream>
 #include <system_error>
 #include <boost/predef.h>
 #include <boost/process.hpp>
@@ -314,6 +324,37 @@ std::error_code Toolchain::compile(Sketch& sketch) noexcept {
 
     sketch.m_built = true;
     return {};
+}
+
+std::vector<std::string> Toolchain::find_compiler() {
+    std::vector<std::string> compilers;
+
+    std::string msvc = find_MSVC();
+
+    return compilers;
+}
+
+bool Toolchain::set_compiler_sketch(std::string &compiler) {
+    if(compiler.empty()){
+        std::cerr << "No compiler selected!";
+        return false;
+    }
+
+    return true;
+}
+
+std::string Toolchain::find_MSVC() {
+    std::array<char, 128> buffer;
+    std::string result;
+    std::unique_ptr<FILE, decltype(&_pclose)> pipe(_popen("vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\\**\\Bin\\MSBuild.exe", "r"), _pclose);
+    if (!pipe) {
+        throw std::runtime_error("popen() failed!");
+    }
+    while (fgets(buffer.data(), (int)buffer.size(), pipe.get()) != nullptr) {
+        result += buffer.data();
+    }
+
+    return result;
 }
 
 } // namespace smce

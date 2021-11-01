@@ -21,6 +21,7 @@
 
 #include <mutex>
 #include <string>
+#include <vector>
 #include <system_error>
 #include <SMCE/SMCE_fs.hpp>
 #include <SMCE/SMCE_iface.h>
@@ -92,6 +93,12 @@ class SMCE_API Toolchain {
      * Compile a sketch
      **/
     std::error_code compile(Sketch& sketch) noexcept;
+
+    // Add const?
+    std::vector<std::string> find_compiler();
+    bool set_compiler_sketch(std::string &compiler);
+    std::string find_MSVC();
+
 };
 
 } // namespace smce
