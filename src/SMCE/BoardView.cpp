@@ -545,17 +545,17 @@ bool FrameBuffer::read_yuv422(std::span<std::byte> res) {
     return true;
 }
 
-    FrameBuffer FrameBuffers::operator[](std::size_t key) noexcept {
-        if (!m_bdat)
-            return {m_bdat, 0};
-        const auto it = std::lower_bound(m_bdat->frame_buffers.begin(), m_bdat->frame_buffers.end(), key,
-                                         [](const auto& pin, std::size_t key) { return pin.key < key; });
-        if (it != m_bdat->frame_buffers.end()) {
-            if (const auto delta = std::distance(m_bdat->frame_buffers.begin(), it);
-                delta >= 0 && m_bdat->frame_buffers[delta].key == key)
-                return {m_bdat, static_cast<std::size_t>(delta)};
-        }
-        return {nullptr, std::size_t(-1)};
+FrameBuffer FrameBuffers::operator[](std::size_t key) noexcept {
+    if (!m_bdat)
+        return {m_bdat, 0};
+    const auto it = std::lower_bound(m_bdat->frame_buffers.begin(), m_bdat->frame_buffers.end(), key,
+                                     [](const auto& pin, std::size_t key) { return pin.key < key; });
+    if (it != m_bdat->frame_buffers.end()) {
+        if (const auto delta = std::distance(m_bdat->frame_buffers.begin(), it);
+            delta >= 0 && m_bdat->frame_buffers[delta].key == key)
+            return {m_bdat, static_cast<std::size_t>(delta)};
     }
+    return {nullptr, std::size_t(-1)};
+}
 
 } // namespace smce
