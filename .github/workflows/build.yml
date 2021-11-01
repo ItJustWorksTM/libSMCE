@@ -618,6 +618,7 @@ jobs:
        - name: rpmlint
          run: rpmlint ./build/*.rpm || true
        - name: Test installation
+         if: matrix.os.name != 'openSUSE'
          uses: addnab/docker-run-action@v3
          with:
            image: ${{ matrix.os.image }}
