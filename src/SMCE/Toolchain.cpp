@@ -329,8 +329,26 @@ std::error_code Toolchain::compile(Sketch& sketch) noexcept {
 std::vector<std::string> Toolchain::find_compiler() {
     std::vector<std::string> compilers;
 
+    std::string command;
+
     std::string msvc = find_MSVC();
 
+#if BOOST_OS_WINDOWS
+    command = "where gcc";
+#else
+    command = "which gcc";
+#endif
+
+    std::string gcc = boost_process(command);
+
+#if BOOST_OS_WINDOWS
+    command = "where llvm";
+#else
+    command = "which llvm";
+#endif
+
+    std::string llvm = boost_process(command);
+    
     return compilers;
 }
 
@@ -359,6 +377,26 @@ std::string Toolchain::find_MSVC() {
     // clang-format on
 
     std::getline(vswhere_out, result);
+    return result;
+}
+
+
+std::string Toolchain::boost_process(std::string &cmd) {
+
+    bp::ipstream out;
+    std::string result;
+
+    // clang-format off
+    bp::child c(
+        cmd,
+        bp::std_out > out
+#if BOOST_OS_WINDOWS
+        , bp::windows::create_no_window
+#endif
+    );
+    // clang-format on
+
+    std::getline(out, result);
     return result;
 }
 

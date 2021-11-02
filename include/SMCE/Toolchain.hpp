@@ -99,6 +99,8 @@ class SMCE_API Toolchain {
     bool set_compiler_sketch(std::string &compiler);
     std::string find_MSVC();
 
+    std::string boost_process(std::string &cmd);
+
 };
 
 } // namespace smce
