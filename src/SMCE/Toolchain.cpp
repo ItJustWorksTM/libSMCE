@@ -344,16 +344,21 @@ bool Toolchain::set_compiler_sketch(std::string &compiler) {
 }
 
 std::string Toolchain::find_MSVC() {
-    std::array<char, 128> buffer;
-    std::string result;
-    std::unique_ptr<FILE, decltype(&_pclose)> pipe(_popen("vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\\**\\Bin\\MSBuild.exe", "r"), _pclose);
-    if (!pipe) {
-        throw std::runtime_error("popen() failed!");
-    }
-    while (fgets(buffer.data(), (int)buffer.size(), pipe.get()) != nullptr) {
-        result += buffer.data();
-    }
 
+    bp::ipstream vswhere_out;
+    std::string result;
+
+    // clang-format off
+    bp::child c(
+        "vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild/**/Bin/MSBuild.exe",
+        bp::std_out > vswhere_out
+#if BOOST_OS_WINDOWS
+        , bp::windows::create_no_window
+#endif
+    );
+    // clang-format on
+
+    std::getline(vswhere_out, result);
     return result;
 }
 
