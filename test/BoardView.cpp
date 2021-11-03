@@ -29,6 +29,10 @@
 
 using namespace std::literals;
 
+constexpr std::byte operator""_b(char c) noexcept { return static_cast<std::byte>(c); }
+constexpr std::byte operator""_b(unsigned long long c) noexcept { return static_cast<std::byte>(c); }
+
+
 TEST_CASE("BoardView GPIO", "[BoardView]") {
     smce::Toolchain tc{SMCE_PATH};
     REQUIRE(!tc.check_suitable_environment());
@@ -149,8 +153,6 @@ TEST_CASE("BoardView UART", "[BoardView]") {
 
 constexpr auto div_ceil(std::size_t lhs, std::size_t rhs) { return lhs / rhs + !!(lhs % rhs); }
 
-constexpr std::byte operator""_b(char c) noexcept { return static_cast<std::byte>(c); }
-
 constexpr std::size_t bpp_444 = 4 + 4 + 4;
 constexpr std::size_t bpp_888 = 8 + 8 + 8;
 
@@ -246,3 +248,80 @@ TEST_CASE("BoardView RGB444 cvt", "[BoardView]") {
 
     REQUIRE(br.stop());
 }
+
+/*
+ * rgb888ToRgb565
+ * 76543210 | 76543210
+ * GGGBBBBB   RRRRRGGG
+ */
+TEST_CASE("BoardView RGB565 Read Test", "[BoardView]") {
+    // convert three bytes(24bits) of rgb888 to two bytes(18bits) of rgb565
+    std::byte res[2];
+    std::byte red_bits[] = {0xFF_b, 0_b, 0_b};
+    std::byte green_bits[] = {0_b, 0xFF_b, 0_b};
+    std::byte blue_bits[] = {0x0_b, 0_b, 0xFF_b};
+    std::byte black_bits[] = {0_b, 0_b, 0_b};
+    std::byte white_bits[] = {0xFF_b, 0xFF_b, 0xFF_b};
+
+    smce::rgb888ToRgb565(red_bits, res);
+    // red
+    REQUIRE(res[1] == 0xF8_b);
+    // green and blue
+    REQUIRE(res[0] == 0_b);
+
+    smce::rgb888ToRgb565(green_bits, res);
+    REQUIRE(res[1] == 0x07_b);
+    REQUIRE(res[0] == 0xE0_b);
+
+    smce::rgb888ToRgb565(blue_bits, res);
+    REQUIRE(res[1] == 0_b);
+    REQUIRE(res[0] == 0x1F_b);
+
+    smce::rgb888ToRgb565(black_bits, res);
+    REQUIRE(res[1] == 0_b);
+    REQUIRE(res[0] == 0_b);
+
+    smce::rgb888ToRgb565(white_bits, res);
+    REQUIRE(res[1] == 0xFF_b);
+    REQUIRE(res[0] == 0xFF_b);
+}
+
+TEST_CASE("BoardView RGB565 Write Test", "[BoardView]") {
+    // convert two bytes(16bits) of rgb565  to three bytes(24bits) of rgb888
+    std::byte res[3];
+    std::byte red_bits[] = {0x00_b, 0xF8_b};
+    std::byte green_bits[] = {0xE0_b, 0x07_b};
+    std::byte blue_bits[] = {0x1F_b, 0_b};
+    std::byte black_bits[] = {0_b, 0_b};
+    std::byte white_bits[] = {0xFF_b, 0xFF_b};
+
+    smce::rgb565ToRgb888(std::span{red_bits, 2}, res);
+    // red
+    REQUIRE(res[0] == 255_b);
+    // green
+    REQUIRE(res[1] == 0_b);
+    // blue
+    REQUIRE(res[2] == 0_b);
+
+    smce::rgb565ToRgb888(std::span{green_bits, 2}, res);
+    REQUIRE(res[0] == 0_b);
+    REQUIRE(res[1] == 255_b);
+    REQUIRE(res[2] == 0_b);
+
+    smce::rgb565ToRgb888(std::span{blue_bits, 2}, res);
+    REQUIRE(res[0] == 0_b);
+    REQUIRE(res[1] == 0_b);
+    REQUIRE(res[2] == 255_b);
+
+    smce::rgb565ToRgb888(std::span{black_bits, 2}, res);
+    REQUIRE(res[0] == 0_b);
+    REQUIRE(res[1] == 0_b);
+    REQUIRE(res[2] == 0_b);
+
+    smce::rgb565ToRgb888(std::span{white_bits, 2}, res);
+    REQUIRE(res[0] == 255_b);
+    REQUIRE(res[1] == 255_b);
+    REQUIRE(res[2] == 255_b);
+}
+
+

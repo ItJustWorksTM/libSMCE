@@ -220,9 +220,7 @@ class SMCE_API FrameBuffer {
 };
 
 SMCE_API void rgb565ToRgb888(std::span<const std::byte>, std::byte*);
-SMCE_API void yuv422ToRgb888(std::span<const std::byte>, std::byte*);
 SMCE_API void rgb888ToRgb565(const std::byte*, std::span<std::byte>);
-SMCE_API void rgb888ToYuv422(const std::byte*, std::span<std::byte>);
 
 
 class SMCE_API FrameBuffers {
