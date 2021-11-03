@@ -326,34 +326,27 @@ std::error_code Toolchain::compile(Sketch& sketch) noexcept {
     return {};
 }
 
-std::vector<std::string> Toolchain::find_compiler() {
-    std::vector<std::string> compilers;
+std::vector<Toolchain::CompilerInformation> Toolchain::find_compilers() {
+    std::vector<Toolchain::CompilerInformation> compilers;
+    std::string compiler_path;
 
-    std::string command;
+    compiler_path = find_MSVC();
+    if(!compiler_path.empty())
+        compilers.push_back(create_compiler_information(compiler_path, "msvc", "TBD"));
 
-    std::string msvc = find_MSVC();
+    compiler_path = search_env_path("gcc");
+    if(!compiler_path.empty())
+        compilers.push_back(create_compiler_information(compiler_path, "gcc", "TBD"));
 
-#if BOOST_OS_WINDOWS
-    command = "where gcc";
-#else
-    command = "which gcc";
-#endif
+    compiler_path = search_env_path("clang");
+    if(!compiler_path.empty())
+        compilers.push_back(create_compiler_information(compiler_path, "clang", "TBD"));
 
-    std::string gcc = boost_process(command);
-
-#if BOOST_OS_WINDOWS
-    command = "where llvm";
-#else
-    command = "which llvm";
-#endif
-
-    std::string llvm = boost_process(command);
-    
     return compilers;
 }
 
-bool Toolchain::set_compiler_sketch(std::string &compiler) {
-    if(compiler.empty()){
+bool Toolchain::select_compiler(Toolchain::CompilerInformation& compiler) {
+    if(compiler.name.empty()){
         std::cerr << "No compiler selected!";
         return false;
     }
@@ -380,24 +373,20 @@ std::string Toolchain::find_MSVC() {
     return result;
 }
 
+std::string Toolchain::search_env_path(const std::string& compiler) {
 
-std::string Toolchain::boost_process(std::string &cmd) {
+    auto path = boost::process::search_path(compiler);
+    return path.string();
+}
 
-    bp::ipstream out;
-    std::string result;
+Toolchain::CompilerInformation Toolchain::create_compiler_information(const std::string& path, const std::string& name, const std::string& version){
+    Toolchain::CompilerInformation compilerInformation;
 
-    // clang-format off
-    bp::child c(
-        cmd,
-        bp::std_out > out
-#if BOOST_OS_WINDOWS
-        , bp::windows::create_no_window
-#endif
-    );
-    // clang-format on
+    compilerInformation.name = name;
+    compilerInformation.path = path;
+    compilerInformation.version = version;
 
-    std::getline(out, result);
-    return result;
+    return compilerInformation;
 }
 
 } // namespace smce

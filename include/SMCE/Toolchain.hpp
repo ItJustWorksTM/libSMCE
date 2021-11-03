@@ -56,6 +56,7 @@ enum struct toolchain_error {
  * used at a given type in an application.
  **/
 class SMCE_API Toolchain {
+
     stdfs::path m_res_dir;
     std::string m_cmake_path = "cmake";
 
@@ -66,6 +67,13 @@ class SMCE_API Toolchain {
     std::error_code do_build(Sketch& sketch) noexcept;
 
   public:
+
+    struct CompilerInformation{
+        std::string name;
+        std::string version;
+        std::string path;
+    };
+
     using LockedLog = std::pair<std::unique_lock<std::mutex>, std::string&>;
 
     /**
@@ -94,14 +102,15 @@ class SMCE_API Toolchain {
      **/
     std::error_code compile(Sketch& sketch) noexcept;
 
-    // Add const?
-    std::vector<std::string> find_compiler();
-    bool set_compiler_sketch(std::string &compiler);
+    std::vector<Toolchain::CompilerInformation> find_compilers();
+    bool select_compiler(Toolchain::CompilerInformation& compiler);
+
     std::string find_MSVC();
-
-    std::string boost_process(std::string &cmd);
-
+    std::string search_env_path(const std::string& compiler);
+    Toolchain::CompilerInformation create_compiler_information(const std::string& path,
+                                                               const std::string& name, const std::string& version);
 };
+
 
 } // namespace smce
 
