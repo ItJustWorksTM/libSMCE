@@ -257,16 +257,10 @@ std::error_code Toolchain::do_build(Sketch& sketch) noexcept {
     else if (ec)
         return ec;
 
-    if (m_cmake_path != "cmake") {
-        if (std::error_code ec; stdfs::is_empty(m_cmake_path, ec))
-            return toolchain_error::cmake_not_found;
-        else if (ec)
-            return ec;
-    } else {
-        m_cmake_path = bp::search_path(m_cmake_path).string();
-        if (m_cmake_path.empty())
-            return toolchain_error::cmake_not_found;
-    }
+    std::error_code ec = check_cmake_availability();
+    if(ec)
+        return ec;
+
     bp::ipstream cmake_out;
     // clang-format off
     const int cmres = bp::system(
@@ -287,6 +281,31 @@ std::error_code Toolchain::do_build(Sketch& sketch) noexcept {
     if (!line.starts_with("cmake"))
         return toolchain_error::cmake_unknown_output;
 
+    return {};
+}
+
+[[nodiscard]] std::error_code Toolchain::check_cmake_availability() noexcept {
+    if (m_cmake_path != "cmake") {
+        if (std::error_code ec; stdfs::is_empty(m_cmake_path, ec)) {
+            return toolchain_error::cmake_not_found;
+        }
+        else if (ec) {
+            return ec;
+        }
+    } else {
+        m_cmake_path = bp::search_path(m_cmake_path).string();
+        if (m_cmake_path.empty()) {
+            if (std::error_code ec; stdfs::is_empty((m_res_dir / "RtResources/CMake/bin/cmake.exe").string(), ec)) {
+                return toolchain_error::cmake_not_found;
+            }
+            else if (ec) {
+                return ec;
+            }
+            else {
+                m_cmake_path = (m_res_dir / "RtResources/CMake/bin/cmake.exe").string();
+            }
+        }
+    }
     return {};
 }
 
