@@ -67,7 +67,7 @@ void print_menu(){
     std::cout << "-wa <pin> <value> -> Set a specific value on a analog pin" << std::endl;
     std::cout << "-wd <pin> <value> -> Set a specific value on a digital pin, value should be 0 or 1" << std::endl;
     std::cout << "-ra <pin> -> Read the value on a analog pin" << std::endl;
-    std::cout << "-rd <pin> -> Read the value on a analog pin" << std::endl;
+    std::cout << "-rd <pin> -> Read the value on a digital pin" << std::endl;
     std::cout << "-q -> Power off board and quit program" << std::endl << std::endl;
 }
 
