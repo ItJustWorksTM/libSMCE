@@ -53,7 +53,15 @@ ctest
 ```shell
 cpack
 ```
+#### Nuget Packaging
+```shell
+For calling the Nuget pack:
+- Put the Nuget.exe in the path 
+- Run bellow command in cmd:
+NuGet.exe pack <Backend project folder name>\LibsmceNuget.nuspec -NoDefaultExcludes -OutputDirectory builds\nuget
+- libSMCE-NugetPackage.2021.11.2.nupkg should be created under builds\nuget 
 
+```
 
 ### Future development
 - Serve the Doxygen-generated docs
