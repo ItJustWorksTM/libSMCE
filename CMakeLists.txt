@@ -20,8 +20,8 @@ cmake_policy (SET CMP0022 NEW)
 
 project (libSMCE VERSION 1.4.0.5)
 list (APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/CMake/Modules")
-include(CodeCoverage) # for code coverage
-APPEND_COVERAGE_COMPILER_FLAGS() # for code coverage
+#include(CodeCoverage) # for code coverage
+#APPEND_COVERAGE_COMPILER_FLAGS() # for code coverage
 
 include (UserConfigVars)
 
