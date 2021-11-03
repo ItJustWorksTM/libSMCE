@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package >
+    <metadata>
+        <id>libSMCE-NugetPackage</id>
+		<authors>Atiye Etemadi</authors>
+		<version>2021.11.02</version>
+        <description>libSMCE(Backend)</description>
+        <tags>LibSMCE, libSMCE</tags>
+    </metadata>
+     
+    <files>
+        <file src="ci\*"                    target="libSMCE\ci"/>
+        <file src="include\**\*.*"          target="libSMCE\include"/>
+        <file src="CMake\**\*.*"            target="libSMCE\CMake"/>
+        <file src="extra\**\*.*"            target="libSMCE\extra"/>
+        <file src="share\**\*.*"            target="libSMCE\share"/>
+        <file src="src\**\*.*"              target="libSMCE\src"/>
+        <file src="test\**\*.*"             target="libSMCE\test"/>
+        <file src="README.md"               target="libSMCE"/>
+        <file src="LibSMCEpackaging.props"  target="libSMCE\others"/>
+		<file src=".clang-format"           target="libSMCE\clang"/>
+		<file src=".clang-tidy"             target="libSMCE\clang"/>
+		<file src="CMakeLists.txt"          target="libSMCE\Config"/>
+		<file src="Config.cmake.in"         target="libSMCE\Config"/>
+		<file src="CONTRIBUTING.md"         target="libSMCE\others"/>
+		<file src="Doxyfile"                target="libSMCE\Doxy"/>
+		<file src="LICENSE"                 target="libSMCE\LICENSE"/>
+	</files>
+</package>
