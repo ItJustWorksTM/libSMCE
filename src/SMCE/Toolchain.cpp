@@ -344,6 +344,7 @@ std::vector<Toolchain::CompilerInformation> Toolchain::find_compilers() {
     if(!compiler_path.empty())
         compilers.push_back(create_compiler_information(compiler_path, "clang", "TBD"));
 
+    select_compiler(compilers.at(1));
     return compilers;
 }
 
@@ -352,6 +353,13 @@ bool Toolchain::select_compiler(Toolchain::CompilerInformation& compiler) {
         std::cerr << "No compiler selected!";
         return false;
     }
+
+    // clang-format off
+    auto cmake_config = bp::child{
+        m_cmake_path,
+            "-DSMCE_TOOLCHAIN=../../CMake/Toolchain/toolchain_"+compiler.name+"_"+compiler.version+".cmake"
+    };
+    // clang-format on
 
     return true;
 }
@@ -405,7 +413,6 @@ bool Toolchain::generate_toolchain_file(Toolchain::CompilerInformation& compiler
         ofs.close();
         return true;
     }
-    //test
 
     return false;
 }
