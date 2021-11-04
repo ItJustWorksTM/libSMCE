@@ -27,12 +27,14 @@
 #include <stdlib.h>
 
 #include <fstream>
+#include <iostream>
 #include <string>
 #include <vector>
 #include <iostream>
 #include <system_error>
 #include <boost/predef.h>
 #include <boost/process.hpp>
+#include <boost/filesystem/fstream.hpp>
 #if BOOST_OS_WINDOWS
 #    include <boost/process/windows.hpp>
 #endif
@@ -379,14 +381,33 @@ std::string Toolchain::search_env_path(const std::string& compiler) {
     return path.string();
 }
 
-Toolchain::CompilerInformation Toolchain::create_compiler_information(const std::string& path, const std::string& name, const std::string& version){
+Toolchain::CompilerInformation Toolchain::create_compiler_information(const std::string& path, const std::string& name, const std::string& version) {
     Toolchain::CompilerInformation compilerInformation;
 
     compilerInformation.name = name;
     compilerInformation.path = path;
     compilerInformation.version = version;
 
+    generate_toolchain_file(compilerInformation);
+
     return compilerInformation;
+}
+
+bool Toolchain::generate_toolchain_file(Toolchain::CompilerInformation& compiler) {
+
+    boost::filesystem::path path{"../../CMake/Toolchain/toolchain_"+compiler.name+"_"+compiler.version+".cmake"};
+    boost::filesystem::ofstream ofs{path};
+
+    if(ofs.is_open()){
+        ofs << "project(libSMCE CXX)" << std::endl;
+        ofs << "enable_language(CXX)" << std::endl;
+        ofs << "set(CMAKE_CXX_COMPILER $"+compiler.path+")";
+        ofs.close();
+        return true;
+    }
+    //test
+
+    return false;
 }
 
 } // namespace smce

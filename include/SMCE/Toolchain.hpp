@@ -109,6 +109,7 @@ class SMCE_API Toolchain {
     std::string search_env_path(const std::string& compiler);
     Toolchain::CompilerInformation create_compiler_information(const std::string& path,
                                                                const std::string& name, const std::string& version);
+    bool generate_toolchain_file(Toolchain::CompilerInformation& compiler);
 };
 
 
