@@ -78,6 +78,39 @@ jobs:
         with:
           name: cmcov-traces
           path: CMakeTrace/
+  debug-cxxstdlib:
+    name: libSMCE - ${{ matrix.lib }} Debug mode
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - lib: libstdc++
+            os: ubuntu-latest
+            c: gcc-10
+            cxx: g++-10
+          - lib: libc++
+            os: ubuntu-latest
+            c: clang-13
+            cxx: clang++-13 -stdlib=libc++
+    env:
+      CC: ${{ matrix.c }}
+      CXX: ${{ matrix.cxx }}
+    steps:
+      - name: Grab more recent Clang/LLVM
+        if: matrix.lib == 'libc++'
+        run: |
+          sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+          sudo apt-get update && sudo apt-get install -y clang-13 libc++-13-dev libc++abi-13-dev
+      - uses: actions/checkout@v2
+      - run: ci/setup-cmake-interceptor.sh
+      - run: cmake -DSMCE_BUILD_PROFILE=CxxStdLibDebug -S . -B build
+      - run: cmake --build build/ --target SMCE_Tests
+      - run: (cd build/test/; ctest --output-on-failure)
+      - run: ci/scan-cmake-commands.sh
+      - uses: codecov/codecov-action@v2
+        with:
+          files: ./cmake-codecov-report.json
 
   build-ubuntu:
     name: libSMCE - Ubuntu (${{ matrix.compiler.name }} & Boost ${{ matrix.boost.version }})
