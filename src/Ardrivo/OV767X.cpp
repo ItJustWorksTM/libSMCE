@@ -64,6 +64,7 @@ int OV767X::begin(SMCE_OV767_Resolution resolution, SMCE_OV767_Format format, in
     }
     switch (format) {
     case RGB888:
+    case RGB565:
     case RGB444:
         m_format = format;
         break;

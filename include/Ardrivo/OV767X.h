@@ -26,6 +26,7 @@
 enum SMCE_OV767_Format {
     RGB888, // RRRRRRRRGGGGGGGGBBBBBBBB // SMCE extension
     RGB444, // GGGGBBBB----RRRR
+    RGB565, //RRRRGGGGGGGBBBB
 };
 
 enum SMCE_OV767_Resolution {

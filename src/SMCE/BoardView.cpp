@@ -375,6 +375,62 @@ bool FrameBuffer::read_rgb444(std::span<std::byte> buf) {
     return true;
 }
 
+/*
+ * MEDIA_BUS_FMT_RGB444_2X8_PADHI_LE is laid as:
+ * 76543210 | 76543210
+ * RRRRRGGG   GGGBBBBB
+ */
+
+bool FrameBuffer::write_rgb565(std::span<const std::byte> buf) {
+    if (!exists())
+        return false;
+
+    auto& frame_buf = m_bdat->frame_buffers[m_idx];
+    if (buf.size() != frame_buf.data.size() / 3 * 2)
+        return false;
+
+    [[maybe_unused]] std::lock_guard lk{frame_buf.data_mut};
+
+    // we need the buffer and the data for the conversion of rgb888 to rgb565
+    // we need to read from
+    auto from = buf.begin();
+    auto to = frame_buf.data.begin();
+    while (from != buf.end()) {
+        const auto rg = *from++;
+        const auto gb = *from++;
+        //RED
+        *to++ = (rg & std::byte{0xF8}) | (rg >> 5); // Take 5 bits of Red component from the 5 positions to thE left of rg
+        //GREEN
+        *to++ = ((rg & std::byte{0xD7}) << 5) | ((gb & std::byte{0xE0}) >> 3); // the right 3 bits from rg and the first/left 3 from bg
+        //BLUE
+        *to++ = gb << 3;
+    }
+
+    return true;
+}
+
+bool FrameBuffer::read_rgb565(std::span<std::byte> buf) {
+    if (!exists())
+        return false;
+
+    auto& frame_buf = m_bdat->frame_buffers[m_idx];
+    if (buf.size() != frame_buf.data.size() / 3 * 2)
+        return false;
+    [[maybe_unused]] std::lock_guard lk{frame_buf.data_mut};
+
+    const auto* from = frame_buf.data.data();
+    auto to = buf.begin();
+    while (to != buf.end()) {
+        const auto r = *from++;
+        const auto g = *from++;
+        const auto b = *from++;
+        *to++ = (r & std::byte{0xF8}) | (g >> 5);
+        *to++ = (g & std::byte{0xE0} <<3 ) | (b >> 3);
+    }
+
+    return true;
+}
+
 FrameBuffer FrameBuffers::operator[](std::size_t key) noexcept {
     if (!m_bdat)
         return {m_bdat, 0};
