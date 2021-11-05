@@ -616,9 +616,11 @@ jobs:
             image: fedora:rawhide
             profile: FedoraHost
           - name: openSUSE
-            codename: Tumbleweed
-            image: opensuse/tumbleweed
-            profile: FedoraHost
+            codename: Leap
+            image: opensuse/leap
+            profile: OpenSuseLeap
+            c: gcc-10
+            cxx: g++-10
           - name: OpenMandriva
             codename: Lx4.2
             image: openmandriva/4.2
@@ -626,6 +628,9 @@ jobs:
     container:
       image: ${{ matrix.os.image }}
       options: --security-opt seccomp=unconfined
+    env:
+      CC: ${{ matrix.os.c }}
+      CXX: ${{ matrix.os.cxx }}
     steps:
        - name: Setup workdir
          run: mkdir /tmp/wk && cd /tmp/wk
@@ -637,7 +642,7 @@ jobs:
        - name: Fetch deps
          run: |
            [[ '${{ matrix.os.name }}' == 'Fedora' ]] && dnf install -y perl jq which tar git cmake rpmdevtools rpmlint ninja-build gcc-c++ boost-devel openssl-devel || true
-           [[ '${{ matrix.os.name }}' == 'openSUSE' ]] && zypper install -y perl jq which tar git cmake rpmdevtools rpm-build rpmlint ninja gcc-c++ boost-devel libboost_atomic${{ steps.boost-ver.outputs.SNAKE }}-devel libboost_filesystem${{ steps.boost-ver.outputs.SNAKE }}-devel libopenssl-devel || true
+           [[ '${{ matrix.os.name }}' == 'openSUSE' ]] && zypper install -y perl jq which tar git cmake rpmdevtools rpm-build rpmlint ninja gcc10-c++ boost-devel libboost_atomic${{ steps.boost-ver.outputs.SNAKE }}-devel libboost_filesystem${{ steps.boost-ver.outputs.SNAKE }}-devel libopenssl-devel || true
            [[ '${{ matrix.os.name }}' == 'OpenMandriva' ]] && dnf install -y perl jq which tar git cmake rpmdevtools rpm-build rpmlint ninja gcc-c++ glibc-devel lib64boost-devel lib64openssl-devel || true
        - uses: actions/checkout@v2
        - name: Setup global CMake interceptor
