@@ -22,12 +22,16 @@
 ## Expected targets:
 # Sketch - sketch executable target
 
-## File outputs:
-# "${PROJECT_SOURCE_DIR}/sketch.cpp"
-
 if (CMAKE_SCRIPT_MODE_FILE)
   message (FATAL_ERROR "This module may only be included in a CMake project configuration")
 endif ()
+
+file (GLOB SKETCH_SOURCE_FILES LIST_DIRECTORIES false CONFIGURE_DEPENDS "${SKETCH_DIR}/*.ino" "${SKETCH_DIR}/*.pde")
+
+if (SKETCH_SOURCE_FILES STREQUAL "")
+  return ()
+endif ()
+
 
 message (STATUS "Setting up preprocessing harness")
 
@@ -87,7 +91,7 @@ elseif (MSVC)
   string (APPEND EXTRA_FLAGS " -fms-extensions")
 endif ()
 
-string (APPEND EXTRA_FLAGS " -nostdinc -nostdinc++ -include Arduino.h")
+string (APPEND EXTRA_FLAGS " -nostdinc -nostdinc++ -include Arduino.h -ferror-limit=0")
 
 file (WRITE "${PROJECT_BINARY_DIR}/ArduinoSourceBuild.cmake" "execute_process (COMMAND \"${ARDPRE_EXECUTABLE}\" \"${SKETCH_DIR}\" ${COMPDEF_FLAGS} ${INCDIR_FLAGS} ${EXTRA_FLAGS} ${CMAKE_CXX_FLAGS} RESULT_VARIABLE ARDPRE_EXITCODE OUTPUT_FILE \"${PROJECT_SOURCE_DIR}/sketch.cpp\")\n")
 file (APPEND "${PROJECT_BINARY_DIR}/ArduinoSourceBuild.cmake" [[
@@ -96,11 +100,10 @@ file (APPEND "${PROJECT_BINARY_DIR}/ArduinoSourceBuild.cmake" [[
     endif ()
 ]])
 
-set (SKETCH_SOURCE_FILES)
-file (GLOB SKETCH_SOURCE_FILES LIST_DIRECTORIES false CONFIGURE_DEPENDS "${SKETCH_DIR}/*.ino" "${SKETCH_DIR}/*.pde")
-
 add_custom_command (OUTPUT "${PROJECT_SOURCE_DIR}/sketch.cpp"
     COMMAND "${CMAKE_COMMAND}" -E env ARDUINO_PRELUDE_DUMP_COMPOSITE=1 "${CMAKE_COMMAND}" -P "${PROJECT_BINARY_DIR}/ArduinoSourceBuild.cmake"
     DEPENDS ${SKETCH_SOURCE_FILES}
     COMMENT "Preprocessing sketch \"${SKETCH_DIR}\""
 )
+
+target_sources (Sketch PRIVATE "${PROJECT_SOURCE_DIR}/sketch.cpp")

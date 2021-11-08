@@ -32,6 +32,11 @@ Check our [Wiki](https://github.com/ItJustWorksTM/libSMCE/wiki) for more informa
 - MQTT (interface of [arduino-mqtt](https://github.com/256dpi/arduino-mqtt)) - Note: cannot be monitored by host application
 - OV767X Camera (interface of [Arduino_OV767X](https://github.com/arduino-libraries/Arduino_OV767X)) - Note: available pixel formats differ
 
+#### Supported sketch languages
+- C++
+- Arduino C++ (through [`arduino-prelude`](https://github.com/ItJustWorksTM/arduino-prelude))
+- [Juniper](https://www.juniper-lang.org) (requires the Juniper compiler to be already installed)
+
 ### Build Requirements
 
 - [CMake](https://www.kitware.com/cmake) >= 3.16

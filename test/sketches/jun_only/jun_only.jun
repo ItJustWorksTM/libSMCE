@@ -1,0 +1,12 @@
+module Blink
+open(Prelude, Io, Time)
+
+let boardLed = 13u16
+
+fun loop() = (
+    Io:digWrite(boardLed, high());
+    Time:wait(10)
+)
+
+fun setup() =
+    Io:setPinMode(boardLed, Io:output())
