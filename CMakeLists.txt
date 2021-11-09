@@ -72,7 +72,7 @@ target_sources (ArdrivoUDD PRIVATE
 add_library (Ardrivo SHARED)
 configure_coverage (Ardrivo)
 set_property (TARGET Ardrivo PROPERTY CXX_EXTENSIONS Off)
-if (CMAKE_VERSION VERSION_LESS 3.18) # In 3.17 and below, that was apparently not default
+if (CMAKE_VERSION VERSION_LESS_EQUAL 3.18) # That was apparently not default
   set_property (TARGET Ardrivo PROPERTY POSITION_INDEPENDENT_CODE True)
 endif ()
 target_include_directories (Ardrivo PRIVATE include/Ardrivo)
