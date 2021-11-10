@@ -13,6 +13,7 @@ find_package (SMCE REQUIRED)
 
 set (SMCE_RES "${PROJECT_BINARY_DIR}/SMCE_Res")
 
+include_directories(${PROJECT_SOURCE_DIR}/include)
 add_executable (SMCE_client SMCE_Client.cpp)
 target_link_libraries (SMCE_client PRIVATE SMCE::SMCE)
 target_compile_definitions (SMCE_client PRIVATE "SMCE_RESOURCES_DIR=\"${SMCE_RES}\"")

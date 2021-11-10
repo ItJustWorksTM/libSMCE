@@ -21,20 +21,18 @@
 #include <thread>                                                                                                                
 #include <utility>                                                                                                               
 #include <string>                                                                                                                
-#include <vector>                                                                                                                
+#include <vector>
+#include <termcolor.hpp>                                                                                                                     
 #include <SMCE/Board.hpp>                                                                                                        
 #include <SMCE/BoardConf.hpp>                                                                                                    
 #include <SMCE/BoardView.hpp>                                                                                                    
 #include <SMCE/Sketch.hpp>                                                                                                       
 #include <SMCE/SketchConf.hpp>                                                                                                   
-#include <SMCE/Toolchain.hpp>                                                                                                    
+#include <SMCE/Toolchain.hpp>
+                                                                                               
                                                                                                                                  
 using namespace std::literals;                                                                                                   
-                                                                                                                                 
-// automic bool for handling threads                                                                                             
-std::atomic_bool run_threads = true;                                                                                             
-// Standard arduino dir                                                                                                          
-std::string dir = ".";                                                                                                           
+                                                                                                                                                                                                                                                                                                    
 void print_help(const char* argv0){                                                                                              
     std::cout << "Usage: " << argv0 << " <fully-qualified-board-name> <path-to-sketch>" << std::endl;                            
 }                                                                                                                                
@@ -42,20 +40,28 @@ void print_help(const char* argv0){
 void exit_sketch(int code){                                                                                                      
     std::cerr << "Error code:  "<< code << std::endl;                                                                            
 }                                                                                                                                
-                                                                                                                                 
+
+// automic bool for handling threads                                                                                             
+std::atomic_bool run_threads = true;
+std::atomic_bool mute_uart = false;
+std::mutex t_lock;                                                                                                                                                                                                                                                        
 //Listen to the uart input from board, writes what it read to terminal                                                           
 void uart_listener(smce::VirtualUart uart){                                                                                      
     auto tx = uart.tx();                                                                                                         
     while(run_threads){                                                                                                          
-        std::string buffer;                                                                                                      
+        std::string buffer;
+        t_lock.lock(); // if recompiling sketch, lock thread here untill recompiling is done.                                                                                                 
         buffer.resize(tx.max_size());                                                                                            
-        const auto len = tx.read(buffer);                                                                                        
+        const auto len = tx.read(buffer);
+        t_lock.unlock();                                                                                        
         if(len == 0){                                                                                                            
             std::this_thread::sleep_for(1ms);                                                                                    
             continue;                                                                                                            
         }                                                                                                                        
-        buffer.resize(len);                                                                                                      
-        std::cout << buffer << std::endl << std::flush;                                                                          
+        buffer.resize(len);
+        if(!mute_uart){
+            std::cout << termcolor::red << buffer << termcolor::reset <<std::endl << "$>" << std::flush; 
+        }                                                                                                                                                                               
     }                                                                                                                            
 }                                                                                                                                
 // Prints a command menu for SMCE_Client                                                                                         
@@ -64,25 +70,26 @@ void print_menu(){
     std::cout << "-h -> See menu" << std::endl;                                                                                  
     std::cout << "-p -> Pause or resume the board" << std::endl;                                                                 
     std::cout << "-rc -> Recompile the sketch" << std::endl;                                                                     
-    std::cout << "-m <message> -> Send message to board through uart (serial)" << std::endl;                                     
+    std::cout << "-m <message> -> Send message to board through uart (serial)" << std::endl;
+    std::cout << "-mt -> disable uart prints in console" << std::endl;                                     
     std::cout << "-wa <pin> <value> -> Set a specific value on a analog pin" << std::endl;                                       
     std::cout << "-wd <pin> <value> -> Set a specific value on a digital pin, value should be 0 or 1" << std::endl;              
     std::cout << "-ra <pin> -> Read the value on a analog pin" << std::endl;                                                     
     std::cout << "-rd <pin> -> Read the value on a digital pin" << std::endl;                                                    
     std::cout << "-q -> Power off board and quit program" << std::endl << std::endl;                                             
 }                                                                                                                                
-                                                                                                                                 
+
+// Standard arduino dir  
+std::string dir = ".";                                                                                                                                     
 int compile_sketch (smce::Sketch &sketch,smce::Toolchain &toolchain ,smce::Board &board) {                                       
-    // Compile the sketch on the toolchain                                                                                       
-    std::cout << "Compiling..." << std::endl;                                                                                    
+    // Compile the sketch on the toolchain                                                                                                                                                                 
     if (const auto ec = toolchain.compile(sketch)) {                                                                             
         std::cerr << "Error: " << ec.message() << std::endl;                                                                     
         auto [_, log] = toolchain.build_log();                                                                                   
         if (!log.empty())                                                                                                        
             std::cerr << log << std::endl;                                                                                       
         return EXIT_FAILURE;                                                                                                     
-    }                                                                                                                            
-    std::cout << "Attach..." << std::endl;                                                                                       
+    }                                                                                                                                                                                                                   
     board.attach_sketch(sketch);                                                                                                 
     // Create Board Config                                                                                                       
     smce::BoardConfig board_conf{                                                                                                
@@ -99,11 +106,25 @@ int compile_sketch (smce::Sketch &sketch,smce::Toolchain &toolchain ,smce::Board
         },                                                                                                                       
         .uart_channels = { {} }, // use standard configuration of uart_channels                                                  
         .sd_cards = { smce::BoardConfig::SecureDigitalStorage{ .root_dir = dir } }                                               
-    };                                                                                                                           
-    std::cout << "Configures..." << std::endl;                                                                                   
+    };                                                                                                                                                                                                            
     board.configure(std::move(board_conf));                                                                                      
     return 0;                                                                                                                    
-}                                                                                                                                
+}
+
+int compile_and_start(smce::Sketch &sketch,smce::Toolchain &toolchain ,smce::Board &board){
+    if(board.status() == smce::Board::Status::running){
+        board.stop();                                                                                                                                                                        
+        board.reset();   
+    }
+    compile_sketch(sketch,toolchain,board);                                                                                                                                           
+    //Start board                                                                                                                
+    if (!board.start()) {                                                                                                        
+        std::cerr << "Error: Board failed to start sketch" << std::endl;                                                         
+        return EXIT_FAILURE;                                                                                                     
+    }else{                                                                                                                       
+        return 0;                                                                              
+    }   
+}
                                                                                                                                  
 int main(int argc, char** argv){                                                                                                 
     if (argc == 2 && (argv[1] == "-h" || argv[1] == "--help")) {                                                                 
@@ -136,28 +157,21 @@ int main(int argc, char** argv){
     // // clang-format on                                                                                                        
                                                                                                                                  
     // Create the virtual Arduino board                                                                                          
-    std::cout << "Creating board..." << std::endl;                                                                               
-    smce::Board board(exit_sketch);                                                                                              
-    compile_sketch(sketch,toolchain,board);                                                                                      
-                                                                                                                                 
-    //Start board                                                                                                                
-    if (!board.start()) {                                                                                                        
-        std::cerr << "Error: Board failed to start sketch" << std::endl;                                                         
-        return EXIT_FAILURE;                                                                                                     
-    }else{                                                                                                                       
-        std::cout << "Sketch started" << std::endl;                                                                              
-    }                                                                                                                            
-                                                                                                                                 
+    std::cout << "Creating board and compiling sketch" << std::endl;                                                                               
+    smce::Board board(exit_sketch);
+    //Compile and start board
+    compile_and_start(sketch,toolchain,board);                                                                                      
+    std::cout << "Complete" << std::endl;                                                                                                                                                                                                                                          
     //Create view and uart (serial) channels                                                                                     
     auto board_view = board.view();                                                                                              
     auto uart0 = board_view.uart_channels[0];                                                                                    
                                                                                                                                  
     //start listener thread for uart                                                                                             
     std::thread uart_thread{[=] {uart_listener(uart0);} };                                                                       
-                                                                                                                                 
+    std::cout << "Messages recived on uart from arduino is shown as " 
+        << termcolor::red << "red" << termcolor::reset << " text." << std::endl;                                                                                                                             
     // Print command menu                                                                                                        
-    print_menu();                                                                                                                
-                                                                                                                                 
+    print_menu();                                                                                                                                                                                                                                              
     // Main loop, handle the command input                                                                                       
     bool suspended = false;                                                                                                      
     while(true){                                                                                                                 
@@ -166,8 +180,9 @@ int main(int argc, char** argv){
         std::getline(std::cin,input);                                                                                            
         board.tick();                                                                                                            
         if (input == "-h"){ //help menu                                                                                          
-            print_menu();                                                                                                        
-       }else if (input == "-p"){ //pause or resume                                                                               
+            print_menu();
+
+        }else if (input == "-p"){ //pause or resume                                                                               
             if(!suspended){                                                                                                      
                 suspended = board.suspend();                                                                                     
                 if(suspended)                                                                                                    
@@ -178,26 +193,34 @@ int main(int argc, char** argv){
                 board.resume();                                                                                                  
                 suspended = false;                                                                                               
                 std::cout << "Board resumed" << std::endl;                                                                       
-            }                                                                                                                    
-        }else if (input == "-rc"){ //recompile                                                                                   
-                std::cout << "1" << std::endl;                                                                                   
-                run_threads = false;                                                                                             
-                board.stop();                                                                                                    
-                std::cout << "2" << std::endl;                                                                                   
-                board.reset();                                                                                                   
-                std::cout << "3" << std::endl;                                                                                   
-                compile_sketch(sketch,toolchain,board);                                                                          
-                std::cout << "4" << std::endl;                                                                                   
-                board.start();                                                                                                   
-                board_view = board.view();                                                                                       
-                uart0 = board_view.uart_channels[0];                                                                             
-                std::cout << "Complete" << std::endl;                                                                            
+            }
+
+        }else if (input == "-rc"){ //recompile
+            std::cout << "Recompiling.." << std::endl; 
+            t_lock.lock(); // aquire lock before recompiling, so uart_listener is forced to wait                                                                                                                                                                        
+            compile_and_start(sketch,toolchain,board);
+            // update boardview and uart0 after the sketch has been recompiled.
+            board_view = board.view();                                                                                       
+            uart0 = board_view.uart_channels[0];                                                                                                   
+            t_lock.unlock(); // unlock as recompile is done                                                                        
+            std::cout << "Complete" << std::endl;
+
         }else if (input.starts_with("-m ")){ //send message on uart                                                              
                 std::string message = input.substr(3);                                                                           
                 for(std::span<char> to_write = message; !to_write.empty();){                                                     
                     const auto written_count = uart0.rx().write(to_write);                                                       
                     to_write = to_write.subspan(written_count);                                                                  
-                }                                                                                                                
+                }
+
+        }else if(input.starts_with("-mt")){
+            if(mute_uart){
+                mute_uart = false;
+                std::cout <<"Unmuted uart"<<std::endl;
+            }else{
+                mute_uart = true;
+                std::cout <<"Muted uart"<<std::endl;
+            }
+
         }else if (input.starts_with("-wa ")){ //write value on analog pin                                                        
             bool write = true;                                                                                                   
             int pin = stoi(input.substr(3,5));                                                                                   
@@ -213,7 +236,8 @@ int main(int argc, char** argv){
             }                                                                                                                    
             if(write){                                                                                                           
                 apin.write(value);                                                                                               
-            }                                                                                                                    
+            }
+
         }else if (input.starts_with("-wd ")){ //write value on digital pin                                                       
             bool write = true;                                                                                                   
             int pin = stoi(input.substr(3,5));                                                                                   
@@ -235,7 +259,8 @@ int main(int argc, char** argv){
                 }else{                                                                                                           
                     std::cout << "Value must be 0 or 1 for digital pins" << std::endl;                                           
                 }                                                                                                                
-            }                                                                                                                    
+            }
+
         }else if (input.starts_with("-ra ")){                                                                                    
             bool read = true;                                                                                                    
             int index_pin = stoi(input.substr(3));                                                                               
@@ -250,16 +275,34 @@ int main(int argc, char** argv){
             }                                                                                                                    
             if(read){                                                                                                            
                 std::cout << "Value from pin " << index_pin << " is " << pin.read() << std::endl;                                
-            }                                                                                                                    
-        }else if (input.starts_with("-rd ")){                                                                                    
-            bool read = true;                                                                                                    
-            int index_pin = stoi(input.substr(3));                                                                               
-            auto pin = board_view.pins[index_pin].digital();                                                                     
-            if(!pin.exists()){                                                                                                   
-                std::cout << "Pin does not exist!" << std::endl;                                                                 
-                read=false;                                                                                                      
-            }                                                                                                                    
-            if(!pin.can_read()){                                                                                                 
-                std::cout << "Can't read from pin!" << std::endl;                                                                
-                read=false;                                                                                                      
-            }                                                                                                                    
+            } 
+
+        }else if (input.starts_with("-rd ")){
+            bool read = true;
+            int index_pin = stoi(input.substr(3));
+            auto pin = board_view.pins[index_pin].digital();
+            if(!pin.exists()){
+                std::cout << "Pin does not exist!" << std::endl;
+                read=false;
+            }
+            if(!pin.can_read()){
+                std::cout << "Can't read from pin!" << std::endl;
+                read=false;
+            }
+            if(read){
+                std::cout << "Value from pin " << index_pin << " is " << pin.read() << std::endl;
+            }
+
+        }else if (input == "-q"){ //power off and quit
+            std::cout << "Quitting..." << std::endl;
+            run_threads = false;
+            board.stop();
+            uart_thread.join();
+            break;
+
+        }else{
+            //If input don't match with anything.
+            std::cout << "Unknown input, try again." << std::endl;
+        }
+    }
+}                                                                                                                   
