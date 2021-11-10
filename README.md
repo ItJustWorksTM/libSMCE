@@ -26,12 +26,12 @@ Check our [Wiki](https://github.com/ItJustWorksTM/libSMCE/wiki) for more informa
 ### Build Requirements
 
 - [CMake](https://www.kitware.com/cmake) >= 3.16
-- C++20 compiler (tested with [GCC](https://gcc.gnu.org) >= 10, [Clang/LLVM](https://clang.llvm.org) >= 10, MSVC >= 19.28, AppleClang)
-- [Boost](https://www.boost.org) >= 1.74 - Not an interface requirement however (you only need Boost headers to build the library, not when using it precompiled) 
+- C++20 compiler (tested with [GCC](https://gcc.gnu.org) >= 10, [Clang/LLVM](https://clang.llvm.org) >= 10, MSVC >= 19.28, AppleClang) 
 - [OpenSSL](https://www.openssl.org) (tested with 1.1.1)
 
 #### Automatically built from source
-- [libmosquitto](https://mosquitto.org/api) 2.0.9 - Used for providing MQTT support
+- [Boost](https://www.boost.org) >= 1.74 - Not an interface requirement however (you only need Boost headers to build the library, not when using it precompiled)
+- [libmosquitto](https://mosquitto.org/api) 2.0.9 - Used to provide MQTT support
 
 
 ### Runtime Requirements
