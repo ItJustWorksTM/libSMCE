@@ -181,6 +181,17 @@ class SMCE__DLL_RT_API String {
     [[nodiscard]] bool operator>(const String& s) const noexcept;
     [[nodiscard]] bool operator>=(const String& s) const noexcept;
 
+    String & operator += (const String &rhs)	{concat(rhs); return (*this);}
+    String & operator += (const char *cstr)		{concat(cstr); return (*this);}
+    String & operator += (char c)			{concat(c); return (*this);}
+    String & operator += (unsigned char num)		{concat(num); return (*this);}
+    String & operator += (int num)			{concat(num); return (*this);}
+    String & operator += (unsigned int num)		{concat(num); return (*this);}
+    String & operator += (long num)			{concat(num); return (*this);}
+    String & operator += (unsigned long num)	{concat(num); return (*this);}
+    String & operator += (float num)		{concat(num); return (*this);}
+    String & operator += (double num)		{concat(num); return (*this);}
+
     friend SMCE__DLL_RT_API String operator+(const String&, const char*);
     friend SMCE__DLL_RT_API String operator+(const char*, const String&);
 };
