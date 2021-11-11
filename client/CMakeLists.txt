@@ -12,10 +12,26 @@ find_package (Threads REQUIRED)
 find_package (SMCE REQUIRED)
 
 set (SMCE_RES "${PROJECT_BINARY_DIR}/SMCE_Res")
-
-include_directories(${PROJECT_SOURCE_DIR}/include)
+include (FetchContent)
+FetchContent_Declare (Termcolor
+        GIT_REPOSITORY "https://github.com/ikalnytskyi/termcolor"
+        GIT_TAG "v2.0.0"
+        GIT_SHALLOW On
+        GIT_PROGRESS On
+        )
+FetchContent_Declare (Lyra
+        GIT_REPOSITORY "https://github.com/bfgroup/Lyra"
+        GIT_TAG "1.5.1"
+        GIT_SHALLOW On
+        GIT_PROGRESS On
+        )
+FetchContent_MakeAvailable(Termcolor Lyra)
 add_executable (SMCE_client SMCE_Client.cpp)
-target_link_libraries (SMCE_client PRIVATE SMCE::SMCE)
+target_link_libraries (SMCE_client PRIVATE SMCE::SMCE termcolor::termcolor bfg::Lyra)
+target_include_directories (SMCE_client PUBLIC
+        "${termcolor_SOURCE_DIR}/include/termcolor"
+        "${lyra_SOURCE_DIR}/include/lyra"
+        )
 target_compile_definitions (SMCE_client PRIVATE "SMCE_RESOURCES_DIR=\"${SMCE_RES}\"")
 file (MAKE_DIRECTORY "${SMCE_RES}")
 execute_process (COMMAND "${CMAKE_COMMAND}" -E tar xf "${SMCE_RESOURCES_ARK}"
