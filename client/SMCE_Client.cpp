@@ -22,7 +22,8 @@
 #include <utility>                                                                                                               
 #include <string>                                                                                                                
 #include <vector>
-#include <termcolor.hpp>                                                                                                                     
+#include <termcolor.hpp>  
+#include <lyra.hpp>                                                                                                                   
 #include <SMCE/Board.hpp>                                                                                                        
 #include <SMCE/BoardConf.hpp>                                                                                                    
 #include <SMCE/BoardView.hpp>                                                                                                    
@@ -78,10 +79,8 @@ void print_menu(){
     std::cout << "-rd <pin> -> Read the value on a digital pin" << std::endl;                                                    
     std::cout << "-q -> Power off board and quit program" << std::endl << std::endl;                                             
 }                                                                                                                                
-
-// Standard arduino dir  
-std::string dir = ".";                                                                                                                                     
-int compile_sketch (smce::Sketch &sketch,smce::Toolchain &toolchain ,smce::Board &board) {                                       
+                                                                                                                                   
+int compile_sketch (smce::Sketch &sketch,smce::Toolchain &toolchain ,smce::Board &board, std::string arduino_root_dir) {                                       
     // Compile the sketch on the toolchain                                                                                                                                                                 
     if (const auto ec = toolchain.compile(sketch)) {                                                                             
         std::cerr << "Error: " << ec.message() << std::endl;                                                                     
@@ -105,18 +104,18 @@ int compile_sketch (smce::Sketch &sketch,smce::Toolchain &toolchain ,smce::Board
             }                                                                                                                    
         },                                                                                                                       
         .uart_channels = { {} }, // use standard configuration of uart_channels                                                  
-        .sd_cards = { smce::BoardConfig::SecureDigitalStorage{ .root_dir = dir } }                                               
+        .sd_cards = { smce::BoardConfig::SecureDigitalStorage{ .root_dir = arduino_root_dir } }                                               
     };                                                                                                                                                                                                            
     board.configure(std::move(board_conf));                                                                                      
     return 0;                                                                                                                    
 }
 
-int compile_and_start(smce::Sketch &sketch,smce::Toolchain &toolchain ,smce::Board &board){
+int compile_and_start(smce::Sketch &sketch,smce::Toolchain &toolchain ,smce::Board &board, std::string arduino_root_dir){
     if(board.status() == smce::Board::Status::running){
         board.stop();                                                                                                                                                                        
         board.reset();   
     }
-    compile_sketch(sketch,toolchain,board);                                                                                                                                           
+    compile_sketch(sketch,toolchain,board,arduino_root_dir);                                                                                                                                           
     //Start board                                                                                                                
     if (!board.start()) {                                                                                                        
         std::cerr << "Error: Board failed to start sketch" << std::endl;                                                         
@@ -126,23 +125,35 @@ int compile_and_start(smce::Sketch &sketch,smce::Toolchain &toolchain ,smce::Boa
     }   
 }
                                                                                                                                  
-int main(int argc, char** argv){                                                                                                 
-    if (argc == 2 && (argv[1] == "-h" || argv[1] == "--help")) {                                                                 
-        print_help(argv[0]);                                                                                                     
-        return EXIT_SUCCESS;                                                                                                     
-    } else if (argc != 3) {                                                                                                      
-        print_help(argv[0]);                                                                                                     
-        return EXIT_FAILURE;                                                                                                     
-    }                                                                                                                            
-    //Saves <fully-qualified-board-name> and <path-to-sketch>                                                                    
-    char* fqbn = argv[1];                                                                                                        
-    char* path_to_sketch = argv[2];                                                                                              
+int main(int argc, char** argv){  
+
+    std::string fqbn;                                                                                                        
+    std::string path_to_sketch;
+    std::string arduino_root_dir = ".";    // path to root dir for arduino, standard is in start folder.
+    std::string smce_resource_dir = SMCE_RESOURCES_DIR; // smce_resource_dir path, given at runtime. 
+
+    auto cli 
+            = lyra::opt(fqbn,"fqbn")
+                ["--fpqn"]["-f"]("Fully qualified board name")
+            | lyra::opt(path_to_sketch,"path-to-sketch")
+                ["--path"]["-p"]("The path to the sketch")
+            | lyra::opt(arduino_root_dir,"Ardunio home folder")
+                ["--dir"]["-d"]("The absolute path to the desired location of arduino root")
+            | lyra::opt(smce_resource_dir,"Alternativ path to SMCE_RESOURCE") // Makes it possible to change path to SMCE_RESOURCES at start.
+                ["--SMCE"]["-s"]("Tha alternative path to SMCE_RESOURCES for runtime, should be absolute.");
+
+    auto result = cli.parse({argc,argv});
+    if(!result){
+        std::cerr << "Error in command line: " << result.errorMessage() << std::endl;
+        return 1;
+    }                                                          
+                                                                                              
                                                                                                                                  
     std::cout << std::endl << "Starting SMCE Client" << std::endl;                                                               
-    std::cout << "Given Fqbn: " << fqbn << "\n" << "Given path to sketch: " << path_to_sketch << std::endl;                      
+    std::cout << "Given Fqbn: " << fqbn << std::endl << "Given path to sketch: " << path_to_sketch << std::endl;                      
                                                                                                                                  
      // Create the toolchain                                                                                                     
-     smce::Toolchain toolchain{SMCE_RESOURCES_DIR};                                                                              
+     smce::Toolchain toolchain{smce_resource_dir};    
      if (const auto ec = toolchain.check_suitable_environment()) {                                                               
          std::cerr << "Error: " << ec.message() << std::endl;                                                                    
          return EXIT_FAILURE;                                                                                                    
@@ -160,7 +171,7 @@ int main(int argc, char** argv){
     std::cout << "Creating board and compiling sketch" << std::endl;                                                                               
     smce::Board board(exit_sketch);
     //Compile and start board
-    compile_and_start(sketch,toolchain,board);                                                                                      
+    compile_and_start(sketch,toolchain,board,arduino_root_dir);                                                                                      
     std::cout << "Complete" << std::endl;                                                                                                                                                                                                                                          
     //Create view and uart (serial) channels                                                                                     
     auto board_view = board.view();                                                                                              
@@ -198,7 +209,7 @@ int main(int argc, char** argv){
         }else if (input == "-rc"){ //recompile
             std::cout << "Recompiling.." << std::endl; 
             t_lock.lock(); // aquire lock before recompiling, so uart_listener is forced to wait                                                                                                                                                                        
-            compile_and_start(sketch,toolchain,board);
+            compile_and_start(sketch,toolchain,board,arduino_root_dir);
             // update boardview and uart0 after the sketch has been recompiled.
             board_view = board.view();                                                                                       
             uart0 = board_view.uart_channels[0];                                                                                                   

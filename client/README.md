@@ -2,9 +2,14 @@
 
 Like SMCE, this sample program requires a C++20 toolchain (for `<span>` mostly).
 
+**IMPORTANT**  
+As is, SMCE_Client is not guaranteed to work on Windows machines!
+Due to a bug that causes the running sketch to crash when sending or reciving messages on uart.
+
+
 ## Build instructions
-To beable to build, the enviroment variable SMCE_ROOT needs to point to a current installed release.
-These can be found under releases on git. Or be build directly from the source code with the commands below.
+To be able to build SMCE_client, the enviroment variable SMCE_ROOT needs to point to a current installed release of libSMCE.
+These can be found under releases on git. Or it can be build directly from the source code with the commands below.
 These should be ran in the libSMCE folder. 
 ```shell
 cmake -S . -B build/
@@ -21,20 +26,26 @@ cmake -S . -B build/
 cmake --build build/
 ```
 
-You can now find the executable in the `./build` directory.
+You can now find the executable "SMCE_client" in the `./build` directory.
 
-### Run instructions
+## Run instructions
 ```
-SMCE_client <fqbn> <sketch-path>
+SMCE_client -f <fqbn> -p <path_to_sketch>
 ```
 where
 - FQBN: [Fully Qualified Board Name](https://arduino.github.io/arduino-cli/latest/FAQ/#whats-the-fqbn-string)
+    Testing has been done with fqbn = arduino:sam:arduino_due_x
 - Sketch path: Relative or absolute path to the sketch to run
 
-#### Start arguments
-    TODO
+### Start arguments
+-f,--fqbn <fqbn>                    -> <fqbn> = Fully qualified board name 
+-p,--path <path_to_sketch>          -> <path_to_sketch> = Relative or absolute path to the sketch to run
+-d,--dir <arduino_root_dir>         -> <arduino_root_dir> = Relative or absolute path to desired location of arduino root folder
+-s,--SMCE <smce_resource_dir>       -> <smce_resource_dir> = Relative or absolute path to SMCE\_RESOURCE folder
 
-### Configuration of board
+(-s or -- SMCE, can be used if binary is not compiled and already linked to the SMCE_RESOURCE folder for the current computer.) 
+
+## Configuration of board
 
 As is, configuring of GPIO pins on the board is done in the source file SMCE_Client.cpp, as seen here:
 
@@ -44,10 +55,11 @@ smce::BoardConfig board_conf{
         .gpio_drivers = {                                                                                                        
             smce::BoardConfig::GpioDrivers{0,                                                                                    
             smce::BoardConfig::GpioDrivers::DigitalDriver{true,true},                                                           
-            smce::BoardConfig::GpioDrivers::AnalogDriver{true,true}                                                             
+            smce::BoardConfig::GpioDrivers::AnalogDriver{false,false}                                                             
             },                                                                                                                   
-            ....                                                                                                             
-        } ......
+            ...
+            ...                                                                                                             
+        }
 ```
 .pins = a list of all a pins on the board. 
 .gpio_drivers = specifies the drivers for each pin, configured as: 
