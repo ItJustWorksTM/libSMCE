@@ -42,6 +42,7 @@ where
 -p,--path <path_to_sketch>          -> <path_to_sketch> = Relative or absolute path to the sketch to run
 -d,--dir <arduino_root_dir>         -> <arduino_root_dir> = Relative or absolute path to desired location of arduino root folder
 -s,--SMCE <smce_resource_dir>       -> <smce_resource_dir> = Relative or absolute path to SMCE\_RESOURCE folder
+-u,--file <write_to_file>           -> <write_to_file> = Set to true if uart should write to file (created in the set arduino root folder)
 
 (-s or -- SMCE, can be used if binary is not compiled and already linked to the SMCE_RESOURCE folder for the current computer.) 
 

@@ -23,7 +23,8 @@
 #include <string>                                                                                                                
 #include <vector>
 #include <termcolor.hpp>  
-#include <lyra.hpp>                                                                                                                   
+#include <lyra.hpp>
+#include <UartToFile.hpp>                                                                                                                   
 #include <SMCE/Board.hpp>                                                                                                        
 #include <SMCE/BoardConf.hpp>                                                                                                    
 #include <SMCE/BoardView.hpp>                                                                                                    
@@ -47,8 +48,9 @@ std::atomic_bool run_threads = true;
 std::atomic_bool mute_uart = false;
 std::mutex t_lock;                                                                                                                                                                                                                                                        
 //Listen to the uart input from board, writes what it read to terminal                                                           
-void uart_listener(smce::VirtualUart uart){                                                                                      
-    auto tx = uart.tx();                                                                                                         
+void uart_listener(smce::VirtualUart uart,bool file_write,std::string path){                                                                                      
+    auto tx = uart.tx();
+    std::string file = path+"/uartlog"+get_time()+".txt";                                                                                                         
     while(run_threads){                                                                                                          
         std::string buffer;
         t_lock.lock(); // if recompiling sketch, lock thread here untill recompiling is done.                                                                                                 
@@ -60,9 +62,13 @@ void uart_listener(smce::VirtualUart uart){
             continue;                                                                                                            
         }                                                                                                                        
         buffer.resize(len);
-        if(!mute_uart){
-            std::cout << termcolor::red << buffer << termcolor::reset <<std::endl << "$>" << std::flush; 
-        }                                                                                                                                                                               
+        if(file_write){
+            uart_to_file(buffer,file);
+        }else{
+            if(!mute_uart){
+                std::cout << termcolor::red << buffer << termcolor::reset <<std::endl << "$>" << std::flush; 
+            }  
+        }                                                                                                                                                                             
     }                                                                                                                            
 }                                                                                                                                
 // Prints a command menu for SMCE_Client                                                                                         
@@ -131,23 +137,37 @@ int main(int argc, char** argv){
     std::string path_to_sketch;
     std::string arduino_root_dir = ".";    // path to root dir for arduino, standard is in start folder.
     std::string smce_resource_dir = SMCE_RESOURCES_DIR; // smce_resource_dir path, given at runtime. 
+    bool file_write = false; //DEFAULT is to write in console
+    bool show_help = false;
 
+    //Setup lyra start arguments for the parser. 
     auto cli 
-            = lyra::opt(fqbn,"fqbn")
+            = lyra::help(show_help)
+            | lyra::opt(fqbn,"fqbn")
                 ["--fpqn"]["-f"]("Fully qualified board name")
             | lyra::opt(path_to_sketch,"path-to-sketch")
                 ["--path"]["-p"]("The path to the sketch")
             | lyra::opt(arduino_root_dir,"Ardunio home folder")
                 ["--dir"]["-d"]("The absolute path to the desired location of arduino root")
             | lyra::opt(smce_resource_dir,"Alternativ path to SMCE_RESOURCE") // Makes it possible to change path to SMCE_RESOURCES at start.
-                ["--SMCE"]["-s"]("Tha alternative path to SMCE_RESOURCES for runtime, should be absolute.");
+                ["--SMCE"]["-s"]("Tha alternative path to SMCE_RESOURCES for runtime, should be absolute.")
+            | lyra::opt(file_write,"file_write")
+                ["--file"]["-u"]("Set to true if uart should write to file (created in the set arduino root folder)");
 
     auto result = cli.parse({argc,argv});
+
+    // If something is not right with parser of input, show error
     if(!result){
         std::cerr << "Error in command line: " << result.errorMessage() << std::endl;
         return 1;
-    }                                                          
-                                                                                              
+    }         
+    // If user input -h or --help, display help.                                                 
+    if(show_help) 
+    {
+        std::cout << cli << "\n";
+        return 0;
+    }
+                                                                                          
                                                                                                                                  
     std::cout << std::endl << "Starting SMCE Client" << std::endl;                                                               
     std::cout << "Given Fqbn: " << fqbn << std::endl << "Given path to sketch: " << path_to_sketch << std::endl;                      
@@ -178,7 +198,7 @@ int main(int argc, char** argv){
     auto uart0 = board_view.uart_channels[0];                                                                                    
                                                                                                                                  
     //start listener thread for uart                                                                                             
-    std::thread uart_thread{[=] {uart_listener(uart0);} };                                                                       
+    std::thread uart_thread{[=] {uart_listener(uart0,file_write,arduino_root_dir);} };                                                                       
     std::cout << "Messages recived on uart from arduino is shown as " 
         << termcolor::red << "red" << termcolor::reset << " text." << std::endl;                                                                                                                             
     // Print command menu                                                                                                        
