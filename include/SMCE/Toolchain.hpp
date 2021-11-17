@@ -66,6 +66,8 @@ class SMCE_API Toolchain {
     std::error_code do_configure(Sketch& sketch) noexcept;
     std::error_code do_build(Sketch& sketch) noexcept;
 
+    std::string selected_toolchain_file;
+
   public:
 
     struct CompilerInformation{

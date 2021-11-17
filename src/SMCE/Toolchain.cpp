@@ -180,6 +180,7 @@ std::error_code Toolchain::do_configure(Sketch& sketch) noexcept {
 
     namespace bp = boost::process;
     bp::ipstream cmake_conf_out;
+
     // clang-format off
     auto cmake_config = bp::child{
         m_cmake_path,
@@ -190,6 +191,7 @@ std::error_code Toolchain::do_configure(Sketch& sketch) noexcept {
         "-DSKETCH_HEXID=" + sketch_hexid,
         "-DSKETCH_FQBN=" + sketch.m_conf.fqbn,
         "-DSKETCH_PATH=" + stdfs::absolute(sketch.m_source).generic_string(),
+        selected_toolchain_file,
         std::move(libs.pp_remote_arg),
         "-P",
         m_res_dir.string() + "/RtResources/SMCE/share/CMake/Scripts/ConfigureSketch.cmake",
@@ -336,15 +338,14 @@ std::vector<Toolchain::CompilerInformation> Toolchain::find_compilers() {
     if(!compiler_path.empty())
         compilers.push_back(create_compiler_information(compiler_path, "msvc", "TBD"));
 
-    compiler_path = search_env_path("gcc");
+    compiler_path = search_env_path("g++");
     if(!compiler_path.empty())
         compilers.push_back(create_compiler_information(compiler_path, "gcc", "TBD"));
 
-    compiler_path = search_env_path("clang");
+    compiler_path = search_env_path("clang++");
     if(!compiler_path.empty())
         compilers.push_back(create_compiler_information(compiler_path, "clang", "TBD"));
 
-    select_compiler(compilers.at(1));
     return compilers;
 }
 
@@ -354,12 +355,10 @@ bool Toolchain::select_compiler(Toolchain::CompilerInformation& compiler) {
         return false;
     }
 
-    // clang-format off
-    auto cmake_config = bp::child{
-        m_cmake_path,
-            "-DSMCE_TOOLCHAIN=../../CMake/Toolchain/toolchain_"+compiler.name+"_"+compiler.version+".cmake"
-    };
-    // clang-format on
+    selected_toolchain_file = "-DSMCE_TOOLCHAIN=" + boost::filesystem::current_path().string() + "/../../CMake/Toolchain/toolchain_" + compiler.name + "_" + compiler.version + ".cmake";
+#if BOOST_OS_WINDOWS
+    boost::replace_all(selected_toolchain_file, "\\", "/");
+#endif
 
     return true;
 }
@@ -380,13 +379,23 @@ std::string Toolchain::find_MSVC() {
     // clang-format on
 
     std::getline(vswhere_out, result);
+
+#if BOOST_OS_WINDOWS
+    boost::replace_all(result, "\\", "/");
+#endif
+
     return result;
 }
 
 std::string Toolchain::search_env_path(const std::string& compiler) {
 
-    auto path = boost::process::search_path(compiler);
-    return path.string();
+    std::string path = boost::process::search_path(compiler).string();
+
+#if BOOST_OS_WINDOWS
+    boost::replace_all(path, "\\", "/");
+#endif
+
+    return path;
 }
 
 Toolchain::CompilerInformation Toolchain::create_compiler_information(const std::string& path, const std::string& name, const std::string& version) {
@@ -407,9 +416,7 @@ bool Toolchain::generate_toolchain_file(Toolchain::CompilerInformation& compiler
     boost::filesystem::ofstream ofs{path};
 
     if(ofs.is_open()){
-        ofs << "project(libSMCE CXX)" << std::endl;
-        ofs << "enable_language(CXX)" << std::endl;
-        ofs << "set(CMAKE_CXX_COMPILER $"+compiler.path+")";
+        ofs << "set(CMAKE_CXX_COMPILER \""+compiler.path+"\")";
         ofs.close();
         return true;
     }
