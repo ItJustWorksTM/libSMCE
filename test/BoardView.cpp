@@ -27,6 +27,7 @@
 #include "SMCE/Toolchain.hpp"
 #include "defs.hpp"
 
+
 using namespace std::literals;
 
 TEST_CASE("BoardView GPIO", "[BoardView]") {
@@ -271,7 +272,7 @@ TEST_CASE("BoardView RGB565 cvt", "[BoardView]") {
         constexpr std::size_t width = 1;
 
         constexpr std::array in = {'\xBC'_b, '\x0A'_b};
-        constexpr std::array expected_out = {'\xA0'_b, '\xB0'_b, '\xC0'_b};
+        constexpr std::array expected_out = {'\xB8'_b, '\x80'_b, '\x50'_b};
         static_assert(in.size() == expected_out.size() / 3 * 2);
 
         fb.set_height(height);
@@ -288,8 +289,8 @@ TEST_CASE("BoardView RGB565 cvt", "[BoardView]") {
         constexpr std::size_t width = 2;
 
         constexpr std::array in = {'\x23'_b, '\xF1'_b, '\x56'_b, '\xF4'_b, '\x89'_b, '\xF7'_b, '\xBC'_b, '\xFA'_b};
-        constexpr std::array expected_out = {'\x10'_b, '\x20'_b, '\x30'_b, '\x40'_b, '\x50'_b, '\x60'_b,
-                                             '\x70'_b, '\x80'_b, '\x90'_b, '\xA0'_b, '\xB0'_b, '\xC0'_b};
+        constexpr std::array expected_out = {'\x20'_b, '\x7C'_b, '\x88'_b, '\x50'_b, '\xDC'_b, '\xA0'_b,
+                                             '\x88'_b, '\x3C'_b, '\xB8'_b, '\xB8'_b, '\x9C'_b, '\xD0'_b};
         static_assert(in.size() == expected_out.size() / 3 * 2);
 
         fb.set_height(height);
@@ -306,7 +307,7 @@ TEST_CASE("BoardView RGB565 cvt", "[BoardView]") {
         constexpr std::size_t width = 1;
 
         constexpr std::array in = {'\xAD'_b, '\xBE'_b, '\xCF'_b};
-        constexpr std::array expected_out = {'\xBC'_b, '\x0A'_b};
+        constexpr std::array expected_out = {'\xAD'_b, '\xF9'_b};
         static_assert(expected_out.size() == in.size() / 3 * 2);
 
         fb.set_height(height);
@@ -324,8 +325,8 @@ TEST_CASE("BoardView RGB565 cvt", "[BoardView]") {
 
         constexpr std::array in = {'\x1A'_b, '\x2B'_b, '\x3C'_b, '\x4D'_b, '\x5E'_b, '\x6F'_b,
                                    '\x7A'_b, '\x8B'_b, '\x9C'_b, '\xAD'_b, '\xBE'_b, '\xCF'_b};
-        constexpr std::array expected_out = {'\x23'_b, '\x01'_b, '\x56'_b, '\x04'_b,
-                                             '\x89'_b, '\x07'_b, '\xBC'_b, '\x0A'_b};
+        constexpr std::array expected_out = {'\x19'_b, '\x47'_b, '\x4A'_b, '\xED'_b,
+                                             '\x7C'_b, '\x53'_b, '\xAD'_b, '\xF9'_b};
         static_assert(expected_out.size() == in.size() / 3 * 2);
 
         fb.set_height(height);
