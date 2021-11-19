@@ -45,7 +45,7 @@ cmake --build .
 
 #### Running the testsuite
 ```shell
-cmake --build . --target SMCE_Tests
+
 ctest
 ```
 
