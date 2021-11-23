@@ -43,17 +43,17 @@ void exit_sketch(int code){
     std::cerr << "Error code:  "<< code << std::endl;                                                                            
 }                                                                                                                                
 
-// automic bool for handling threads                                                                                             
-std::atomic_bool run_threads = true;
-std::atomic_bool mute_uart = false;
-std::mutex t_lock;                                                                                                                                                                                                                                                        
+// atomic bool for handling threads
+static std::atomic_bool run_threads = true;
+static std::atomic_bool mute_uart = false;
+static std::mutex t_lock;
 //Listen to the uart input from board, writes what it read to terminal                                                           
 void uart_listener(smce::VirtualUart uart,bool file_write,std::string path){                                                                                      
     auto tx = uart.tx();
     std::string file = path+"/uartlog"+get_time()+".txt";                                                                                                         
     while(run_threads){                                                                                                          
         std::string buffer;
-        t_lock.lock(); // if recompiling sketch, lock thread here untill recompiling is done.                                                                                                 
+        t_lock.lock(); // if recompiling sketch, lock thread here until recompiling is done.
         buffer.resize(tx.max_size());                                                                                            
         const auto len = tx.read(buffer);
         t_lock.unlock();                                                                                        
@@ -199,7 +199,7 @@ int main(int argc, char** argv){
                                                                                                                                  
     //start listener thread for uart                                                                                             
     std::thread uart_thread{[=] {uart_listener(uart0,file_write,arduino_root_dir);} };                                                                       
-    std::cout << "Messages recived on uart from arduino is shown as " 
+    std::cout << "Messages received on uart from arduino is shown as "
         << termcolor::red << "red" << termcolor::reset << " text." << std::endl;                                                                                                                             
     // Print command menu                                                                                                        
     print_menu();                                                                                                                                                                                                                                              
