@@ -14,7 +14,7 @@ enum SMCE_Pixel_Format {
 
 class SMCE__DLL_RT_API FramebufferAccess {
   private:
-    std::size_t m_key = 0;
+    std::size_t m_key = 1;
     SMCE_Pixel_Format m_format = RGB888;
     bool m_begun = false;
   public:
