@@ -14,8 +14,8 @@ extern void maybe_init();
 
 int FramebufferAccess::begin(std::uint16_t width, std::uint16_t height, SMCE_Pixel_Format format, std::uint8_t fps) {
     const auto error = [=](const char* msg) {
-        std::cerr << "ERROR: FramebufferAccess::begin(" << width << "x" << height << ", " << format << ", " << fps << "): " << msg
-                  << std::endl;
+        std::cerr << "ERROR: FramebufferAccess::begin(" << width << "x" << height << ", " << format << ", " << fps
+                  << "): " << msg << std::endl;
         return -1;
     };
     if (m_begun) {

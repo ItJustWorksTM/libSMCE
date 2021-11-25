@@ -7,16 +7,18 @@
 
 #include "SMCE_dll.hpp"
 
-enum SMCE_Pixel_Format {
+enum SMCE_Pixel_Format
+{
     RGB888, // RRRRRRRRGGGGGGGGBBBBBBBB // SMCE extension
     RGB444, // GGGGBBBB----RRRR
 };
 
 class SMCE__DLL_RT_API FramebufferAccess {
   private:
-    std::size_t m_key = 1;
+    std::size_t m_key = 0;
     SMCE_Pixel_Format m_format = RGB888;
     bool m_begun = false;
+
   public:
     int begin(std::uint16_t width, std::uint16_t height, SMCE_Pixel_Format format, std::uint8_t fps);
     void end();
