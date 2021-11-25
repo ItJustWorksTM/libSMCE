@@ -3,8 +3,8 @@
 //
 
 #include <array>
+#include <climits>
 #include <iostream>
-#include <limits>
 #include <SMCE/BoardView.hpp>
 #include "../../include/Ardrivo/FrameBufferAccess.h"
 
