@@ -1,21 +1,16 @@
 #include <UartToFile.hpp>
-#include <ctime>
-
+#include <chrono>
+#include <iomanip>
 #include <fstream>
 #include <iostream>
 
 
 std::string get_time(){
-    time_t currentTime;
-    struct tm *localTime;
-
-    time( &currentTime );
-    localTime = localtime( &currentTime );
-
-    int hour   = localTime->tm_hour;
-    int min    = localTime->tm_min;
-    int sec    = localTime->tm_sec;
-    return(std::to_string(hour)+":"+std::to_string(min)+":"+std::to_string(sec));
+    auto time_t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    std::tm time = *std::localtime(&time_t);
+    std::stringstream ss;
+    ss << std::put_time(&time, "%T");
+    return ss.str();
 }
 
 int uart_to_file(std::string message, std::string path){
