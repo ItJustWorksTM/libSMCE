@@ -28,8 +28,8 @@ FetchContent_Declare (Lyra
         )
 FetchContent_MakeAvailable(Termcolor Lyra)
 
-include_directories(${PROJECT_SOURCE_DIR}/src)
 add_executable (${PROJECT_NAME} SMCE_Client.cpp)
+target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/src)
 target_sources (${PROJECT_NAME} PRIVATE 
         src/UartToFile.hpp
         src/UartToFile.cpp

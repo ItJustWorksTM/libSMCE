@@ -1,6 +1,6 @@
 # libSMCE command line frontend
 
-Like SMCE, this sample program requires a C++20 toolchain (for `<span>` mostly).
+Like SMCE, this command line frontend requires a C++20 toolchain.
 
 **IMPORTANT**  
 As is, SMCE_Client is not guaranteed to work on Windows machines!
@@ -8,17 +8,6 @@ Due to a bug that causes the running sketch to crash when sending or reciving me
 
 
 ## Build instructions
-To be able to build SMCE_client, the enviroment variable SMCE_ROOT needs to point to a current installed release of libSMCE.
-These can be found under releases on git. Or it can be build directly from the source code with the commands below.
-These should be ran in the libSMCE folder. 
-```shell
-cmake -S . -B build/
-cmake --build build/
-cmake --build build/ --config Release
-cmake --install build/ --prefix <path to installation folder>
-```
-
-After SMCE_ROOT is added, run:
 
 ```shell
 cd client
