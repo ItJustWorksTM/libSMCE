@@ -114,6 +114,7 @@ TEST_CASE("Arduino Characters", "[Board]") {
     smce::Toolchain tc{SMCE_PATH};
     REQUIRE(!tc.check_suitable_environment());
     smce::Sketch sk{SKETCHES_PATH "characters", {.fqbn = "arduino:avr:nano"}};
+
     const auto ec = tc.compile(sk);
     if (ec)
         std::cerr << tc.build_log().second;
@@ -323,3 +324,28 @@ TEST_CASE("Board - Check conditions for suspend, resume and terminate", "[Board]
     REQUIRE(br.status() == smce::Board::Status::running);
     REQUIRE(br.terminate());
 }
+
+#ifdef SMCE_TEST_JUNIPER
+
+TEST_CASE("Juniper sources", "[Board]") {
+    smce::Toolchain tc{SMCE_PATH};
+    REQUIRE(!tc.check_suitable_environment());
+    smce::Sketch sk{SKETCHES_PATH "jun_only", {.fqbn = "arduino:avr:nano"}};
+    const auto ec = tc.compile(sk);
+    if (ec)
+        std::cerr << tc.build_log().second;
+    REQUIRE_FALSE(ec);
+    smce::Board br{};
+    REQUIRE(br.configure({.pins = {13}, .gpio_drivers = {{13, {{false, true}}, {}}}}));
+    REQUIRE(br.attach_sketch(sk));
+    REQUIRE(br.prepare());
+    auto bv = br.view();
+    REQUIRE(bv.valid());
+    auto pin13d = bv.pins[13].digital();
+    REQUIRE(pin13d.exists());
+    REQUIRE(br.start());
+    test_pin_delayable(pin13d, true, 5000, 1ms);
+    REQUIRE(br.stop());
+}
+
+#endif

@@ -1,5 +1,5 @@
 #
-#  BuildProfiles/Fedora34.cmake
+#  BuildProfiles/CxxStdLibDebug.cmake
 #  Copyright 2021 ItJustWorksTM
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,12 +16,11 @@
 #
 
 include_guard ()
-set (SMCE_PROFILE_VERSION 1)
 
-include ("${CMAKE_CURRENT_LIST_DIR}/Common/Fedora.cmake")
+message (WARNING "This profile is NOT intended for packaging")
 
 set (SMCE_BUILD_SHARED On)
-set (SMCE_BUILD_STATIC On)
+set (SMCE_BUILD_STATIC Off)
 set (SMCE_CXXRT_LINKING SHARED)
 set (SMCE_BOOST_LINKING SOURCE)
 set (SMCE_ARDRIVO_MQTT On)
@@ -29,5 +28,7 @@ set (SMCE_MOSQUITTO_LINKING SOURCE)
 set (SMCE_OPENSSL_LINKING SHARED)
 set (SMCE_ARDRIVO_OV767X On)
 
-set (SMCE_OS_RELEASE "%{?dist}")
-set (SMCE_CPACK_PROFILE "Templates/Fedora")
+# leaky leaky, but needs to be
+add_compile_definitions (_GLIBCXX_DEBUG=1 _ITERATOR_DEBUG_LEVEL=2) # libstdc++
+add_compile_definitions (_LIBCPP_DEBUG=1 _LIBCPP_ENABLE_NODISCARD=1) # libc++
+add_compile_definitions (_ITERATOR_DEBUG_LEVEL=2) # MSSTL

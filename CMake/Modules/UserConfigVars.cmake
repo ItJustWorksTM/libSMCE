@@ -32,9 +32,9 @@ if (NOT "${SMCE_CXXRT_LINKING}" IN_LIST SMCE_LIBRARY_TYPES)
   message (FATAL_ERROR "SMCE_CXXRT_LINKING must be SHARED or STATIC")
 endif ()
 
-set (SMCE_BOOST_LINKING "SHARED" CACHE STRING "SHARED to dynamically link against Boost, or STATIC to link statically")
-if (NOT "${SMCE_BOOST_LINKING}" IN_LIST SMCE_LIBRARY_TYPES)
-  message (FATAL_ERROR "SMCE_BOOST_LINKING must be SHARED or STATIC")
+set (SMCE_BOOST_LINKING "AUTO" CACHE STRING "AUTO to use the first available library found, or name one of SHARED, STATIC, or SOURCE to force")
+if (NOT "${SMCE_BOOST_LINKING}" IN_LIST SMCE_EXTENDED_LIBRARY_TYPES)
+  message (FATAL_ERROR "SMCE_BOOST_LINKING must be AUTO, SHARED, STATIC, or SOURCE")
 endif ()
 
 option (SMCE_ARDRIVO_MQTT "Set to \"Off\" to disable MQTT integration in Ardrivo" On)
