@@ -114,6 +114,7 @@ TEST_CASE("Arduino Characters", "[Board]") {
     smce::Toolchain tc{SMCE_PATH};
     REQUIRE(!tc.check_suitable_environment());
     smce::Sketch sk{SKETCHES_PATH "characters", {.fqbn = "arduino:avr:nano"}};
+
     const auto ec = tc.compile(sk);
     if (ec)
         std::cerr << tc.build_log().second;
