@@ -17,6 +17,9 @@
 
 cmake_minimum_required (VERSION 3.16)
 cmake_policy (SET CMP0022 NEW)
+if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.19")
+  cmake_policy (SET CMP0112 NEW)
+endif ()
 
 project (libSMCE VERSION 1.4.0.5)
 list (APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/CMake/Modules")
@@ -69,6 +72,9 @@ target_sources (ArdrivoUDD PRIVATE
 add_library (Ardrivo SHARED)
 configure_coverage (Ardrivo)
 set_property (TARGET Ardrivo PROPERTY CXX_EXTENSIONS Off)
+if (CMAKE_VERSION VERSION_LESS_EQUAL 3.18) # That was apparently not default
+  set_property (TARGET Ardrivo PROPERTY POSITION_INDEPENDENT_CODE True)
+endif ()
 target_include_directories (Ardrivo PRIVATE include/Ardrivo)
 target_link_libraries (Ardrivo PRIVATE ipcSMCE ArdrivoUDD BindGenProxies)
 target_sources (Ardrivo PRIVATE
@@ -137,9 +143,11 @@ target_link_libraries (objSMCE PUBLIC ipcSMCE HostUDD)
 target_sources (objSMCE PRIVATE
     include/SMCE/internal/utils.hpp
     include/SMCE/internal/portable/ostream_joiner.hpp
+    include/SMCE/internal/portable/scope.hpp
     include/SMCE/SMCE_iface.h
     include/SMCE/SMCE_fs.hpp
     include/SMCE/BoardConf.hpp
+    src/SMCE/BoardConf.cpp
     include/SMCE/Board.hpp
     src/SMCE/Board.cpp
     include/SMCE/Toolchain.hpp
@@ -157,6 +165,9 @@ if (NOT MSVC)
   target_compile_options (objSMCE PRIVATE "-Wall" "-Wextra" "-Wpedantic" "-Werror" "-Wcast-align")
 else ()
   target_compile_options (objSMCE PRIVATE "/W4" "/permissive-" "/wd4244" "/wd4251" "/wd4459" "/WX")
+endif ()
+if (MINGW)
+  target_link_libraries (objSMCE PUBLIC ntdll)
 endif ()
 
 if (SMCE_BUILD_SHARED)

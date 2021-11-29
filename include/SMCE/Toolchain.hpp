@@ -49,6 +49,8 @@ enum struct toolchain_error {
 };
 // clang-format on
 
+SMCE_API std::error_code make_error_code(toolchain_error ev) noexcept;
+
 /**
  * Compilation environment for sketches
  *
@@ -116,5 +118,10 @@ class SMCE_API Toolchain {
 
 
 } // namespace smce
+
+namespace std {
+template <>
+struct is_error_code_enum<smce::toolchain_error> : std::bool_constant<true> {};
+} // namespace std
 
 #endif // SMCE_TOOLCHAIN_HPP

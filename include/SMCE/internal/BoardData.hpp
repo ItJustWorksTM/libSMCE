@@ -182,6 +182,8 @@ struct SMCE_INTERNAL BoardData {
     ShmVector<IpcAtomicValue<std::uint32_t>> a32_bank;
     ShmVector<IpcAtomicValue<std::uint64_t>> a64_bank;
     ShmVector<IpcMovableMutex> mtx_bank;
+
+    IpcAtomicValue<bool> stop_requested = false; // rw
     BoardData(const ShmAllocator<void>&, const BoardConfig&) noexcept;
 
   private:

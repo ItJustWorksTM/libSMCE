@@ -18,26 +18,23 @@
 
 #include <SMCE/Toolchain.hpp>
 
-#include <cstdio>
-#include <memory>
+
 #include <stdexcept>
 #include <string>
-#include <array>
-#include <stdio.h>
-#include <stdlib.h>
 
 #include <fstream>
 #include <iostream>
-#include <string>
 #include <vector>
-#include <iostream>
 #include <system_error>
 #include <boost/predef.h>
 #include <boost/process.hpp>
 #include <boost/filesystem/fstream.hpp>
+
 #if BOOST_OS_WINDOWS
 #    include <boost/process/windows.hpp>
 #endif
+#include <boost/process.hpp>
+
 #include <SMCE/PluginManifest.hpp>
 #include <SMCE/SMCE_iface.h>
 #include <SMCE/Sketch.hpp>
@@ -48,11 +45,6 @@
 using namespace std::literals;
 
 namespace bp = boost::process;
-
-namespace std {
-template <>
-struct is_error_code_enum<smce::toolchain_error> : std::bool_constant<true> {};
-} // namespace std
 
 namespace smce {
 namespace detail {
@@ -71,6 +63,8 @@ struct toolchain_error_category : public std::error_category {
             return "Resource directory is a file";
         case toolchain_error::cmake_not_found:
             return "CMake not found in PATH";
+        case toolchain_error::cmake_unknown_output:
+            return "CMake output unrecognized";
         case toolchain_error::invalid_plugin_name:
             return "Plugin name is \".\", \"..\", or contains a forward slash";
         case toolchain_error::sketch_invalid:
@@ -104,7 +98,7 @@ const std::error_category& get_exec_ctx_error_category() noexcept {
 
 } // namespace detail
 
-inline std::error_code make_error_code(toolchain_error ev) {
+std::error_code make_error_code(toolchain_error ev) noexcept {
     return std::error_code{static_cast<std::underlying_type<toolchain_error>::type>(ev),
                            detail::get_exec_ctx_error_category()};
 }
