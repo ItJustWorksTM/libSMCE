@@ -37,16 +37,6 @@ BoardData::BoardData(const ShmAllocator<void>& shm_valloc, const BoardConfig& c)
     : pins{shm_valloc}, uart_channels{shm_valloc}, direct_storages{shm_valloc}, frame_buffers{shm_valloc},
       device_allocation_map{shm_valloc}, raw_bank{shm_valloc}, a8_bank{shm_valloc}, a16_bank{shm_valloc},
       a32_bank{shm_valloc}, a64_bank{shm_valloc}, mtx_bank{shm_valloc} {
-
-    configure_pins(c);
-    configure_uart_channels(shm_valloc, c);
-    configure_direct_storages(shm_valloc, c);
-    configure_frame_buffers(shm_valloc, c);
-
-    calculate_device_memory_allocations(shm_valloc, c);
-}
-
-void BoardData::configure_pins(const BoardConfig& c) {
     auto sorted_pins = c.pins;
     std::sort(sorted_pins.begin(), sorted_pins.end());
 
@@ -73,9 +63,7 @@ void BoardData::configure_pins(const BoardConfig& c) {
             pin.can_digital_write = driver.board_write;
         }
     }
-}
 
-void BoardData::configure_uart_channels(const ShmAllocator<void>& shm_valloc, const BoardConfig& c) {
     uart_channels.reserve(c.uart_channels.size());
     for (const auto& conf : c.uart_channels) {
         auto& data = uart_channels.emplace_back(shm_valloc);
@@ -85,9 +73,7 @@ void BoardData::configure_uart_channels(const ShmAllocator<void>& shm_valloc, co
         data.max_buffered_rx = static_cast<std::uint16_t>(conf.rx_buffer_length);
         data.max_buffered_tx = static_cast<std::uint16_t>(conf.tx_buffer_length);
     }
-}
 
-void BoardData::configure_direct_storages(const ShmAllocator<void>& shm_valloc, const BoardConfig& c) {
     direct_storages.reserve(c.sd_cards.size());
     for (const auto& conf : c.sd_cards) {
         auto& data = direct_storages.emplace_back(shm_valloc);
@@ -98,18 +84,14 @@ void BoardData::configure_direct_storages(const ShmAllocator<void>& shm_valloc, 
             data.root_dir.assign(std::string_view{rt_str});
         }
     }
-}
 
-void BoardData::configure_frame_buffers(const ShmAllocator<void>& shm_valloc, const BoardConfig& c) {
     frame_buffers.reserve(c.frame_buffers.size());
     for (const auto& conf : c.frame_buffers) {
         auto& data = frame_buffers.emplace_back(shm_valloc);
         data.key = conf.key;
         data.direction = BoardData::FrameBuffer::Direction{static_cast<std::uint8_t>(conf.direction)};
     }
-}
 
-void BoardData::calculate_device_memory_allocations(const ShmAllocator<void>& shm_valloc, const BoardConfig& c) {
     std::size_t r8s_needed = 0;
     std::size_t r16s_needed = 0;
     std::size_t r32s_needed = 0;

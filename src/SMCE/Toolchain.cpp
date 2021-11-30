@@ -18,23 +18,14 @@
 
 #include <SMCE/Toolchain.hpp>
 
-
-#include <stdexcept>
-#include <string>
-
 #include <fstream>
-#include <iostream>
-#include <vector>
+#include <string>
 #include <system_error>
 #include <boost/predef.h>
 #include <boost/process.hpp>
-#include <boost/filesystem/fstream.hpp>
-
 #if BOOST_OS_WINDOWS
 #    include <boost/process/windows.hpp>
 #endif
-#include <boost/process.hpp>
-
 #include <SMCE/PluginManifest.hpp>
 #include <SMCE/SMCE_iface.h>
 #include <SMCE/Sketch.hpp>
@@ -174,7 +165,6 @@ std::error_code Toolchain::do_configure(Sketch& sketch) noexcept {
 
     namespace bp = boost::process;
     bp::ipstream cmake_conf_out;
-
     // clang-format off
     auto cmake_config = bp::child{
         m_cmake_path,
@@ -185,7 +175,6 @@ std::error_code Toolchain::do_configure(Sketch& sketch) noexcept {
         "-DSKETCH_HEXID=" + sketch_hexid,
         "-DSKETCH_FQBN=" + sketch.m_conf.fqbn,
         "-DSKETCH_PATH=" + stdfs::absolute(sketch.m_source).generic_string(),
-        selected_toolchain_file,
         std::move(libs.pp_remote_arg),
         "-P",
         m_res_dir.string() + "/RtResources/SMCE/share/CMake/Scripts/ConfigureSketch.cmake",
@@ -330,100 +319,6 @@ std::error_code Toolchain::compile(Sketch& sketch) noexcept {
 
     sketch.m_built = true;
     return {};
-}
-
-std::vector<Toolchain::CompilerInformation> Toolchain::find_compilers() {
-    std::vector<Toolchain::CompilerInformation> compilers;
-    std::string compiler_path;
-
-    compiler_path = find_MSVC();
-    if(!compiler_path.empty())
-        compilers.push_back(create_compiler_information(compiler_path, "msvc", "TBD"));
-
-    compiler_path = search_env_path("g++");
-    if(!compiler_path.empty())
-        compilers.push_back(create_compiler_information(compiler_path, "gcc", "TBD"));
-
-    compiler_path = search_env_path("clang++");
-    if(!compiler_path.empty())
-        compilers.push_back(create_compiler_information(compiler_path, "clang", "TBD"));
-
-    return compilers;
-}
-
-bool Toolchain::select_compiler(Toolchain::CompilerInformation& compiler) {
-    if(compiler.name.empty()){
-        std::cerr << "No compiler selected!";
-        return false;
-    }
-
-    selected_toolchain_file = "-DSMCE_TOOLCHAIN=" + boost::filesystem::current_path().string() + "/../../CMake/Toolchain/toolchain_" + compiler.name + "_" + compiler.version + ".cmake";
-#if BOOST_OS_WINDOWS
-    boost::replace_all(selected_toolchain_file, "\\", "/");
-#endif
-
-    return true;
-}
-
-std::string Toolchain::find_MSVC() {
-
-    bp::ipstream vswhere_out;
-    std::string result;
-
-    // clang-format off
-    bp::child c(
-        "vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild/**/Bin/MSBuild.exe",
-        bp::std_out > vswhere_out
-#if BOOST_OS_WINDOWS
-        , bp::windows::create_no_window
-#endif
-    );
-    // clang-format on
-
-    std::getline(vswhere_out, result);
-
-#if BOOST_OS_WINDOWS
-    boost::replace_all(result, "\\", "/");
-#endif
-
-    return result;
-}
-
-std::string Toolchain::search_env_path(const std::string& compiler) {
-
-    std::string path = boost::process::search_path(compiler).string();
-
-#if BOOST_OS_WINDOWS
-    boost::replace_all(path, "\\", "/");
-#endif
-
-    return path;
-}
-
-Toolchain::CompilerInformation Toolchain::create_compiler_information(const std::string& path, const std::string& name, const std::string& version) {
-    Toolchain::CompilerInformation compilerInformation;
-
-    compilerInformation.name = name;
-    compilerInformation.path = path;
-    compilerInformation.version = version;
-
-    generate_toolchain_file(compilerInformation);
-
-    return compilerInformation;
-}
-
-bool Toolchain::generate_toolchain_file(Toolchain::CompilerInformation& compiler) {
-
-    boost::filesystem::path path{"../../CMake/Toolchain/toolchain_"+compiler.name+"_"+compiler.version+".cmake"};
-    boost::filesystem::ofstream ofs{path};
-
-    if(ofs.is_open()){
-        ofs << "set(CMAKE_CXX_COMPILER \""+compiler.path+"\")";
-        ofs.close();
-        return true;
-    }
-
-    return false;
 }
 
 } // namespace smce

@@ -78,9 +78,7 @@ TEST_CASE("Invalid manifests processing", "[Plugin]") {
     const auto plugin_root = base_dir / "plugin_root";
     std::filesystem::create_directory(base_dir / "manifests");
 
-    std::error_code cp_ec;
-    std::filesystem::copy(MANIFESTS_PATH + manifest + ".cmake", base_dir / "manifests" / (manifest + ".cmake"), cp_ec);
-
+    std::filesystem::copy(MANIFESTS_PATH + manifest + ".cmake", base_dir / "manifests");
     const auto res = bp::system(bp::shell, bp::start_dir(base_dir.generic_string()),
 #if !BOOST_OS_WINDOWS
                                 bp::env["CMAKE_GENERATOR"] = generator,

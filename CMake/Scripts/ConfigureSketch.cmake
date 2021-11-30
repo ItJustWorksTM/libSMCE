@@ -118,13 +118,12 @@ if ("$ENV{SMCE_LEGACY_PREPROCESSING}")
   include (LegacyPreprocessing)
 endif ()
 
-if (EXISTS ${SMCE_TOOLCHAIN})
-  set (TOOLCHAIN "-DCMAKE_TOOLCHAIN_FILE=${SMCE_TOOLCHAIN}")
-  set (NINJA "-G Ninja")
+if (DEFINED ENV{SMCE_TOOLCHAIN})
+  set (TOOLCHAIN "-DCMAKE_TOOLCHAIN_FILE=\"$ENV{SMCE_TOOLCHAIN}\"")
 endif ()
 
 file (COPY "${SMCE_DIR}/RtResources/SMCE/share/CMake/Runtime/CMakeLists.txt" DESTINATION "${COMP_DIR}")
 file (MAKE_DIRECTORY "${COMP_DIR}/build")
-execute_process (COMMAND "${CMAKE_COMMAND}" "-DSMCE_DIR=${SMCE_DIR}" "-DARDPRE_EXECUTABLE=${ARDPRE_EXECUTABLE}" "-DSKETCH_DIR=${SKETCH_DIR}" ${TOOLCHAIN} -S "${COMP_DIR}" -B "${COMP_DIR}/build" ${NINJA})
+execute_process (COMMAND "${CMAKE_COMMAND}" "-DSMCE_DIR=${SMCE_DIR}" "-DARDPRE_EXECUTABLE=${ARDPRE_EXECUTABLE}" "-DSKETCH_DIR=${SKETCH_DIR}" ${TOOLCHAIN} -S "${COMP_DIR}" -B "${COMP_DIR}/build")
 
 message (STATUS "SMCE: Sketch binary will be at \"${COMP_DIR}/build/Sketch\"")

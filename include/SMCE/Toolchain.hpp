@@ -21,7 +21,6 @@
 
 #include <mutex>
 #include <string>
-#include <vector>
 #include <system_error>
 #include <SMCE/SMCE_fs.hpp>
 #include <SMCE/SMCE_iface.h>
@@ -58,7 +57,6 @@ SMCE_API std::error_code make_error_code(toolchain_error ev) noexcept;
  * used at a given type in an application.
  **/
 class SMCE_API Toolchain {
-
     stdfs::path m_res_dir;
     std::string m_cmake_path = "cmake";
 
@@ -68,16 +66,7 @@ class SMCE_API Toolchain {
     std::error_code do_configure(Sketch& sketch) noexcept;
     std::error_code do_build(Sketch& sketch) noexcept;
 
-    std::string selected_toolchain_file;
-
   public:
-
-    struct CompilerInformation{
-        std::string name;
-        std::string version;
-        std::string path;
-    };
-
     using LockedLog = std::pair<std::unique_lock<std::mutex>, std::string&>;
 
     /**
@@ -106,17 +95,7 @@ class SMCE_API Toolchain {
      * Compile a sketch
      **/
     std::error_code compile(Sketch& sketch) noexcept;
-
-    std::vector<Toolchain::CompilerInformation> find_compilers();
-    bool select_compiler(Toolchain::CompilerInformation& compiler);
-
-    std::string find_MSVC();
-    std::string search_env_path(const std::string& compiler);
-    Toolchain::CompilerInformation create_compiler_information(const std::string& path,
-                                                               const std::string& name, const std::string& version);
-    bool generate_toolchain_file(Toolchain::CompilerInformation& compiler);
 };
-
 
 } // namespace smce
 
