@@ -155,10 +155,14 @@ elseif ("${SMCE_BOOST_LINKING}" STREQUAL "SOURCE")
 endif ()
 
 add_library (Boost_ipc INTERFACE)
-if (WIN32)
-  target_link_libraries (Boost_ipc INTERFACE ole32 oleaut32 psapi advapi32)
-elseif (NOT APPLE)
-  target_link_libraries (Boost_ipc INTERFACE rt)
+target_link_libraries (Boost_ipc INTERFACE
+    $<$<NOT:$<OR:$<BOOL:${APPLE}>,$<BOOL:${WIN32}>>>:rt>
+    $<$<BOOL:${WIN32}>:ole32 oleaut32 psapi advapi32>
+    $<$<BOOL:${MINGW}>:ws2_32 ntdll>
+)
+if (MINGW)
+  target_compile_definitions (Boost_ipc INTERFACE __kernel_entry=)
+  target_compile_options (Boost_ipc INTERFACE -Wno-unknown-pragmas)
 endif ()
 add_library (Boost::ipc ALIAS Boost_ipc)
 

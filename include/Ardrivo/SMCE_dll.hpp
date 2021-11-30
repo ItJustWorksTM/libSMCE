@@ -19,7 +19,7 @@
 #ifndef SMCE__SMCE_DLL_HPP
 #define SMCE__SMCE_DLL_HPP
 
-#if defined(_MSC_VER)
+#if defined(_WIN32)
 #    if defined(SMCE__COMPILING_USERCODE)
 #        define SMCE__DLL_API __declspec(dllexport)
 #        define SMCE__DLL_RT_API __declspec(dllimport)

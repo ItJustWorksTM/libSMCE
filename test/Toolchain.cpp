@@ -16,10 +16,18 @@
  *
  */
 #include <filesystem>
+#include <iostream>
 #include <catch2/catch_test_macros.hpp>
 #include "SMCE/Toolchain.hpp"
 #include "defs.hpp"
 
+/**
+ * Tests whether a non suitable environment is detected
+ * when the toolchain is NOT configured correctly.
+ *
+ * For that, a toolchain is created that refers to an empty directory,
+ * so the necessary resources are not available.
+ */
 TEST_CASE("Toolchain invalid", "[Toolchain]") {
     const auto path = SMCE_TEST_DIR "/empty_dir";
     std::filesystem::create_directory(path);
@@ -28,9 +36,58 @@ TEST_CASE("Toolchain invalid", "[Toolchain]") {
     REQUIRE(tc.resource_dir() == path);
 }
 
+/**
+ * Tests whether a suitable environment is detected
+ * when the toolchain is configured correctly.
+ */
 TEST_CASE("Toolchain valid", "[Toolchain]") {
     smce::Toolchain tc{SMCE_PATH};
     REQUIRE(!tc.check_suitable_environment());
     REQUIRE(tc.resource_dir() == SMCE_PATH);
     REQUIRE_FALSE(tc.cmake_path().empty());
+}
+
+TEST_CASE("Sketch compilation valid", "[Toolchain]") {
+    smce::Toolchain tc{SMCE_PATH};
+    REQUIRE(!tc.check_suitable_environment());
+    REQUIRE(tc.resource_dir() == SMCE_PATH);
+    REQUIRE_FALSE(tc.cmake_path().empty());
+
+    smce::Sketch sk{SKETCHES_PATH "uart", {.fqbn = "test_board", .legacy_preproc_libs = {{"WiFi"}}}};
+    const auto ec = tc.compile(sk);
+    if (ec)
+        std::cerr << tc.build_log().second;
+    REQUIRE(!ec);
+}
+
+TEST_CASE("Sketch compilation with different toolchain errors", "[Toolchain]") {
+    smce::Toolchain tc{SMCE_PATH};
+    REQUIRE(!tc.check_suitable_environment());
+    REQUIRE(tc.resource_dir() == SMCE_PATH);
+    REQUIRE_FALSE(tc.cmake_path().empty());
+
+    SECTION("Invalid sketch path") {
+        smce::Sketch sk{SKETCHES_PATH "non_existing", {.fqbn = "test_board", .legacy_preproc_libs = {{"WiFi"}}}};
+        const auto ec = tc.compile(sk);
+        if (ec)
+            std::cerr << tc.build_log().second;
+        REQUIRE(static_cast<smce::toolchain_error>(ec.value()) == smce::toolchain_error::sketch_invalid);
+    }
+
+    SECTION("Sketch containing invalid syntax") {
+        smce::Sketch sk{SKETCHES_PATH "uart_invalid", {.fqbn = "test_board", .legacy_preproc_libs = {{"WiFi"}}}};
+        const auto ec = tc.compile(sk);
+        if (ec)
+            std::cerr << tc.build_log().second;
+        REQUIRE(static_cast<smce::toolchain_error>(ec.value()) == smce::toolchain_error::build_failed);
+    }
+
+    SECTION("Invalid plugin name") {
+        smce::Sketch sk{SKETCHES_PATH "uart",
+                        {.fqbn = "test_board", .legacy_preproc_libs = {{"WiFi"}}, .plugins = {{"/invalid"}}}};
+        const auto ec = tc.compile(sk);
+        if (ec)
+            std::cerr << tc.build_log().second;
+        REQUIRE(static_cast<smce::toolchain_error>(ec.value()) == smce::toolchain_error::invalid_plugin_name);
+    }
 }
