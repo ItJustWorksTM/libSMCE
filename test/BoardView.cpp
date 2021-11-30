@@ -40,7 +40,7 @@ TEST_CASE("BoardView GPIO", "[BoardView]") {
     smce::Board br{};
     // clang-format off
     smce::BoardConfig bc{
-        /* .pins = */{0, 2, 3, 4},
+        /* .pins = */{0, 2},
         /* .gpio_drivers = */{
             smce::BoardConfig::GpioDrivers{
                 0,
@@ -52,16 +52,6 @@ TEST_CASE("BoardView GPIO", "[BoardView]") {
                 smce::BoardConfig::GpioDrivers::DigitalDriver{false, true},
                 smce::BoardConfig::GpioDrivers::AnalogDriver{false, true}
             },
-            smce::BoardConfig::GpioDrivers{
-                3,
-                smce::BoardConfig::GpioDrivers::DigitalDriver{false, true},
-                smce::BoardConfig::GpioDrivers::AnalogDriver{true, false}
-            },
-            smce::BoardConfig::GpioDrivers{
-                4,
-                smce::BoardConfig::GpioDrivers::DigitalDriver{false, true},
-                smce::BoardConfig::GpioDrivers::AnalogDriver{false, true}
-            },
         }
     };
     // clang-format on
@@ -70,61 +60,34 @@ TEST_CASE("BoardView GPIO", "[BoardView]") {
     REQUIRE(br.start());
     auto bv = br.view();
     REQUIRE(bv.valid());
+    auto pin0 = bv.pins[0];
+    REQUIRE(pin0.exists());
+    auto pin0d = pin0.digital();
+    REQUIRE(pin0d.exists());
+    REQUIRE(pin0d.can_read());
+    REQUIRE_FALSE(pin0d.can_write());
+    auto pin0a = pin0.analog();
+    REQUIRE(pin0a.exists());
+    REQUIRE(pin0a.can_read());
+    REQUIRE_FALSE(pin0a.can_write());
+    auto pin1 = bv.pins[1];
+    REQUIRE_FALSE(pin1.exists());
+    auto pin2 = bv.pins[2];
+    REQUIRE(pin2.exists());
+    auto pin2d = pin2.digital();
+    REQUIRE(pin2d.exists());
+    REQUIRE_FALSE(pin2d.can_read());
+    REQUIRE(pin2d.can_write());
+    auto pin2a = pin2.analog();
+    REQUIRE(pin2a.exists());
+    REQUIRE_FALSE(pin2a.can_read());
+    REQUIRE(pin2a.can_write());
+    std::this_thread::sleep_for(1ms);
 
-    SECTION("Test: Configuration + Digital read and write on Pin 0 and 2.") {
-        auto pin0 = bv.pins[0];
-        REQUIRE(pin0.exists());
-        auto pin0d = pin0.digital();
-        REQUIRE(pin0d.exists());
-        REQUIRE(pin0d.can_read());
-        REQUIRE_FALSE(pin0d.can_write());
-        auto pin0a = pin0.analog();
-        REQUIRE(pin0a.exists());
-        REQUIRE(pin0a.can_read());
-        REQUIRE_FALSE(pin0a.can_write());
-
-        auto pin2 = bv.pins[2];
-        REQUIRE(pin2.exists());
-        auto pin2d = pin2.digital();
-        REQUIRE(pin2d.exists());
-        REQUIRE_FALSE(pin2d.can_read());
-        REQUIRE(pin2d.can_write());
-        auto pin2a = pin2.analog();
-        REQUIRE(pin2a.exists());
-        REQUIRE_FALSE(pin2a.can_read());
-        REQUIRE(pin2a.can_write());
-        std::this_thread::sleep_for(1ms);
-
-        pin0d.write(false);
-        test_pin_delayable(pin2d, true, 16384, 1ms);
-        pin0d.write(true);
-        test_pin_delayable(pin2d, false, 16384, 1ms);
-    }
-
-    SECTION("Test: A non existing pin can't be used.") {
-        auto pin1 = bv.pins[1];
-        REQUIRE_FALSE(pin1.exists());
-    }
-
-    SECTION("Test: Configuration + analog read and write on Pin 3 and 4.") {
-        auto pin3 = bv.pins[3];
-        REQUIRE(pin3.exists());
-        auto pin3a = pin3.analog();
-        REQUIRE(pin3a.exists());
-        REQUIRE(pin3a.can_read());
-        REQUIRE_FALSE(pin3a.can_write());
-
-        auto pin4 = bv.pins[4];
-        REQUIRE(pin4.exists());
-        auto pin4a = pin4.analog();
-        REQUIRE(pin4a.exists());
-        REQUIRE_FALSE(pin4a.can_read());
-        REQUIRE(pin4a.can_write());
-
-        pin3a.write(5);
-        test_pin_delayable(pin4a, 5, 16384, 1ms);
-    }
-
+    pin0d.write(false);
+    test_pin_delayable(pin2d, true, 16384, 1ms);
+    pin0d.write(true);
+    test_pin_delayable(pin2d, false, 16384, 1ms);
     REQUIRE(br.stop());
 }
 
