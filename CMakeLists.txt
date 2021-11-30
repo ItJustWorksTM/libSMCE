@@ -72,6 +72,9 @@ target_sources (ArdrivoUDD PRIVATE
 add_library (Ardrivo SHARED)
 configure_coverage (Ardrivo)
 set_property (TARGET Ardrivo PROPERTY CXX_EXTENSIONS Off)
+if (CMAKE_VERSION VERSION_LESS_EQUAL 3.18) # That was apparently not default
+  set_property (TARGET Ardrivo PROPERTY POSITION_INDEPENDENT_CODE True)
+endif ()
 target_include_directories (Ardrivo PRIVATE include/Ardrivo)
 target_link_libraries (Ardrivo PRIVATE ipcSMCE ArdrivoUDD BindGenProxies)
 target_sources (Ardrivo PRIVATE
@@ -162,6 +165,9 @@ if (NOT MSVC)
   target_compile_options (objSMCE PRIVATE "-Wall" "-Wextra" "-Wpedantic" "-Werror" "-Wcast-align")
 else ()
   target_compile_options (objSMCE PRIVATE "/W4" "/permissive-" "/wd4244" "/wd4251" "/wd4459" "/WX")
+endif ()
+if (MINGW)
+  target_link_libraries (objSMCE PUBLIC ntdll)
 endif ()
 
 if (SMCE_BUILD_SHARED)

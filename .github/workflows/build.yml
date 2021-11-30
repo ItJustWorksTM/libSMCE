@@ -78,6 +78,39 @@ jobs:
         with:
           name: cmcov-traces
           path: CMakeTrace/
+  debug-cxxstdlib:
+    name: libSMCE - ${{ matrix.lib }} Debug mode
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - lib: libstdc++
+            os: ubuntu-latest
+            c: gcc-10
+            cxx: g++-10
+          - lib: libc++
+            os: ubuntu-latest
+            c: clang-13
+            cxx: clang++-13 -stdlib=libc++
+    env:
+      CC: ${{ matrix.c }}
+      CXX: ${{ matrix.cxx }}
+    steps:
+      - name: Grab more recent Clang/LLVM
+        if: matrix.lib == 'libc++'
+        run: |
+          sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+          sudo apt-get update && sudo apt-get install -y clang-13 libc++-13-dev libc++abi-13-dev
+      - uses: actions/checkout@v2
+      - run: ci/setup-cmake-interceptor.sh
+      - run: cmake -DSMCE_BUILD_PROFILE=CxxStdLibDebug -S . -B build
+      - run: cmake --build build/ --target SMCE_Tests
+      - run: (cd build/test/; ctest --output-on-failure)
+      - run: ci/scan-cmake-commands.sh
+      - uses: codecov/codecov-action@v2
+        with:
+          files: ./cmake-codecov-report.json
 
   build-ubuntu:
     name: libSMCE - Ubuntu (${{ matrix.compiler.name }} & Boost ${{ matrix.boost.version }})
@@ -583,9 +616,11 @@ jobs:
             image: fedora:rawhide
             profile: FedoraHost
           - name: openSUSE
-            codename: Tumbleweed
-            image: opensuse/tumbleweed
-            profile: FedoraHost
+            codename: Leap
+            image: opensuse/leap
+            profile: OpenSuseLeap
+            c: gcc-10
+            cxx: g++-10
           - name: OpenMandriva
             codename: Lx4.2
             image: openmandriva/4.2
@@ -593,6 +628,9 @@ jobs:
     container:
       image: ${{ matrix.os.image }}
       options: --security-opt seccomp=unconfined
+    env:
+      CC: ${{ matrix.os.c }}
+      CXX: ${{ matrix.os.cxx }}
     steps:
        - name: Setup workdir
          run: mkdir /tmp/wk && cd /tmp/wk
@@ -604,7 +642,7 @@ jobs:
        - name: Fetch deps
          run: |
            [[ '${{ matrix.os.name }}' == 'Fedora' ]] && dnf install -y perl jq which tar git cmake rpmdevtools rpmlint ninja-build gcc-c++ boost-devel openssl-devel || true
-           [[ '${{ matrix.os.name }}' == 'openSUSE' ]] && zypper install -y perl jq which tar git cmake rpmdevtools rpm-build rpmlint ninja gcc-c++ boost-devel libboost_atomic${{ steps.boost-ver.outputs.SNAKE }}-devel libboost_filesystem${{ steps.boost-ver.outputs.SNAKE }}-devel libopenssl-devel || true
+           [[ '${{ matrix.os.name }}' == 'openSUSE' ]] && zypper install -y perl jq which tar git cmake rpmdevtools rpm-build rpmlint ninja gcc10-c++ boost-devel libboost_atomic${{ steps.boost-ver.outputs.SNAKE }}-devel libboost_filesystem${{ steps.boost-ver.outputs.SNAKE }}-devel libopenssl-devel || true
            [[ '${{ matrix.os.name }}' == 'OpenMandriva' ]] && dnf install -y perl jq which tar git cmake rpmdevtools rpm-build rpmlint ninja gcc-c++ glibc-devel lib64boost-devel lib64openssl-devel || true
        - uses: actions/checkout@v2
        - name: Setup global CMake interceptor

@@ -91,7 +91,7 @@ elseif (MSVC)
   string (APPEND EXTRA_FLAGS " -fms-extensions")
 endif ()
 
-string (APPEND EXTRA_FLAGS " -nostdinc -nostdinc++ -include Arduino.h")
+string (APPEND EXTRA_FLAGS " -nostdinc -nostdinc++ -include Arduino.h -ferror-limit=0")
 
 file (WRITE "${PROJECT_BINARY_DIR}/ArduinoSourceBuild.cmake" "execute_process (COMMAND \"${ARDPRE_EXECUTABLE}\" \"${SKETCH_DIR}\" ${COMPDEF_FLAGS} ${INCDIR_FLAGS} ${EXTRA_FLAGS} ${CMAKE_CXX_FLAGS} RESULT_VARIABLE ARDPRE_EXITCODE OUTPUT_FILE \"${PROJECT_SOURCE_DIR}/sketch.cpp\")\n")
 file (APPEND "${PROJECT_BINARY_DIR}/ArduinoSourceBuild.cmake" [[
