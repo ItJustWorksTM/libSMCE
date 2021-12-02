@@ -286,16 +286,23 @@ std::error_code Toolchain::do_build(Sketch& sketch) noexcept {
 }
 
 [[nodiscard]] std::error_code Toolchain::check_cmake_availability() noexcept {
-    cout << "the verry beginning        ";
+    cout << " the verry beginning        ";
     if (m_cmake_path != "cmake") {
-        if (std::error_code ec; stdfs::is_empty(m_cmake_path, ec))
+        cout << " 1 ";
+        if (std::error_code ec; stdfs::is_empty(m_cmake_path, ec)) {
+            cout << " 2 ";
             return toolchain_error::cmake_not_found;
-        else if (ec)
+        }
+        else if (ec) {
+            cout << " 3 ";
             return ec;
+        }
     } else {
         m_cmake_path = bp::search_path(m_cmake_path).string();
-        if (m_cmake_path.empty())
+        if (m_cmake_path.empty()) {
+            cout << "4";
             return toolchain_error::cmake_not_found;
+        }
     }
     cout << "before";
     cout << m_cmake_path;
