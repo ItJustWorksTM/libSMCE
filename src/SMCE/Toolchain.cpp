@@ -286,6 +286,7 @@ std::error_code Toolchain::do_build(Sketch& sketch) noexcept {
 }
 
 [[nodiscard]] std::error_code Toolchain::check_cmake_availability() noexcept {
+    cout << "the verry beginning        ";
     if (m_cmake_path != "cmake") {
         if (std::error_code ec; stdfs::is_empty(m_cmake_path, ec))
             return toolchain_error::cmake_not_found;
