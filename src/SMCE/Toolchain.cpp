@@ -34,6 +34,8 @@
 #include <SMCE/internal/utils.hpp>
 
 using namespace std::literals;
+#include <iostream>
+using namespace std;
 
 namespace bp = boost::process;
 
@@ -294,6 +296,7 @@ std::error_code Toolchain::do_build(Sketch& sketch) noexcept {
         if (m_cmake_path.empty())
             return toolchain_error::cmake_not_found;
     }
+    cout << m_cmake_path;
     return {};
 }
 
