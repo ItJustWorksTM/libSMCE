@@ -32,9 +32,9 @@
 #include <SMCE/SketchConf.hpp>
 #include <SMCE/internal/BoardDeviceSpecification.hpp>
 #include <SMCE/internal/utils.hpp>
+#include <iostream>
 
 using namespace std::literals;
-#include <iostream>
 using namespace std;
 
 namespace bp = boost::process;
