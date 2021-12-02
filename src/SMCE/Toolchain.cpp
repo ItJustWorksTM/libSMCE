@@ -296,7 +296,9 @@ std::error_code Toolchain::do_build(Sketch& sketch) noexcept {
         if (m_cmake_path.empty())
             return toolchain_error::cmake_not_found;
     }
+    cout << "before";
     cout << m_cmake_path;
+    cout << "after";
     return {};
 }
 
