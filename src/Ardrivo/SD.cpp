@@ -352,7 +352,7 @@ bool SDClass::rmdir(const char* path) {
 
     const auto fspath = SMCE_SDimpl.root() / (path[0] == '/' ? path + 1 : path);
 
-    if (std::filesystem::is_directory(fspath))
+    if (!std::filesystem::is_directory(fspath))
         return false;
     std::filesystem::remove_all(fspath);
     return true;
