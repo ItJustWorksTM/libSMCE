@@ -294,6 +294,7 @@ std::error_code Toolchain::do_build(Sketch& sketch) noexcept {
             return toolchain_error::cmake_not_found;
         }
         else if (ec) {
+            cout << ec;
             cout << " 3 ";
             return ec;
         }
