@@ -284,7 +284,7 @@ std::error_code Toolchain::do_build(Sketch& sketch) noexcept {
 }
 
 [[nodiscard]] std::error_code Toolchain::check_cmake_availability() noexcept {
-    if (m_cmake_path != "RtResources/CMake") {
+    if (m_cmake_path != (m_res_dir / "RtResources" / "CMake").string()) {
         if (std::error_code ec; stdfs::is_empty(m_cmake_path, ec)) {
             return toolchain_error::cmake_not_found;
         }
