@@ -58,7 +58,7 @@ SMCE_API std::error_code make_error_code(toolchain_error ev) noexcept;
  **/
 class SMCE_API Toolchain {
     stdfs::path m_res_dir;
-    std::string m_cmake_path = "cmake";
+    std::string m_cmake_path = "RtResources/CMake";
 
     std::string m_build_log;
     std::mutex m_build_log_mtx;
