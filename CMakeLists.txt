@@ -102,6 +102,9 @@ target_sources (Ardrivo PRIVATE
 
     include/Ardrivo/WiFi.h
     src/Ardrivo/WiFi.cpp
+
+    include/Ardrivo/FrameBufferAccess.h
+    src/Ardrivo/FrameBufferAccess.cpp
 )
 if (SMCE_ARDRIVO_MQTT)
   target_sources (Ardrivo PRIVATE include/Ardrivo/MQTT.h src/Ardrivo/MQTT.cpp)
