@@ -284,7 +284,7 @@ std::error_code Toolchain::do_build(Sketch& sketch) noexcept {
 }
 
 [[nodiscard]] std::error_code Toolchain::check_cmake_availability() noexcept {
-    if (m_cmake_path != (m_res_dir / "RtResources/CMake/bin/cmake.exe").string()) {
+    if (m_cmake_path != "cmake") {
         if (std::error_code ec; stdfs::is_empty(m_cmake_path, ec)) {
             return toolchain_error::cmake_not_found;
         }
@@ -292,9 +292,17 @@ std::error_code Toolchain::do_build(Sketch& sketch) noexcept {
             return ec;
         }
     } else {
-        m_cmake_path = bp::search_path(m_cmake_path).string();
-        if (m_cmake_path.empty()) {
-            return toolchain_error::cmake_not_found;
+        if (std::error_code ec; stdfs::is_empty((m_res_dir / "RtResources/CMake/bin/cmake.exe").string(), ec)) {
+            m_cmake_path = bp::search_path(m_cmake_path).string();
+            if (m_cmake_path.empty()) {
+                return toolchain_error::cmake_not_found;
+            }
+        }
+        else if (ec) {
+            return ec;
+        }
+        else {
+            m_cmake_path = (m_res_dir / "RtResources/CMake/bin/cmake.exe").string();
         }
     }
     return {};
