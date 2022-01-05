@@ -90,6 +90,7 @@ class SMCE_API Toolchain {
      **/
     [[nodiscard]] std::error_code check_suitable_environment() noexcept;
 
+    [[nodiscard]] std::error_code check_cmake_availability() noexcept;
     /**
      * Compile a sketch
      **/
