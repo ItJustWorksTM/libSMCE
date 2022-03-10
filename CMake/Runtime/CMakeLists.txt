@@ -22,7 +22,8 @@
 
 cmake_minimum_required (VERSION 3.12)
 
-project (Sketch CXX)
+project (Sketch)
+enable_language (CXX)
 
 set (MODULES_DIR "${SMCE_DIR}/RtResources/CMake/Modules")
 set (SMCE_MODULES_DIR "${SMCE_DIR}/RtResources/SMCE/share/CMake/Modules")
