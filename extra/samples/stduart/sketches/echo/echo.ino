@@ -1,9 +1,7 @@
-void setup() {
-    Serial.begin(9600);
-}
+void setup() { Serial.begin(9600); }
 
 void loop() {
-    if(Serial.available())
+    if (Serial.available())
         Serial.print(Serial.readString());
 
 #ifdef __SMCE__

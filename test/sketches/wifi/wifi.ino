@@ -1,5 +1,5 @@
-#include <WiFi.h>
 #include <MQTT.h>
+#include <WiFi.h>
 
 void setup() {
 #ifndef __SMCE__
