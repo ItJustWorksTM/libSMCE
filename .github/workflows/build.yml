@@ -294,18 +294,23 @@ jobs:
         boost:
           - version: 1.74.0
             slug: 1_74_0
+            vcabi: 14.2
             release: false
           - version: 1.75.0
             slug: 1_75_0
+            vcabi: 14.2
             release: false
           - version: 1.76.0
             slug: 1_76_0
+            vcabi: 14.2
             release: false
           - version: 1.77.0
             slug: 1_77_0
+            vcabi: 14.2
             release: false
           - version: 1.78.0
             slug: 1_78_0
+            vcabi: 14.3
             release: true
 #   env:
 #     CC: ${{ matrix.compiler.c }}
@@ -321,7 +326,7 @@ jobs:
           key: ${{ runner.os }}-boost-${{ matrix.boost.version }}-64bit
       - if: steps.cache-boost.outputs.cache-hit != 'true'
         shell: powershell
-        run: .\ci\install-boost.ps1 '14.3' '${{ matrix.boost.version }}' '${{ matrix.boost.slug }}'
+        run: .\ci\install-boost.ps1 '${{ matrix.boost.vcabi }}' '${{ matrix.boost.version }}' '${{ matrix.boost.slug }}'
       - name: Check deps
         shell: bash
         run: |
