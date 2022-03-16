@@ -5,6 +5,4 @@ void setup() {
     analogWrite(0, foobar());
 }
 
-void loop() {
-    delay(1);
-}
+void loop() { delay(1); }

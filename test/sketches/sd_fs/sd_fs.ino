@@ -11,6 +11,4 @@ void setup() {
     digitalWrite(0, HIGH);
 }
 
-void loop() {
-    delay(1);
-}
+void loop() { delay(1); }
