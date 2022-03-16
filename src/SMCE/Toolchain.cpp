@@ -140,6 +140,30 @@ SMCE_INTERNAL void write_devices_specs(const SketchConfig& skonf, const stdfs::p
         f << "smce_bindgen_sketch (" << e.get().full_string << ")\n";
 }
 
+#if BOOST_OS_WINDOWS
+
+SMCE_INTERNAL stdfs::path find_bundled_cmake(const stdfs::path& res_dir) {
+    auto ret = res_dir / "RtResources" / "CMake" / "bin" / "cmake.exe";
+    return stdfs::exists(ret) ? ret : stdfs::path{};
+}
+
+SMCE_INTERNAL stdfs::path find_system_cmake() {
+    PWSTR program_files = nullptr;
+    ::SHGetKnownFolderPath(FOLDERID_ProgramFilesX64, KF_FLAG_DEFAULT, nullptr, &program_files);
+    auto ret = stdfs::path{program_files} / "CMake" / "bin" / "cmake.exe";
+    ::CoTaskMemFree(program_files);
+    return stdfs::exists(ret) ? ret : stdfs::path{};
+}
+
+#else
+
+SMCE_INTERNAL stdfs::path find_bundled_cmake(const stdfs::path& res_dir) {
+    auto ret = res_dir / "RtResources" / "CMake" / "bin" / "cmake";
+    return stdfs::exists(ret) ? ret : stdfs::path{};
+}
+
+#endif
+
 Toolchain::Toolchain(stdfs::path resources_dir) noexcept : m_res_dir{std::move(resources_dir)} {
     m_build_log.reserve(4096);
 }
@@ -267,14 +291,12 @@ std::error_code Toolchain::do_build(Sketch& sketch) noexcept {
             return ec;
     } else {
         m_cmake_path = bp::search_path(m_cmake_path).string();
+        if (m_cmake_path.empty())
+            m_cmake_path = find_bundled_cmake(m_res_dir).string();
 #if BOOST_OS_WINDOWS
         // CMake on Windows is often not added to the PATH
-        if (m_cmake_path.empty()) {
-            PWSTR program_files = nullptr;
-            ::SHGetKnownFolderPath(FOLDERID_ProgramFilesX64, KF_FLAG_DEFAULT, nullptr, &program_files);
-            m_cmake_path = (stdfs::path{program_files} / "CMake" / "bin" / "cmake.exe").string();
-            ::CoTaskMemFree(program_files);
-        }
+        if (m_cmake_path.empty())
+            m_cmake_path = find_system_cmake().string();
 #endif
         if (m_cmake_path.empty())
             return toolchain_error::cmake_not_found;
