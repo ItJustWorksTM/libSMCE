@@ -20,7 +20,12 @@
 # ARDPRE_EXECUTABLE - Path of the arduino-prelude executable
 # SKETCH_DIR - Path to the sketch
 
-cmake_minimum_required (VERSION 3.12)
+if (WIN32)
+  cmake_minimum_required (VERSION 3.15)
+  set (CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+else ()
+  cmake_minimum_required (VERSION 3.12)
+endif ()
 
 project (Sketch)
 enable_language (CXX)
