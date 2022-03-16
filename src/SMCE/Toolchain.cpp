@@ -26,6 +26,9 @@
 #    include <boost/process/windows.hpp>
 #endif
 #include <boost/process.hpp>
+#if BOOST_OS_WINDOWS
+#    include <ShlObj.h>
+#endif
 
 #include <SMCE/PluginManifest.hpp>
 #include <SMCE/SMCE_iface.h>
@@ -264,6 +267,15 @@ std::error_code Toolchain::do_build(Sketch& sketch) noexcept {
             return ec;
     } else {
         m_cmake_path = bp::search_path(m_cmake_path).string();
+#if BOOST_OS_WINDOWS
+        // CMake on Windows is often not added to the PATH
+        if (m_cmake_path.empty()) {
+            PWSTR program_files = nullptr;
+            ::SHGetKnownFolderPath(FOLDERID_ProgramFilesX64, KF_FLAG_DEFAULT, nullptr, &program_files);
+            m_cmake_path = (stdfs::path{program_files} / "CMake" / "bin" / "cmake.exe").string();
+            ::CoTaskMemFree(program_files);
+        }
+#endif
         if (m_cmake_path.empty())
             return toolchain_error::cmake_not_found;
     }
