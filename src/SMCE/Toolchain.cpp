@@ -238,7 +238,7 @@ std::error_code Toolchain::do_build(Sketch& sketch) noexcept {
     // clang-format off
     auto cmake_build = bp::child{
 #if BOOST_OS_WINDOWS
-        bp::env["MSBUILDDISABLENODEREUSE"] = "1", // MSBuild "feature" which uses your child processes as potential deamons, forever
+        bp::env["MSBUILDDISABLENODEREUSE"] = "1", // MSBuild "feature" which uses your child processes as potential daemons, forever
 #endif
         m_cmake_path,
         "--build", (sketch.m_tmpdir / "build").string(),
