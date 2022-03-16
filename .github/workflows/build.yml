@@ -303,6 +303,9 @@ jobs:
             release: false
           - version: 1.77.0
             slug: 1_77_0
+            release: false
+          - version: 1.78.0
+            slug: 1_78_0
             release: true
 #   env:
 #     CC: ${{ matrix.compiler.c }}
@@ -318,7 +321,7 @@ jobs:
           key: ${{ runner.os }}-boost-${{ matrix.boost.version }}-64bit
       - if: steps.cache-boost.outputs.cache-hit != 'true'
         shell: powershell
-        run: .\ci\install-boost.ps1 '14.2' '${{ matrix.boost.version }}' '${{ matrix.boost.slug }}'
+        run: .\ci\install-boost.ps1 '14.3' '${{ matrix.boost.version }}' '${{ matrix.boost.slug }}'
       - name: Check deps
         shell: bash
         run: |
