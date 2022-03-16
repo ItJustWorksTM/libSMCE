@@ -18,6 +18,7 @@
 
 #include "SMCE/BoardView.hpp"
 
+#include <array>
 #include <iterator>
 #include <mutex>
 #include <boost/date_time/microsec_time_clock.hpp>
