@@ -648,7 +648,7 @@ jobs:
          run: |
            [[ '${{ matrix.os.name }}' == 'Fedora' ]] && dnf install -y perl jq which tar git cmake rpmdevtools rpmlint ninja-build gcc-c++ boost-devel openssl-devel || true
            [[ '${{ matrix.os.name }}' == 'openSUSE' ]] && zypper install -y perl jq which tar git cmake rpmdevtools rpm-build rpmlint ninja gcc10-c++ boost-devel libboost_atomic${{ steps.boost-ver.outputs.SNAKE }}-devel libboost_filesystem${{ steps.boost-ver.outputs.SNAKE }}-devel libopenssl-devel || true
-           [[ '${{ matrix.os.name }}' == 'OpenMandriva' ]] && dnf install -y perl jq which tar git cmake rpmdevtools rpm-build rpmlint ninja gcc-c++ glibc-devel lib64boost-devel lib64openssl-devel || true
+           [[ '${{ matrix.os.name }}' == 'OpenMandriva' ]] && dnf install -y perl jq which tar git cmake rpmdevtools rpm-build rpmlint ninja clang glibc-devel lib64boost-devel lib64openssl-devel || true
        - uses: actions/checkout@v2
        - name: Setup global CMake interceptor
          run: ci/setup-cmake-interceptor.sh
