@@ -45,9 +45,9 @@ if (MSVC AND NOT CMAKE_CXX_SIMULATE_ID)
   list (APPEND COMPILER_INCLUDE_DIRS "${WINSDK_INCDIR}/ucrt" "${WINSDK_INCDIR}/um" "${WINSDK_INCDIR}/shared")
 else ()
   if (MSVC)
-    message (WARNING "Clang-cl unsupported")
     file (TO_NATIVE_PATH "${PROJECT_BINARY_DIR}/empty" EMPTY_FILE_MSPATH)
-    execute_process (COMMAND "${CMAKE_CXX_COMPILER}" "/E" "/Tp" "${EMPTY_FILE_MSPATH}" "/clang:-Wp,-v"
+    separate_arguments (cxx_flags_list WINDOWS_COMMAND ${CMAKE_CXX_FLAGS})
+    execute_process (COMMAND "${CMAKE_CXX_COMPILER}" "/E" "/Tp" "${EMPTY_FILE_MSPATH}" "/clang:-Wp,-v" ${cxx_flags_list}
         RESULT_VARIABLE COMPILER_SEARCH_DIRS_COMMAND_RESULT
         ERROR_VARIABLE COMPILER_SEARCH_DIRS_RAW
         OUTPUT_QUIET
