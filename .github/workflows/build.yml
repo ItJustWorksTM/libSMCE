@@ -527,9 +527,6 @@ jobs:
             codename: Hirsute
             image: ubuntu:hirsute
           - name: Ubuntu
-            codename: Groovy
-            image: ubuntu:groovy
-          - name: Ubuntu
             codename: Focal
             image: ubuntu:focal
     container:
