@@ -626,10 +626,10 @@ jobs:
             profile: OpenSuseLeap
             c: gcc-10
             cxx: g++-10
-          - name: OpenMandriva
-            codename: Lx4.2
-            image: openmandriva/4.2
-            profile: FedoraHost
+#         - name: OpenMandriva
+#           codename: Lx4.2
+#           image: openmandriva/4.2
+#           profile: FedoraHost
     container:
       image: ${{ matrix.os.image }}
       options: --security-opt seccomp=unconfined
