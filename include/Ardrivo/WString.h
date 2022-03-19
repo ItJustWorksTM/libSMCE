@@ -52,6 +52,10 @@ class SMCE__DLL_RT_API String {
 
     String(std::string u);
 
+    String(ConvTag, std::intmax_t val);
+    String(ConvTag, std::uintmax_t val);
+    String(ConvTag, long double val);
+
     String(ConvTag, std::uintmax_t val, SMCE__BIN);
     String(ConvTag, std::uintmax_t val, SMCE__HEX);
 
@@ -76,7 +80,8 @@ class SMCE__DLL_RT_API String {
     template <class T>
     explicit String(T val,
                     typename std::enable_if<SMCE__decays_to_integral<T>::value, ConvTTag<T>>::type = ConvTTag<T>{})
-        : m_u{std::to_string(val)} {}
+        : String{conv_tag,
+                 static_cast<std::conditional_t<std::is_signed<T>::value, std::intmax_t, std::uintmax_t>>(val)} {}
     template <class T>
     String(T val, SMCE__BIN,
            typename std::enable_if<SMCE__decays_to_integral<T>::value, ConvTTag<T>>::type = ConvTTag<T>{})
@@ -84,7 +89,8 @@ class SMCE__DLL_RT_API String {
     template <class T>
     String(T val, SMCE__DEC,
            typename std::enable_if<SMCE__decays_to_integral<T>::value, ConvTTag<T>>::type = ConvTTag<T>{})
-        : String{val} {}
+        : String{conv_tag,
+                 static_cast<std::conditional_t<std::is_signed<T>::value, std::intmax_t, std::uintmax_t>>(val)} {}
     template <class T>
     String(T val, SMCE__HEX,
            typename std::enable_if<SMCE__decays_to_integral<T>::value, ConvTTag<T>>::type = ConvTTag<T>{})
@@ -94,13 +100,16 @@ class SMCE__DLL_RT_API String {
            typename std::enable_if<SMCE__decays_to_integral<T>::value, ConvTTag<T>>::type = ConvTTag<T>{}) {
         switch (base) {
         case 2:
-            *this = String{conv_tag, val, BIN};
+            *this = String{conv_tag, SMCE__bit_cast<typename std::make_unsigned<T>::type>(val), BIN};
             break;
         case 10:
-            *this = String{val};
+            *this = String{
+                conv_tag,
+                static_cast<typename std::conditional<std::is_signed<T>::value, std::intmax_t, std::uintmax_t>::type>(
+                    val)};
             break;
         case 16:
-            *this = String{conv_tag, val, HEX};
+            *this = String{conv_tag, SMCE__bit_cast<typename std::make_unsigned<T>::type>(val), HEX};
             break;
         default:
             throw std::runtime_error{"ERROR: String::String(?, ?): Unsupported base for numeric conversion\n"};
@@ -111,7 +120,7 @@ class SMCE__DLL_RT_API String {
     explicit String(
         T val, [[maybe_unused]] int precision = -1,
         typename std::enable_if<SMCE__decays_to_floating_point<T>::value, ConvTTag<T>>::type = ConvTTag<T>{})
-        : m_u{std::to_string(val)} {}
+        : String{conv_tag, static_cast<long double>(val)} {}
 
     [[nodiscard]] const char* c_str() const noexcept;
     [[nodiscard]] std::size_t length() const noexcept;
