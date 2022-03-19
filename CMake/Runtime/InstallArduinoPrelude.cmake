@@ -18,7 +18,7 @@
 ## Expected variables:
 # ARDPRE_ROOT - root directory of the arduino-prelude install tree
 
-set (ARDPRE_KNOWN_LATEST "1.0.1")
+set (ARDPRE_KNOWN_LATEST "1.0.2")
 
 # Compute archive filename
 set (ARDPRE_FILENAME_SYS "${CMAKE_HOST_SYSTEM_NAME}")
