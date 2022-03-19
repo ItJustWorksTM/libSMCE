@@ -147,6 +147,36 @@ TEST_CASE("BoardView UART", "[BoardView]") {
     REQUIRE(br.stop());
 }
 
+TEST_CASE("UART strconv", "[BoardView]") {
+    smce::Toolchain tc{SMCE_PATH};
+    REQUIRE(!tc.check_suitable_environment());
+    smce::Sketch sk{SKETCHES_PATH "strconv", {.fqbn = "arduino:avr:nano"}};
+    const auto ec = tc.compile(sk);
+    if (ec)
+        std::cerr << tc.build_log().second;
+    REQUIRE_FALSE(ec);
+    smce::Board br{};
+    REQUIRE(br.configure({.uart_channels = {{}}}));
+    REQUIRE(br.attach_sketch(sk));
+    REQUIRE(br.start());
+    auto bv = br.view();
+    REQUIRE(bv.valid());
+    auto uart0 = bv.uart_channels[0];
+    REQUIRE(uart0.exists());
+    REQUIRE(uart0.rx().exists());
+
+    std::array<char, 2> out{};
+    int ticks = 16'000;
+    do {
+        if (ticks-- == 0)
+            FAIL("Timed out");
+        std::this_thread::sleep_for(1ms);
+    } while (uart0.tx().size() != out.size());
+    REQUIRE(uart0.tx().read(out) == out.size());
+    REQUIRE(out == std::array<char, 2>{'4', '5'});
+    REQUIRE(br.stop());
+}
+
 constexpr auto div_ceil(std::size_t lhs, std::size_t rhs) { return lhs / rhs + !!(lhs % rhs); }
 
 constexpr std::byte operator""_b(char c) noexcept { return static_cast<std::byte>(c); }
