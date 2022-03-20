@@ -16,7 +16,18 @@
  *
  */
 
+#include <algorithm>
 #include "SMCE_dll.hpp"
 #include "WiFi.h"
 
 SMCE__DLL_API WiFiClass WiFi;
+
+std::uint8_t* WiFiClass::BSSID(std::uint8_t* bssid) {
+    std::fill_n(bssid, WL_MAC_ADDR_LENGTH, 0);
+    return bssid;
+}
+
+std::uint8_t* WiFiClass::macAddress(std::uint8_t* mac) const {
+    std::fill_n(mac, WL_MAC_ADDR_LENGTH, 0);
+    return mac;
+}

@@ -19,6 +19,6 @@
 #ifndef IPAddress_h
 #define IPAddress_h
 
-struct IPAddress {};
+class IPAddress {};
 
 #endif // IPAddress_h

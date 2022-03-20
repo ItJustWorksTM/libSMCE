@@ -102,7 +102,8 @@ target_sources (Ardrivo PRIVATE
 
     include/Ardrivo/WiFi.h
     src/Ardrivo/WiFi.cpp
-)
+    include/Ardrivo/WiFiClient.h
+    )
 if (SMCE_ARDRIVO_MQTT)
   target_sources (Ardrivo PRIVATE include/Ardrivo/MQTT.h src/Ardrivo/MQTT.cpp)
   target_link_libraries(Ardrivo PRIVATE SMCE_mosquitto)

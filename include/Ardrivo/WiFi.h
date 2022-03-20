@@ -20,25 +20,74 @@
 #define WiFi_h
 
 #include <cstdint>
-#include "Client.h"
 #include "IPAddress.h"
 #include "SMCE_dll.hpp"
+#include "WiFiClient.h"
 
-struct WiFiClass : Client {
-    inline int connect([[maybe_unused]] IPAddress ip, [[maybe_unused]] std::uint16_t port) override { return 0; }
-    int connect([[maybe_unused]] const char* host, [[maybe_unused]] std::uint16_t port) override { return 0; }
-    std::size_t write([[maybe_unused]] std::uint8_t) override { return 0; }
-    std::size_t write([[maybe_unused]] const std::uint8_t* buf, [[maybe_unused]] std::size_t size) override {
-        return 0;
+enum {
+    WL_SSID_MAX_LENGTH = 32,
+    WL_WPA_KEY_MAX_LENGTH = 63,
+    WL_WEP_KEY_MAX_LENGTH = 13,
+    WL_MAC_ADDR_LENGTH = 6,
+    WL_IPV4_LENGTH = 4,
+    WL_NETWORKS_LIST_MAXNUM = 10,
+    MAX_SOCK_NUM = 4,
+    SOCK_NOT_AVAIL = 255,
+    NA_STATE = -1,
+    WL_MAX_ATTEMPT_CONNECTION = 10,
+};
+
+enum wl_status_t {
+    WL_NO_SHIELD = 255, // for compatibility with WiFi Shield library
+    WL_IDLE_STATUS = 0,
+    WL_NO_SSID_AVAIL = 1,
+    WL_SCAN_COMPLETED = 2,
+    WL_CONNECTED = 3,
+    WL_CONNECT_FAILED = 4,
+    WL_CONNECTION_LOST = 5,
+    WL_DISCONNECTED = 6,
+};
+
+enum wl_enc_type {
+    ENC_TYPE_WEP = 5,
+    ENC_TYPE_TKIP = 2,
+    ENC_TYPE_CCMP = 4,
+    ENC_TYPE_NONE = 7,
+    ENC_TYPE_AUTO = 8,
+};
+
+struct WiFiClass {
+    int begin() { return 0; }
+    int begin([[maybe_unused]] const char* ssid) { return WL_NO_SHIELD; }
+    int begin([[maybe_unused]] const char* ssid, [[maybe_unused]] const char* pass) { return WL_NO_SHIELD; }
+    int begin([[maybe_unused]] const char* ssid, [[maybe_unused]] std::uint8_t key_idx,
+              [[maybe_unused]] const char* key) {
+        return WL_NO_SHIELD;
     }
-    int available() override { return 0; }
-    int read() override { return -1; }
-    int read([[maybe_unused]] std::uint8_t* buf, [[maybe_unused]] std::size_t size) override { return 0; }
-    int peek() override { return -1; }
-    void flush() override {}
-    void stop() override {}
-    std::uint8_t connected() override { return 0; }
-    operator bool() override { return false; }
+    int disconnect() { return WL_NO_SHIELD; }
+    void config([[maybe_unused]] IPAddress local_ip) {}
+    void config([[maybe_unused]] IPAddress local_ip, [[maybe_unused]] IPAddress dns_server) {}
+    void config([[maybe_unused]] IPAddress local_ip, [[maybe_unused]] IPAddress dns_server,
+                [[maybe_unused]] IPAddress gateway) {}
+    void config([[maybe_unused]] IPAddress local_ip, [[maybe_unused]] IPAddress dns_server,
+                [[maybe_unused]] IPAddress gateway, [[maybe_unused]] IPAddress subnet) {}
+    void setDNS([[maybe_unused]] IPAddress dns_server1) {}
+    void setDNS([[maybe_unused]] IPAddress dns_server1, [[maybe_unused]] IPAddress dns_server2) {}
+    /*[[nodiscard]]*/ char* SSID() const { return nullptr; }
+    /*[[nodiscard]]*/ char* SSID([[maybe_unused]] std::uint8_t networkItem) const { return nullptr; }
+    std::uint8_t* BSSID(std::uint8_t* bssid);
+    /*[[nodiscard]]*/ std::int32_t RSSI() { return 0; }
+    /*[[nodiscard]]*/ std::int32_t RSSI([[maybe_unused]] std::uint8_t networkItem) { return 0; }
+    /*[[nodiscard]]*/ std::uint8_t encryptionType() { return ENC_TYPE_AUTO; }
+    /*[[nodiscard]]*/ std::uint8_t encryptionType([[maybe_unused]] std::uint8_t networkItem) { return ENC_TYPE_AUTO; }
+    std::int8_t scanNetworks() { return 0; }
+    /*[[nodiscard]]*/ static std::uint8_t getSocket() { return 0; }
+    std::uint8_t* macAddress(std::uint8_t* mac) const;
+    /*[[nodiscard]]*/ int status() const { return WL_NO_SHIELD; }
+
+    /*[[nodiscard]]*/ IPAddress localIP() { return {}; }
+    /*[[nodiscard]]*/ IPAddress subnetMask() { return {}; }
+    /*[[nodiscard]]*/ IPAddress gatewayIP() { return {}; }
 };
 
 SMCE__DLL_RT_API
