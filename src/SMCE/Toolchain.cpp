@@ -52,14 +52,16 @@ struct toolchain_error_category : public std::error_category {
         switch (static_cast<toolchain_error>(ev)) {
         case toolchain_error::resdir_absent:
             return "Resource directory does not exist";
-        case toolchain_error::resdir_empty:
-            return "Resource directory empty";
         case toolchain_error::resdir_file:
             return "Resource directory is a file";
+        case toolchain_error::resdir_empty:
+            return "Resource directory empty";
         case toolchain_error::cmake_not_found:
             return "CMake not found in PATH";
         case toolchain_error::cmake_unknown_output:
             return "CMake output unrecognized";
+        case toolchain_error::cmake_failing:
+            return "CMake failed";
         case toolchain_error::invalid_plugin_name:
             return "Plugin name is \".\", \"..\", or contains a forward slash";
         case toolchain_error::sketch_invalid:
