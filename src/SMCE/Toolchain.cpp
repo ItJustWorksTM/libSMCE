@@ -149,6 +149,17 @@ SMCE_INTERNAL stdfs::path find_bundled_cmake(const stdfs::path& res_dir) {
     return stdfs::exists(ret) ? ret : stdfs::path{};
 }
 
+#else
+
+SMCE_INTERNAL stdfs::path find_bundled_cmake(const stdfs::path& res_dir) {
+    auto ret = res_dir / "RtResources" / "CMake" / "bin" / "cmake";
+    return stdfs::exists(ret) ? ret : stdfs::path{};
+}
+
+#endif
+
+#if BOOST_OS_WINDOWS
+
 SMCE_INTERNAL stdfs::path find_system_cmake() {
     PWSTR program_files = nullptr;
     ::SHGetKnownFolderPath(FOLDERID_ProgramFilesX64, KF_FLAG_DEFAULT, nullptr, &program_files);
@@ -157,10 +168,12 @@ SMCE_INTERNAL stdfs::path find_system_cmake() {
     return stdfs::exists(ret) ? ret : stdfs::path{};
 }
 
-#else
+#endif
 
-SMCE_INTERNAL stdfs::path find_bundled_cmake(const stdfs::path& res_dir) {
-    auto ret = res_dir / "RtResources" / "CMake" / "bin" / "cmake";
+#if BOOST_OS_MACOS
+
+SMCE_INTERNAL stdfs::path find_cmake_in_bundle() {
+    stdfs::path ret = "/Applications/CMake.app/Contents/bin/cmake";
     return stdfs::exists(ret) ? ret : stdfs::path{};
 }
 
@@ -299,6 +312,10 @@ std::error_code Toolchain::do_build(Sketch& sketch) noexcept {
         // CMake on Windows is often not added to the PATH
         if (m_cmake_path.empty())
             m_cmake_path = find_system_cmake().string();
+#elif BOOST_OS_MACOS
+        // Some users may have the CMake bundle (app) instead of a system install
+        if (m_cmake_path.empty())
+            m_cmake_path = find_cmake_in_bundle().string();
 #endif
         if (m_cmake_path.empty())
             return toolchain_error::cmake_not_found;
