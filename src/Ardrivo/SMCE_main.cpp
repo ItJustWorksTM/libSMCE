@@ -16,11 +16,15 @@
  *
  */
 
+#include <chrono>
 #include <cstdio>
 #include <cstdlib>
+#include <thread>
 #include "SMCE/BoardView.hpp"
 #include "SMCE/internal/SharedBoardData.hpp"
 #include "SMCE.hpp"
+
+using namespace std::chrono_literals;
 
 namespace smce {
 
@@ -42,8 +46,13 @@ void maybe_init() {
 int SMCE__main([[maybe_unused]] int argc, [[maybe_unused]] char** argv, SetupSig* setup, LoopSig* loop) noexcept try {
     smce::maybe_init();
     setup();
-    while (!smce::board_view.stop_requested())
+    while (!smce::board_view.stop_requested()) {
+        const auto loop_start = std::chrono::steady_clock::now();
         loop();
+        const auto loop_end = std::chrono::steady_clock::now();
+        if (loop_end - loop_start < 1ms)
+            std::this_thread::yield();
+    }
     return EXIT_SUCCESS;
 } catch (const std::exception& e) {
     std::fputs("Exception occurred:", stderr);
