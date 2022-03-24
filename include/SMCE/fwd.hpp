@@ -24,6 +24,8 @@ namespace smce {
 struct BoardConfig;
 class Board;
 class BoardView;
+class BoardDeviceNativeSpecification;
+class BoardDeviceSyntheticSpecification;
 class BoardDeviceSpecification;
 class BoardDeviceView;
 class Sketch;

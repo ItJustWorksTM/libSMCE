@@ -22,18 +22,23 @@
 #if defined(_WIN32)
 #    if defined(SMCE_LIB_BUILD)
 #        define SMCE_API __declspec(dllexport)
+#        define SMCE_API_FRIEND __declspec(dllexport)
 #    elif !defined(SMCE_WIN32_LINK_STATIC)
 #        define SMCE_API __declspec(dllimport)
+#        define SMCE_API_FRIEND __declspec(dllimport)
 #    else
 #        define SMCE_API
+#        define SMCE_API_FRIEND
 #    endif
 #    define SMCE_INTERNAL
 #else
 #    if defined(SMCE_LIB_BUILD)
 #        define SMCE_API [[gnu::visibility("default")]]
+#        define SMCE_API_FRIEND
 #        define SMCE_INTERNAL [[gnu::visibility("hidden")]]
 #    else
 #        define SMCE_API
+#        define SMCE_API_FRIEND
 #        define SMCE_INTERNAL
 #    endif
 #endif

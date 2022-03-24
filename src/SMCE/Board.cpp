@@ -17,7 +17,6 @@
  */
 
 #include <SMCE/Board.hpp>
-#include <SMCE/internal/BoardDeviceSpecification.hpp>
 #include <boost/predef.h>
 
 #if BOOST_OS_UNIX || BOOST_OS_MACOS
@@ -144,7 +143,7 @@ bool Board::start() noexcept {
 
     for (const auto& skdev : m_sketch_ptr->m_conf.genbind_devices) {
         if (std::find_if(m_conf_opt->board_devices.cbegin(), m_conf_opt->board_devices.cend(), [&](const auto& e) {
-                return e.spec.get().full_string == skdev.get().full_string;
+                return e.spec.to_cmake() == skdev.to_cmake();
             }) == m_conf_opt->board_devices.cend())
             return false;
     }

@@ -33,18 +33,18 @@ TEST_CASE("Basic board device", "[BoardDevice]") {
     REQUIRE(!tc.check_suitable_environment());
     // clang-format off
     smce::PluginManifest uudprov_pm{
-    "UDDProvider",
-    "1.0",
-    {},
-    {"TestUDD"},
-    "file://" PLUGINS_PATH "UDDProvider",
-    "",
-    smce::PluginManifest::Defaults::arduino,
+        "UDDProvider",
+        "1.0",
+        {},
+        {"TestUDD"},
+        "file://" PLUGINS_PATH "UDDProvider",
+        "",
+        smce::PluginManifest::Defaults::arduino,
     };
     smce::Sketch sk{SKETCHES_PATH "udd_consumer", {
             .fqbn = "arduino:avr:nano",
             .plugins = { std::move(uudprov_pm) },
-            .genbind_devices = { std::cref(TestUDD::specification) }
+            .genbind_devices = { TestUDD::specification }
     }};
     // clang-format on
     const auto ec = tc.compile(sk);
@@ -53,7 +53,7 @@ TEST_CASE("Basic board device", "[BoardDevice]") {
     REQUIRE(!ec);
 
     smce::Board br{};
-    smce::BoardConfig bc{{}, {}, {}, {}, {}, {{std::cref(TestUDD::specification), 2}}};
+    smce::BoardConfig bc{{}, {}, {}, {}, {}, {{TestUDD::specification, 2}}};
 
     REQUIRE(br.configure(std::move(bc)));
     REQUIRE(br.attach_sketch(sk));

@@ -19,7 +19,7 @@ include_guard ()
 
 include (GNUInstallDirs)
 
-set (SMCE_BOILERPLATE_TARGETS objSMCE HostUDD BindGenProxies ipcSMCE iSMCE)
+set(SMCE_BOILERPLATE_TARGETS objSMCE BindGenProxies ipcSMCE iSMCE)
 
 function (smce_internal_install TARGETS)
   cmake_parse_arguments (SMCE_INSTALL "" "COMPONENT" "TARGETS" ${ARGV})

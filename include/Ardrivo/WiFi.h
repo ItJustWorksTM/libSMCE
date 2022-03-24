@@ -24,6 +24,7 @@
 #include "SMCE_dll.hpp"
 #include "WiFiClient.h"
 
+// clang-format off
 enum {
     WL_SSID_MAX_LENGTH = 32,
     WL_WPA_KEY_MAX_LENGTH = 63,
@@ -55,6 +56,7 @@ enum wl_enc_type {
     ENC_TYPE_NONE = 7,
     ENC_TYPE_AUTO = 8,
 };
+// clang-format on
 
 struct WiFiClass {
     int begin() { return 0; }

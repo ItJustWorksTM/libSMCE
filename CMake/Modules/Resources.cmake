@@ -144,7 +144,6 @@ macro (setup_smce_resources)
   copy_at_build (DESTINATION "${SMCE_RTRES_DIR}/Ardrivo/include/SMCE_rt/internal"
       FILES
         "${PROJECT_SOURCE_DIR}/include/SMCE_rt/internal/SMCE_api.hpp"
-        "${PROJECT_SOURCE_DIR}/include/SMCE_rt/internal/BoardDeviceAllocationBases.hpp"
         "${PROJECT_SOURCE_DIR}/include/SMCE_rt/internal/sketch_rt.hpp"
       COMMENT "Setting-up internal bindgen headers"
       APPEND_TRACKER SMCE_RUNTIME_BG_HEADERS

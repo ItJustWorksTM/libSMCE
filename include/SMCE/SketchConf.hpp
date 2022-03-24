@@ -19,12 +19,10 @@
 #ifndef SMCE_SKETCHCONF_HPP
 #define SMCE_SKETCHCONF_HPP
 
-#include <functional>
 #include <string>
-#include <variant>
 #include <vector>
+#include <SMCE/BoardDeviceSpecification.hpp>
 #include <SMCE/PluginManifest.hpp>
-#include <SMCE/SMCE_fs.hpp>
 #include <SMCE/SMCE_iface.h>
 #include <SMCE/fwd.hpp>
 
@@ -42,12 +40,11 @@ struct SMCE_API SketchConfig {
         std::string version; // Version string; empty if latest
     };
 
-    std::string fqbn;                                /// Fully-qualified board name that the sketch is targeting
-    std::vector<std::string> extra_board_uris;       /// Extra board.txt URIs for ArduinoCLI
-    std::vector<ArduinoLibrary> legacy_preproc_libs; /// Libraries to use during legacy preprocessing
-    std::vector<PluginManifest> plugins;             /// Plugins to compile with
-    std::vector<std::reference_wrapper<const BoardDeviceSpecification>>
-        genbind_devices; /// Board devices to generate bindings for
+    std::string fqbn;                                      /// Fully-qualified board name that the sketch is targeting
+    std::vector<std::string> extra_board_uris;             /// Extra board.txt URIs for ArduinoCLI
+    std::vector<ArduinoLibrary> legacy_preproc_libs;       /// Libraries to use during legacy preprocessing
+    std::vector<PluginManifest> plugins;                   /// Plugins to compile with
+    std::vector<BoardDeviceSpecification> genbind_devices; /// Board devices to generate bindings for
 };
 
 } // namespace smce

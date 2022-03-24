@@ -29,10 +29,10 @@ class SMCE_PROXY_API AtomicU8 {
     void* m_ptr{};
 
   public:
+    AtomicU8(void* ptr, const Impl&) noexcept : m_ptr{ptr} {}
     AtomicU8() noexcept = default;
     AtomicU8(AtomicU8&) = delete;
     inline AtomicU8(AtomicU8&&) noexcept = default;
-    inline void assign(const Impl&, void* ptr) noexcept { m_ptr = ptr; }
 
     std::uint8_t load() noexcept;
     void store(std::uint8_t v) noexcept;
@@ -45,10 +45,10 @@ class SMCE_PROXY_API AtomicU16 {
     void* m_ptr{};
 
   public:
+    AtomicU16(void* ptr, const Impl&) noexcept : m_ptr{ptr} {}
     AtomicU16() noexcept = default;
     AtomicU16(AtomicU16&) = delete;
     inline AtomicU16(AtomicU16&&) noexcept = default;
-    inline void assign(const Impl&, void* ptr) noexcept { m_ptr = ptr; }
 
     std::uint16_t load() noexcept;
     void store(std::uint16_t v) noexcept;
@@ -61,10 +61,10 @@ class SMCE_PROXY_API AtomicU32 {
     void* m_ptr{};
 
   public:
+    AtomicU32(void* ptr, const Impl&) noexcept : m_ptr{ptr} {}
     AtomicU32() noexcept = default;
     AtomicU32(AtomicU32&) = delete;
     inline AtomicU32(AtomicU32&&) noexcept = default;
-    inline void assign(const Impl&, void* ptr) noexcept { m_ptr = ptr; }
 
     std::uint32_t load() noexcept;
     void store(std::uint32_t v) noexcept;
@@ -77,10 +77,10 @@ class SMCE_PROXY_API AtomicU64 {
     void* m_ptr{};
 
   public:
+    AtomicU64(void* ptr, const Impl&) noexcept : m_ptr{ptr} {}
     AtomicU64() noexcept = default;
     AtomicU64(AtomicU64&) = delete;
     inline AtomicU64(AtomicU64&&) noexcept = default;
-    inline void assign(const Impl&, void* ptr) noexcept { m_ptr = ptr; }
 
     std::uint64_t load() noexcept;
     void store(std::uint64_t v) noexcept;
@@ -93,10 +93,10 @@ class SMCE_PROXY_API AtomicS8 {
     AtomicU8 m_u{};
 
   public:
+    AtomicS8(void* ptr, const Impl& impl) noexcept : m_u{ptr, impl} {}
     AtomicS8() noexcept = default;
     AtomicS8(AtomicS8&) = delete;
     inline AtomicS8(AtomicS8&&) noexcept = default;
-    inline void assign(const Impl& r, void* ptr) noexcept { m_u.assign(r, ptr); }
 
     inline std::int8_t load() noexcept { return static_cast<std::int8_t>(m_u.load()); }
     inline void store(std::int8_t v) noexcept { m_u.store(static_cast<std::uint8_t>(v)); }
@@ -109,10 +109,10 @@ class SMCE_PROXY_API AtomicS16 {
     AtomicU16 m_u{};
 
   public:
+    AtomicS16(void* ptr, const Impl& impl) noexcept : m_u{ptr, impl} {}
     AtomicS16() noexcept = default;
     AtomicS16(AtomicS16&) = delete;
     inline AtomicS16(AtomicS16&&) noexcept = default;
-    inline void assign(const Impl& r, void* ptr) noexcept { m_u.assign(r, ptr); }
 
     inline std::int16_t load() noexcept { return static_cast<std::int16_t>(m_u.load()); }
     inline void store(std::int16_t v) noexcept { m_u.store(static_cast<std::uint16_t>(v)); }
@@ -125,10 +125,10 @@ class SMCE_PROXY_API AtomicS32 {
     AtomicU32 m_u{};
 
   public:
+    AtomicS32(void* ptr, const Impl& impl) noexcept : m_u{ptr, impl} {}
     AtomicS32() noexcept = default;
     AtomicS32(AtomicS32&) = delete;
     inline AtomicS32(AtomicS32&&) noexcept = default;
-    inline void assign(const Impl& r, void* ptr) noexcept { m_u.assign(r, ptr); }
 
     std::int32_t load() noexcept { return static_cast<std::int32_t>(m_u.load()); }
     void store(std::int32_t v) noexcept { m_u.store(static_cast<std::uint32_t>(v)); }
@@ -141,10 +141,10 @@ class SMCE_PROXY_API AtomicS64 {
     AtomicU64 m_u{};
 
   public:
+    AtomicS64(void* ptr, const Impl& impl) noexcept : m_u{ptr, impl} {}
     AtomicS64() noexcept = default;
     AtomicS64(AtomicS64&) = delete;
     inline AtomicS64(AtomicS64&&) noexcept = default;
-    inline void assign(const Impl& r, void* ptr) noexcept { m_u.assign(r, ptr); }
 
     std::int64_t load() noexcept { return static_cast<std::int64_t>(m_u.load()); }
     void store(std::int64_t v) noexcept { m_u.store(static_cast<std::uint64_t>(v)); }
@@ -153,25 +153,51 @@ class SMCE_PROXY_API AtomicS64 {
     inline void operator=(std::int64_t v) noexcept { store(v); }
 };
 
+class SMCE_PROXY_API AtomicF32 {
+    void* m_ptr{};
+
+  public:
+    AtomicF32(void* ptr, const Impl&) noexcept : m_ptr{ptr} {}
+    AtomicF32() noexcept = default;
+    AtomicF32(AtomicF32&) = delete;
+    inline AtomicF32(AtomicF32&&) noexcept = default;
+
+    float load() noexcept;
+    void store(float v) noexcept;
+
+    inline operator float() noexcept { return load(); }
+    inline void operator=(float v) noexcept { store(v); }
+};
+
+class SMCE_PROXY_API AtomicF64 {
+    void* m_ptr{};
+
+  public:
+    AtomicF64(void* ptr, const Impl&) noexcept : m_ptr{ptr} {}
+    AtomicF64() noexcept = default;
+    AtomicF64(AtomicF64&) = delete;
+    inline AtomicF64(AtomicF64&&) noexcept = default;
+
+    double load() noexcept;
+    void store(double v) noexcept;
+
+    inline operator double() noexcept { return load(); }
+    inline void operator=(float v) noexcept { store(v); }
+};
+
 class SMCE_PROXY_API Mutex {
     void* m_ptr{};
 
   public:
+    Mutex(void* ptr, const Impl&) noexcept : m_ptr{ptr} {}
     Mutex() noexcept = default;
     Mutex(Mutex&) = delete;
     inline Mutex(Mutex&&) noexcept = default;
-    inline void assign(const Impl&, void* ptr) noexcept { m_ptr = ptr; }
 
     void lock();
     bool try_lock();
     void unlock();
 };
-
-SMCE_PROXY_API extern const std::size_t A8_size;
-SMCE_PROXY_API extern const std::size_t A16_size;
-SMCE_PROXY_API extern const std::size_t A32_size;
-SMCE_PROXY_API extern const std::size_t A64_size;
-SMCE_PROXY_API extern const std::size_t Mtx_size;
 
 } // namespace smce_rt
 
