@@ -31,8 +31,8 @@ endif ()
 
 include (Coverage)
 
-set(PREV_CMAKE_MSVC_RUNTIME_LIBRARY "${CMAKE_MSVC_RUNTIME_LIBRARY}")
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+set (PREV_CMAKE_MSVC_RUNTIME_LIBRARY "${CMAKE_MSVC_RUNTIME_LIBRARY}")
+set (CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 if ("${SMCE_CXXRT_LINKING}" STREQUAL "SHARED")
   string (APPEND CMAKE_MSVC_RUNTIME_LIBRARY "DLL")
 endif ()
@@ -57,6 +57,11 @@ target_sources (BindGenProxies PRIVATE
     include/SMCE_rt/SMCE_proxies.hpp
     src/SMCE_rt/BindGenProxies.cpp
 )
+if (NOT MSVC)
+  target_compile_options (BindGenProxies PRIVATE "-Wall" "-Wextra" "-Wpedantic" "-Werror" "-Wcast-align")
+else ()
+  target_compile_options (BindGenProxies PRIVATE "/Zc:__cplusplus" "/W4" "/permissive-" "/wd4244" "/wd4251" "/wd4459" "/WX")
+endif ()
 
 add_library (ArdrivoUDD OBJECT)
 configure_coverage (ArdrivoUDD)
@@ -68,6 +73,11 @@ target_sources (ArdrivoUDD PRIVATE
     include/SMCE_rt/internal/sketch_rt.hpp
     src/Ardrivo/UDDRuntime.cpp
 )
+if (NOT MSVC)
+  target_compile_options (ArdrivoUDD PRIVATE "-Wall" "-Wextra" "-Wpedantic" "-Werror" "-Wcast-align")
+else ()
+  target_compile_options (ArdrivoUDD PRIVATE "/Zc:__cplusplus" "/W4" "/permissive-" "/wd4244" "/wd4251" "/wd4459" "/WX")
+endif ()
 
 add_library (Ardrivo SHARED)
 configure_coverage (Ardrivo)
@@ -103,10 +113,10 @@ target_sources (Ardrivo PRIVATE
     include/Ardrivo/WiFi.h
     src/Ardrivo/WiFi.cpp
     include/Ardrivo/WiFiClient.h
-    )
+)
 if (SMCE_ARDRIVO_MQTT)
   target_sources (Ardrivo PRIVATE include/Ardrivo/MQTT.h src/Ardrivo/MQTT.cpp)
-  target_link_libraries(Ardrivo PRIVATE SMCE_mosquitto)
+  target_link_libraries (Ardrivo PRIVATE SMCE_mosquitto)
 endif ()
 if (SMCE_ARDRIVO_OV767X)
   target_sources (Ardrivo PRIVATE include/Ardrivo/OV767X.h src/Ardrivo/OV767X.cpp)
@@ -122,25 +132,15 @@ if (NOT MSVC)
   endif ()
 else ()
   target_compile_definitions (Ardrivo PRIVATE "_CRT_SECURE_NO_WARNINGS=1")
-  target_compile_options (Ardrivo PRIVATE "/W4" "/permissive-" "/wd4244" "/wd4459" "/wd4716" "/WX")
+  target_compile_options (Ardrivo PRIVATE "/Zc:__cplusplus" "/W4" "/permissive-" "/wd4244" "/wd4459" "/wd4716" "/WX")
 endif ()
-
-add_library (HostUDD OBJECT)
-configure_coverage (HostUDD)
-set_property (TARGET HostUDD PROPERTY CXX_EXTENSIONS Off)
-set_property (TARGET HostUDD PROPERTY POSITION_INDEPENDENT_CODE True)
-target_link_libraries (HostUDD PUBLIC ipcSMCE BindGenProxies)
-target_sources (HostUDD PRIVATE
-    include/SMCE_rt/internal/sketch_rt.hpp
-    src/SMCE/UDDRuntime.cpp
-)
 
 
 add_library (objSMCE OBJECT)
 configure_coverage (objSMCE)
 set_property (TARGET objSMCE PROPERTY CXX_EXTENSIONS Off)
 set_property (TARGET objSMCE PROPERTY POSITION_INDEPENDENT_CODE True)
-target_link_libraries (objSMCE PUBLIC ipcSMCE HostUDD)
+target_link_libraries (objSMCE PUBLIC ipcSMCE)
 target_sources (objSMCE PRIVATE
     include/SMCE/internal/utils.hpp
     include/SMCE/internal/portable/ostream_joiner.hpp
@@ -149,10 +149,14 @@ target_sources (objSMCE PRIVATE
     include/SMCE/SMCE_fs.hpp
     include/SMCE/BoardConf.hpp
     src/SMCE/BoardConf.cpp
+    include/SMCE/BoardDeviceSpecification.hpp
+    src/SMCE/BoardDeviceSpecification.cpp
+    src/SMCE/BoardData.cpp
     include/SMCE/Board.hpp
     src/SMCE/Board.cpp
     include/SMCE/Toolchain.hpp
     src/SMCE/Toolchain.cpp
+    src/SMCE/SharedBoardData_host.cpp
     include/SMCE/Sketch.hpp
     src/SMCE/Sketch.cpp
     include/SMCE/Uuid.hpp
@@ -160,12 +164,11 @@ target_sources (objSMCE PRIVATE
     include/SMCE/PluginManifest.hpp
     src/SMCE/PluginManifest.cpp
     include/SMCE/SketchConf.hpp
-    include/SMCE/internal/BoardDeviceSpecification.hpp
 )
 if (NOT MSVC)
   target_compile_options (objSMCE PRIVATE "-Wall" "-Wextra" "-Wpedantic" "-Werror" "-Wcast-align")
 else ()
-  target_compile_options (objSMCE PRIVATE "/W4" "/permissive-" "/wd4244" "/wd4251" "/wd4459" "/WX")
+  target_compile_options (objSMCE PRIVATE "/Zc:__cplusplus" "/W4" "/permissive-" "/wd4244" "/wd4251" "/wd4459" "/WX")
 endif ()
 if (MINGW)
   target_link_libraries (objSMCE PUBLIC ntdll)
@@ -175,7 +178,7 @@ if (SMCE_BUILD_SHARED)
   add_library (SMCE SHARED)
   configure_coverage (SMCE)
   target_link_libraries (SMCE
-      PRIVATE objSMCE HostUDD ipcSMCE BindGenProxies
+      PRIVATE objSMCE ipcSMCE BindGenProxies
       PUBLIC iSMCE
   )
   set_property (TARGET SMCE PROPERTY VERSION "${PROJECT_VERSION}")
@@ -188,7 +191,7 @@ if (SMCE_BUILD_STATIC)
   add_library (SMCE_static STATIC)
   configure_coverage (SMCE_static)
   target_link_libraries (SMCE_static
-      PRIVATE objSMCE HostUDD ipcSMCE BindGenProxies
+      PRIVATE objSMCE ipcSMCE BindGenProxies
       PUBLIC iSMCE
   )
   if (WIN32)
@@ -235,7 +238,8 @@ file (REMOVE_RECURSE "${PROJECT_BINARY_DIR}/packaging")
 file (MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/packaging/include")
 file (COPY "${PROJECT_SOURCE_DIR}/include/SMCE" DESTINATION "${PROJECT_BINARY_DIR}/packaging/include")
 file (REMOVE_RECURSE
-    "${PROJECT_BINARY_DIR}/packaging/include/SMCE/internal/portable"
+    "${PROJECT_BINARY_DIR}/packaging/include/SMCE/internal/portable/ostream_joiner.hpp"
+    "${PROJECT_BINARY_DIR}/packaging/include/SMCE/internal/portable/scope.hpp"
     "${PROJECT_BINARY_DIR}/packaging/include/SMCE/internal/BoardData.hpp"
     "${PROJECT_BINARY_DIR}/packaging/include/SMCE/internal/BoardDeviceView.hpp"
     "${PROJECT_BINARY_DIR}/packaging/include/SMCE/internal/SharedBoardData.hpp"

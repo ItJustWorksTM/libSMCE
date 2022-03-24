@@ -50,7 +50,7 @@ bool operator==(const BoardConfig::FrameBuffer& lhs, const BoardConfig::FrameBuf
 }
 
 bool operator==(const BoardConfig::BoardDevice& lhs, const BoardConfig::BoardDevice& rhs) noexcept {
-    return lhs.count == rhs.count && &lhs.spec.get() == &rhs.spec.get();
+    return lhs.count == rhs.count && lhs.spec == rhs.spec;
 }
 
 } // namespace smce

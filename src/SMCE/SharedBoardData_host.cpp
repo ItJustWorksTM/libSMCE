@@ -1,5 +1,5 @@
 /*
- *  BoardDeviceView.hpp
+ *  SharedBoardData_host.cpp
  *  Copyright 2021-2022 ItJustWorksTM
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,30 +16,24 @@
  *
  */
 
-#ifndef LIBSMCE_BOARDDEVICEVIEW_HPP
-#define LIBSMCE_BOARDDEVICEVIEW_HPP
+#include "SMCE/internal/SharedBoardData.hpp"
 
-#include <cstddef>
-#include <string_view>
-#include "SMCE/SMCE_iface.h"
-#include "SMCE/fwd.hpp"
-#include "SMCE_rt/internal/BoardDeviceAllocationBases.hpp"
+namespace bip = boost::interprocess;
+using ShmSegMan = bip::managed_shared_memory::segment_manager;
+using ShmVoidAllocator = bip::allocator<void, ShmSegMan>;
 
 namespace smce {
 
-/// \internal
-class SMCE_API BoardDeviceView {
-    BoardData* m_bdat{};
+bool SharedBoardData::configure(std::string_view seg_name, const BoardConfig& bconf) {
+    reset();
+    m_master = true;
+    m_name = seg_name;
 
-  public:
-    explicit BoardDeviceView(BoardView& bv) noexcept;
+    // TODO compute required allocation size
 
-    [[nodiscard]] smce_rt::BoardDeviceAllocationPtrBases getBases(std::string_view dev_name);
-
-    /// Object validity check
-    [[nodiscard]] bool valid() noexcept { return m_bdat; }
-};
+    m_shm = bip::managed_shared_memory{bip::create_only, m_name.c_str(), 2 * 1024 * 1024};
+    m_bd = m_shm.construct<BoardData>("BoardData")(ShmVoidAllocator{m_shm.get_segment_manager()}, bconf);
+    return true;
+}
 
 } // namespace smce
-
-#endif // LIBSMCE_BOARDDEVICEVIEW_HPP

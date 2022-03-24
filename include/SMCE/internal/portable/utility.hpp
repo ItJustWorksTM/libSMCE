@@ -1,5 +1,5 @@
 /*
- *  host_rt.hpp
+ *  portable/utility.hpp
  *  Copyright 2021-2022 ItJustWorksTM
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,18 +16,30 @@
  *
  */
 
-#ifndef LIBSMCE_HOST_RT_HPP
-#define LIBSMCE_HOST_RT_HPP
+#ifndef LIBSMCE_UTILITY_HPP
+#define LIBSMCE_UTILITY_HPP
 
-#include <string_view>
-#include <SMCE/SMCE_iface.h>
-#include <SMCE/fwd.hpp>
-#include <SMCE_rt/internal/BoardDeviceAllocationBases.hpp>
+#ifdef __cpp_lib_to_underlying
+#    include <utility>
+#else
+#    include <type_traits>
+#endif
 
-namespace smce_rt {
+namespace smce::portable {
 
-SMCE_API BoardDeviceAllocationPtrBases getBases(smce::BoardView&, std::string_view);
+#ifdef __cpp_lib_to_underlying
 
+using std::to_underlying;
+
+#else
+
+template <class E>
+constexpr std::underlying_type_t<E> to_underlying(E e) noexcept {
+    return static_cast<std::underlying_type_t<E>>(e);
 }
 
-#endif // LIBSMCE_HOST_RT_HPP
+#endif
+
+} // namespace smce::portable
+
+#endif // LIBSMCE_UTILITY_HPP

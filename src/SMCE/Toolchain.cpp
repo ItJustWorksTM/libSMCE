@@ -34,7 +34,6 @@
 #include <SMCE/SMCE_iface.h>
 #include <SMCE/Sketch.hpp>
 #include <SMCE/SketchConf.hpp>
-#include <SMCE/internal/BoardDeviceSpecification.hpp>
 #include <SMCE/internal/utils.hpp>
 
 using namespace std::literals;
@@ -139,7 +138,7 @@ SMCE_INTERNAL void write_devices_specs(const SketchConfig& skonf, const stdfs::p
     std::ofstream f{tmpdir / "Devices.cmake"};
     f << "# HSD generated\ninclude (BindGen)\n";
     for (const auto& e : skonf.genbind_devices)
-        f << "smce_bindgen_sketch (" << e.get().full_string << ")\n";
+        f << "smce_bindgen_sketch (" << e.to_cmake() << ")\n";
 }
 
 #if BOOST_OS_WINDOWS

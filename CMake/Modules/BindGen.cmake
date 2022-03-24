@@ -15,82 +15,77 @@
 #  limitations under the License.
 #
 
-include_guard ()
+include_guard()
 
-set (SMCE_BINDGEN_TYPES
+set(SMCE_BINDGEN_TYPES
     u8 u16 u32 u64
     s8 s16 s32 s64
+    f32 f64
     au8 au16 au32 au64
     as8 as16 as32 as64
+    af32 af64
     mutex
-)
-set (SMCE_BINDGEN_TYPES_MAPPING
-    std::uint8_t std::uint16_t std::uint32_t std::uint64_t
-    std::int8_t std::int16_t std::int32_t std::int64_t
+    )
+set(SMCE_BINDGEN_TYPES_MAPPING
+    std::uint8_t& std::uint16_t& std::uint32_t& std::uint64_t&
+    std::int8_t& std::int16_t& std::int32_t& std::int64_t&
+    float& double&
     smce_rt::AtomicU8 smce_rt::AtomicU16 smce_rt::AtomicU32 smce_rt::AtomicU64
     smce_rt::AtomicS8 smce_rt::AtomicS16 smce_rt::AtomicS32 smce_rt::AtomicS64
+    smce_rt::AtomicF32 smce_rt::AtomicF64
     smce_rt::Mutex
-)
-set (SMCE_BINDGEN_STORAGE_MAPPING
-    r8 r16 r32 r64
-    r8 r16 r32 r64
-    a8 a16 a32 a64
-    a8 a16 a32 a64
-    mtx
-)
-set (SMCE_BINDGEN_SIZE_MAPPING
-    1 2 4 8
-    1 2 4 8
-    smce_rt::A8_size smce_rt::A16_size smce_rt::A32_size smce_rt::A64_size
-    smce_rt::A8_size smce_rt::A16_size smce_rt::A32_size smce_rt::A64_size
-    smce_rt::Mtx_size
-)
+    )
 
 
-macro (smce_bindgen_find_type OUTPUT_VARIABLE TYPE)
-  list (FIND SMCE_BINDGEN_TYPES "${TYPE}" ${OUTPUT_VARIABLE})
-endmacro ()
+macro(smce_bindgen_find_type OUTPUT_VARIABLE TYPE)
+  list(FIND SMCE_BINDGEN_TYPES "${TYPE}" ${OUTPUT_VARIABLE})
+endmacro()
 
-macro (smce_bindgen_configure_prelude)
-  set (GENERATED_DEVICE "${NAME}")
-  string (LENGTH "${NAME}" GENERATED_DEVICE_LENGTH)
-  set (GENERATED_DEVICE_FIELDS "")
-  set (GENERATED_DEVICE_FIELDS_ASSIGN "")
-  set (GENERATED_DEVICE_CTOR_CALL "")
-  set (GENERATED_DEVICE_CTOR_INIT "")
-  set (GENERATED_DEVICE_CTOR_ARGS "")
+macro(smce_bindgen_configure_prelude)
+  set(GENERATED_DEVICE "${NAME}")
+  string(LENGTH "${NAME}" GENERATED_DEVICE_LENGTH)
+  set(GENERATED_DEVICE_FIELDS "")
+  set(GENERATED_DEVICE_CTOR_INIT "")
+  set(GENERATED_DEVICE_CTOR_ARGS "")
+  set(GENERATED_DEVICE_CTOR_CALL_HOST "")
+  set(GENERATED_DEVICE_CTOR_CALL_SKETCH "")
   foreach (field ${FIELDS})
     if (NOT field MATCHES "^([A-Za-z_][A-Za-z0-9_]*) ([A-Za-z_][A-Za-z0-9_]*)$")
-      message (FATAL_ERROR "Invalid field format \"${field}\"")
+      message(FATAL_ERROR "Invalid field format \"${field}\"")
     endif ()
-    smce_bindgen_find_type (find_type_res "${CMAKE_MATCH_1}")
+    smce_bindgen_find_type(find_type_res "${CMAKE_MATCH_1}")
     if (find_type_res EQUAL -1)
-      message (FATAL_ERROR "Invalid field type \"${CMAKE_MATCH_1}\" for field \"${CMAKE_MATCH_2}\"")
+      message(FATAL_ERROR "Invalid field type \"${CMAKE_MATCH_1}\" for field \"${CMAKE_MATCH_2}\"")
     endif ()
-    list (GET SMCE_BINDGEN_TYPES_MAPPING ${find_type_res} field_type)
-    list (GET SMCE_BINDGEN_STORAGE_MAPPING ${find_type_res} field_storage)
-    list (GET SMCE_BINDGEN_SIZE_MAPPING ${find_type_res} field_size)
+    string(LENGTH field_name_length "${CMAKE_MATCH_2}")
+    if (field_name_length GREATER 32)
+      message(FATAL_ERROR "Field name \"${CMAKE_MATCH_2}\" exceeding 32 characters length limit (is ${field_name_length} bytes long)")
+    endif ()
+    list(GET SMCE_BINDGEN_TYPES_MAPPING ${find_type_res} field_type)
+
     if (find_type_res LESS 8)
-      string (APPEND GENERATED_DEVICE_FIELDS "    ${field_type}& ${CMAKE_MATCH_2};\n")
-      string (APPEND GENERATED_DEVICE_CTOR_ARGS "${field_type}& ${CMAKE_MATCH_2}, ")
-      string (APPEND GENERATED_DEVICE_CTOR_INIT "${CMAKE_MATCH_2}{${CMAKE_MATCH_2}}, ")
-      string (APPEND GENERATED_DEVICE_CTOR_CALL "[&]() -> ${field_type}& { ${field_type}& curr = *reinterpret_cast<${field_type}*>(bases.${field_storage}); bases.${field_storage} += ${field_size}; return curr; }(), ")
+      string(APPEND GENERATED_DEVICE_FIELDS "    ${field_type} ${CMAKE_MATCH_2};\n")
+      string(APPEND GENERATED_DEVICE_CTOR_INIT "${CMAKE_MATCH_2}{${CMAKE_MATCH_2}}, ")
     else ()
-      string (APPEND GENERATED_DEVICE_FIELDS "    mutable ${field_type} ${CMAKE_MATCH_2};\n")
-      string (APPEND GENERATED_DEVICE_FIELDS_ASSIGN "dev.${CMAKE_MATCH_2}.assign(smce_rt::Impl{}, bases.${field_storage}); ")
-      string (APPEND GENERATED_DEVICE_FIELDS_ASSIGN "bases.${field_storage} = static_cast<char*>(bases.${field_storage}) + ${field_size};\n")
+      string(APPEND GENERATED_DEVICE_CTOR_INIT "${CMAKE_MATCH_2}{std::move(${CMAKE_MATCH_2})}, ")
+      string(APPEND GENERATED_DEVICE_FIELDS "    mutable ${field_type} ${CMAKE_MATCH_2};\n")
     endif ()
+    string(APPEND GENERATED_DEVICE_CTOR_ARGS "${field_type} ${CMAKE_MATCH_2}, ")
+    string(APPEND GENERATED_DEVICE_CTOR_CALL_HOST "dev[\"${CMAKE_MATCH_2}\"].as_${CMAKE_MATCH_1}(), ")
+    string(APPEND GENERATED_DEVICE_CTOR_CALL_SKETCH "smce_rt::device_field_${CMAKE_MATCH_1}(\"${GENERATED_DEVICE}\", n, \"${CMAKE_MATCH_2}\"), ")
   endforeach ()
-  string (REGEX REPLACE ", $" "" GENERATED_DEVICE_CTOR_ARGS "${GENERATED_DEVICE_CTOR_ARGS}")
-  string (REGEX REPLACE ", $" "" GENERATED_DEVICE_CTOR_INIT "${GENERATED_DEVICE_CTOR_INIT}")
-  string (REGEX REPLACE ", $" "" GENERATED_DEVICE_CTOR_CALL "${GENERATED_DEVICE_CTOR_CALL}")
+  string(REGEX REPLACE ", $" "" GENERATED_DEVICE_CTOR_ARGS "${GENERATED_DEVICE_CTOR_ARGS}")
+  string(REGEX REPLACE ", $" "" GENERATED_DEVICE_CTOR_INIT "${GENERATED_DEVICE_CTOR_INIT}")
+  string(REGEX REPLACE ", $" "" GENERATED_DEVICE_CTOR_CALL_HOST "${GENERATED_DEVICE_CTOR_CALL_HOST}")
+  string(REGEX REPLACE ", $" "" GENERATED_DEVICE_CTOR_CALL_SKETCH "${GENERATED_DEVICE_CTOR_CALL_SKETCH}")
   if (NOT GENERATED_DEVICE_CTOR_INIT STREQUAL "")
-    string (PREPEND GENERATED_DEVICE_CTOR_INIT ": ")
+    string(PREPEND GENERATED_DEVICE_CTOR_INIT ": ")
   endif ()
-  set (GENERATED_DEVICE_SPECSTRING)
+  set(GENERATED_DEVICE_SPECSTRING " ")
   foreach (token "${NAME}" "${VERSION}" ${FIELDS})
-    string (APPEND GENERATED_DEVICE_SPECSTRING "\\\"${token}\\\" ")
+    string(APPEND GENERATED_DEVICE_SPECSTRING "\\\"${token}\\\":")
   endforeach ()
+  string(REGEX REPLACE ":$" "" GENERATED_DEVICE_SPECSTRING "${GENERATED_DEVICE_SPECSTRING}")
 endmacro ()
 
 function (smce_bindgen_host_header OUTPUT_DIRECTORY NAME VERSION)
@@ -102,9 +97,9 @@ function (smce_bindgen_host_header OUTPUT_DIRECTORY NAME VERSION)
 #ifndef LIBSMCE_GENERATED_@GENERATED_DEVICE@_HPP
 #define LIBSMCE_GENERATED_@GENERATED_DEVICE@_HPP
 
-#include <functional>
 #include <vector>
 #include <SMCE/fwd.hpp>
+#include <SMCE/BoardDeviceSpecification.hpp>
 #include <SMCE/BoardView.hpp>
 #include <SMCE_rt/SMCE_proxies.hpp>
 
@@ -112,9 +107,9 @@ struct @GENERATED_DEVICE@ /* v@VERSION@ */ {
 
 @GENERATED_DEVICE_FIELDS@
 
-    static std::vector<@GENERATED_DEVICE@> getObjects(smce::BoardView&);
+    [[nodiscard]] static std::vector<@GENERATED_DEVICE@> getObjects(smce::BoardView&);
 
-    static const smce::BoardDeviceSpecification& specification;
+    static const smce::BoardDeviceNativeSpecification& specification;
   private:
     @GENERATED_DEVICE@(@GENERATED_DEVICE_CTOR_ARGS@);
 };
@@ -135,7 +130,6 @@ function (smce_bindgen_sketch_header OUTPUT_DIRECTORY NAME VERSION)
 #ifndef LIBSMCE_GENERATED_@GENERATEDDEVICE@_HPP
 #define LIBSMCE_GENERATED_@GENERATEDDEVICE@_HPP
 
-#include <functional>
 #include <vector>
 #include <SMCE_rt/SMCE_proxies.hpp>
 
@@ -159,54 +153,33 @@ endfunction ()
 function (smce_bindgen_host_impl OUTPUT_DIRECTORY NAME VERSION)
   set (FIELDS ${ARGN})
   smce_bindgen_configure_prelude ()
-  foreach (type IN LISTS SMCE_BINDGEN_STORAGE_MAPPING)
-    set (GENERATED_DEVICE_${type}_COUNT 0)
-  endforeach ()
-  foreach (field IN LISTS FIELDS)
-    string (REGEX MATCH "^([A-Za-z_][A-Za-z0-9_]*) ([A-Za-z_][A-Za-z0-9_]*)$" ignore "${field}")
-    smce_bindgen_find_type (find_type_res "${CMAKE_MATCH_1}")
-    list (GET SMCE_BINDGEN_STORAGE_MAPPING ${find_type_res} field_storage)
-    math (EXPR GENERATED_DEVICE_${field_storage}_COUNT "${GENERATED_DEVICE_${field_storage}_COUNT}+1")
-  endforeach ()
   file (WRITE "${PROJECT_BINARY_DIR}/SMCE_BINDGEN_HOST_IMPL.cpp.in"
 [=======[// HSD generated
 
 #include <algorithm>
 #include <iterator>
-#include <SMCE/internal/BoardDeviceSpecification.hpp>
-#include <SMCE_rt/internal/host_rt.hpp>
+#include <type_traits>
+#include <vector>
+#include <SMCE/BoardDeviceSpecification.hpp>
+#include <SMCE/BoardDeviceView.hpp>
 #include "@GENERATED_DEVICE@.hpp"
-
-namespace smce_rt {
-struct Impl {};
-}
 
 @GENERATED_DEVICE@::@GENERATED_DEVICE@(@GENERATED_DEVICE_CTOR_ARGS@) @GENERATED_DEVICE_CTOR_INIT@ {}
 
 std::vector<@GENERATED_DEVICE@> @GENERATED_DEVICE@::getObjects(smce::BoardView& bv) {
-    auto bases = smce_rt::getBases(bv, "@GENERATED_DEVICE@");
+    auto devs = smce::BoardDeviceView{bv}["@GENERATED_DEVICE@"];
     std::vector<@GENERATED_DEVICE@> ret;
-    ret.reserve(bases.count);
-    std::generate_n(std::back_inserter(ret), bases.count, [&]{
-        auto dev = @GENERATED_DEVICE@{@GENERATED_DEVICE_CTOR_CALL@};
-        @GENERATED_DEVICE_FIELDS_ASSIGN@
-        return dev;
+    ret.reserve(devs.size());
+    std::size_t n = 0;
+    std::generate_n(std::back_inserter(ret), devs.size(), [&]{
+        auto dev = devs[n++];
+        return @GENERATED_DEVICE@{@GENERATED_DEVICE_CTOR_CALL_HOST@};
     });
     return ret;
 }
 
-const smce::BoardDeviceSpecification& @GENERATED_DEVICE@::specification{
-  "@GENERATED_DEVICE_SPECSTRING@",
-  "@GENERATED_DEVICE@",
-  @GENERATED_DEVICE_r8_COUNT@,
-  @GENERATED_DEVICE_r16_COUNT@,
-  @GENERATED_DEVICE_r32_COUNT@,
-  @GENERATED_DEVICE_r64_COUNT@,
-  @GENERATED_DEVICE_a8_COUNT@,
-  @GENERATED_DEVICE_a16_COUNT@,
-  @GENERATED_DEVICE_a32_COUNT@,
-  @GENERATED_DEVICE_a64_COUNT@,
-  @GENERATED_DEVICE_mtx_COUNT@,
+const smce::BoardDeviceNativeSpecification& @GENERATED_DEVICE@::specification = smce::BoardDeviceNativeSpecification{
+  "@GENERATED_DEVICE_SPECSTRING@"
 };
 ]=======]
   )
@@ -234,14 +207,13 @@ const std::vector<@GENERATED_DEVICE@> @GENERATED_DEVICE@::objects = @GENERATED_D
 @GENERATED_DEVICE@::@GENERATED_DEVICE@(@GENERATED_DEVICE_CTOR_ARGS@) @GENERATED_DEVICE_CTOR_INIT@ {}
 
 std::vector<@GENERATED_DEVICE@> @GENERATED_DEVICE@::init() {
-    auto bases = smce_rt::getBases("@GENERATED_DEVICE@", @GENERATED_DEVICE_LENGTH@);
+    smce_rt::devices_init();
+    const std::size_t dev_count = smce_rt::device_count("@GENERATED_DEVICE@");
     std::vector<@GENERATED_DEVICE@> ret;
-    ret.reserve(bases.count);
-    std::generate_n(std::back_inserter(ret), bases.count, [&]{
-        auto dev = @GENERATED_DEVICE@{@GENERATED_DEVICE_CTOR_CALL@};
-        @GENERATED_DEVICE_FIELDS_ASSIGN@
-        return std::move(dev);
-    });
+    ret.reserve(dev_count);
+
+    for (std::size_t n = 0; n < dev_count; ++n)
+        ret.push_back(@GENERATED_DEVICE@{@GENERATED_DEVICE_CTOR_CALL_SKETCH@});
 
     return ret;
 }

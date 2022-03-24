@@ -23,9 +23,10 @@
 #include <functional>
 #include <optional>
 #include <vector>
-#include "SMCE/SMCE_fs.hpp"
-#include "SMCE/SMCE_iface.h"
-#include "SMCE/fwd.hpp"
+#include <SMCE/BoardDeviceSpecification.hpp>
+#include <SMCE/SMCE_fs.hpp>
+#include <SMCE/SMCE_iface.h>
+#include <SMCE/fwd.hpp>
 
 namespace smce {
 
@@ -79,7 +80,7 @@ struct SMCE_API BoardConfig {
     };
 
     struct BoardDevice {
-        std::reference_wrapper<const BoardDeviceSpecification> spec;
+        BoardDeviceSpecification spec;
         std::size_t count;
     };
 

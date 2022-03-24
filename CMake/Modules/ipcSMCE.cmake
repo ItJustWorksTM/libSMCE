@@ -27,17 +27,18 @@ target_link_libraries (ipcSMCE PUBLIC iSMCE)
 target_compile_definitions (ipcSMCE PUBLIC SMCE_LIB_BUILD=1)
 target_sources (ipcSMCE PRIVATE
     include/SMCE/internal/BoardData.hpp
-    src/SMCE/BoardData.cpp
+    include/SMCE/BoardDeviceFieldType.hpp
     include/SMCE/BoardView.hpp
     src/SMCE/BoardView.cpp
-    include/SMCE_rt/internal/BoardDeviceAllocationBases.hpp
-    include/SMCE/internal/BoardDeviceView.hpp
+    include/SMCE_rt/internal/SMCE_api.hpp
+    include/SMCE_rt/SMCE_proxies.hpp
+    include/SMCE/BoardDeviceView.hpp
     src/SMCE/BoardDeviceView.cpp
     include/SMCE/internal/SharedBoardData.hpp
     src/SMCE/SharedBoardData.cpp
-    )
+)
 if (NOT MSVC)
   target_compile_options (ipcSMCE PRIVATE "-Wall" "-Wextra" "-Wpedantic" "-Werror" "-Wcast-align")
 else ()
-  target_compile_options (ipcSMCE PRIVATE "/W4" "/permissive-" "/wd4244" "/wd4251" "/wd4459" "/WX")
+  target_compile_options (ipcSMCE PRIVATE "/Zc:__cplusplus" "/W4" "/permissive-" "/wd4244" "/wd4251" "/wd4459" "/WX")
 endif ()
