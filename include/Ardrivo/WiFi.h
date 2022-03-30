@@ -64,7 +64,7 @@ struct WiFiClass {
               [[maybe_unused]] const char* key) {
         return WL_CONNECTED;
     }
-    int disconnect() { return WL_DISCONNECTED; }
+    int disconnect() { return WL_CONNECTED; }
     void config([[maybe_unused]] IPAddress local_ip) {}
     void config([[maybe_unused]] IPAddress local_ip, [[maybe_unused]] IPAddress dns_server) {}
     void config([[maybe_unused]] IPAddress local_ip, [[maybe_unused]] IPAddress dns_server,
