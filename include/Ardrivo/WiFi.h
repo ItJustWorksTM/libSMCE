@@ -59,14 +59,14 @@ enum wl_enc_type {
 // clang-format on
 
 struct WiFiClass {
-    int begin() { return 0; }
-    int begin([[maybe_unused]] const char* ssid) { return WL_NO_SHIELD; }
-    int begin([[maybe_unused]] const char* ssid, [[maybe_unused]] const char* pass) { return WL_NO_SHIELD; }
+    int begin() { return WL_CONNECTED; }
+    int begin([[maybe_unused]] const char* ssid) { return WL_CONNECTED; }
+    int begin([[maybe_unused]] const char* ssid, [[maybe_unused]] const char* pass) { return WL_CONNECTED; }
     int begin([[maybe_unused]] const char* ssid, [[maybe_unused]] std::uint8_t key_idx,
               [[maybe_unused]] const char* key) {
-        return WL_NO_SHIELD;
+        return WL_CONNECTED;
     }
-    int disconnect() { return WL_NO_SHIELD; }
+    int disconnect() { return WL_CONNECTED; }
     void config([[maybe_unused]] IPAddress local_ip) {}
     void config([[maybe_unused]] IPAddress local_ip, [[maybe_unused]] IPAddress dns_server) {}
     void config([[maybe_unused]] IPAddress local_ip, [[maybe_unused]] IPAddress dns_server,
@@ -85,7 +85,7 @@ struct WiFiClass {
     std::int8_t scanNetworks() { return 0; }
     /*[[nodiscard]]*/ static std::uint8_t getSocket() { return 0; }
     std::uint8_t* macAddress(std::uint8_t* mac) const;
-    /*[[nodiscard]]*/ int status() const { return WL_NO_SHIELD; }
+    /*[[nodiscard]]*/ int status() const { return WL_CONNECTED; }
 
     /*[[nodiscard]]*/ IPAddress localIP() { return {}; }
     /*[[nodiscard]]*/ IPAddress subnetMask() { return {}; }
