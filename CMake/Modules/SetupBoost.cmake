@@ -71,7 +71,9 @@ endif ()
 set (BUILD_TESTING Off)
 
 if (NOT DEFINED BOOST_EXCLUDE_LIBRARIES)
-  set (BOOST_EXCLUDE_LIBRARIES compute)
+  set (BOOST_EXCLUDE_LIBRARIES compute context)
+  add_library (boost_context INTERFACE) # We don't need it and it breaks macOS universal builds
+  add_library (Boost::context ALIAS boost_context)
 endif ()
 string (TOLOWER "${SMCE_CXXRT_LINKING}" BOOST_RUNTIME_LINK)
 
