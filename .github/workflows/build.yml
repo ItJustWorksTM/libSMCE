@@ -543,10 +543,10 @@ jobs:
             codename: 35
             image: fedora:35
             profile: FedoraHost
-          - name: Fedora
-            codename: Rawhide
-            image: fedora:rawhide
-            profile: FedoraHost
+#         - name: Fedora
+#           codename: Rawhide
+#           image: fedora:rawhide
+#           profile: FedoraHost
           - name: openSUSE
             codename: Leap
             image: opensuse/leap
