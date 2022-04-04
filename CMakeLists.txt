@@ -30,6 +30,7 @@ if (DEFINED SMCE_BUILD_PROFILE)
 endif ()
 
 include (Coverage)
+include (AdHocSign)
 
 set (PREV_CMAKE_MSVC_RUNTIME_LIBRARY "${CMAKE_MSVC_RUNTIME_LIBRARY}")
 set (CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
@@ -121,6 +122,7 @@ endif ()
 if (SMCE_ARDRIVO_OV767X)
   target_sources (Ardrivo PRIVATE include/Ardrivo/OV767X.h src/Ardrivo/OV767X.cpp)
 endif ()
+ad_hoc_sign (Ardrivo)
 
 if (NOT MSVC)
   target_compile_options (Ardrivo PRIVATE "-Wall" "-Wextra" "-Wpedantic" "-Werror" "-Wcast-align")
@@ -185,6 +187,7 @@ if (SMCE_BUILD_SHARED)
   set_property (TARGET SMCE PROPERTY SOVERSION "${PROJECT_VERSION_MAJOR}")
   set_property (TARGET SMCE PROPERTY INTERFACE_SMCE_MAJOR_VERSION "${PROJECT_VERSION_MAJOR}")
   set_property (TARGET SMCE APPEND PROPERTY COMPATIBLE_INTERFACE_STRING SMCE_MAJOR_VERSION)
+  ad_hoc_sign (SMCE)
 endif ()
 
 if (SMCE_BUILD_STATIC)

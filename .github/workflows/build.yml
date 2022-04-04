@@ -215,6 +215,7 @@ jobs:
           export OPENSSL_ROOT_DIR=$(brew --prefix openssl@3)
           mkdir build
           cmake -G Ninja \
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=10.15\
             -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" \
             -DCMAKE_BUILD_TYPE=Release \
             -DSMCE_CXXRT_LINKING=STATIC \
