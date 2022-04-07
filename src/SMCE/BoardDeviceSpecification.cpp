@@ -150,10 +150,10 @@ std::string smce::BoardDeviceSpecification::to_cmake() const {
             },
             [](const BoardDeviceSyntheticSpecification& e) {
                 std::ostringstream oss;
-                oss << '\"' << e.name << '\"' << ';';
-                oss << '\"' << e.version << '\"' << ';';
+                oss << '\"' << e.name << '\"' << ' ';
+                oss << '\"' << e.version << '\"' << ' ';
                 for (const auto& [field_name, field_type] : e.fields)
-                    oss << '\"' << field_name << ';' << to_string(field_type) << '\"' << ';';
+                    oss << '\"' << to_string(field_type) << ' ' << field_name << '\"' << ' ';
                 auto str = std::move(oss).str();
                 str.pop_back();
                 return str;
