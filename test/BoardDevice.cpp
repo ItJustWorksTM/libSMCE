@@ -69,6 +69,10 @@ TEST_CASE("Basic board device", "[BoardDevice]") {
                 FAIL("Timed out UDD atomic-wait");
             std::this_thread::sleep_for(2ms);
         } while (devs[0].f2.load() != 10);
+        REQUIRE(devs[0].f2.load() == 10);
+        REQUIRE(devs[0].f5.load() != 10);
+        REQUIRE(devs[1].f2.load() != 10);
+        REQUIRE(devs[1].f5.load() != 10);
     }
     {
         std::size_t ticks = 8192;
@@ -77,6 +81,8 @@ TEST_CASE("Basic board device", "[BoardDevice]") {
                 FAIL("Timed out UDD atomic-wait");
             std::this_thread::sleep_for(2ms);
         } while (devs[1].f2.load() != 65500);
+        REQUIRE(devs[1].f2.load() == 65500);
+        REQUIRE(devs[0].f2.load() != 65500);
     }
     // FIXME test mutexes and constant storage
     REQUIRE(br.stop());

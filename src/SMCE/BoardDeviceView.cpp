@@ -45,13 +45,19 @@ VirtualDeviceField::VirtualDeviceField(BoardData* bdat, std::size_t map_index, s
 
     m_type = type;
 
-    std::size_t front_elements = 0;
+    std::size_t elements_per_device = 0;
     for (auto& [_, dev_type] : device.fields) {
         if (device_field_type_to_bank_idx[portable::to_underlying(dev_type)] == base_field_idx)
-            ++front_elements;
+            ++elements_per_device;
     }
 
-    m_base = base_field + front_elements * base_index;
+    std::size_t elements_before = 0;
+    for (auto f_it = device.fields.begin(); f_it != it; ++f_it) {
+        if (device_field_type_to_bank_idx[portable::to_underlying(f_it->second)] == base_field_idx)
+            ++elements_before;
+    }
+
+    m_base = base_field + elements_per_device * base_index + elements_before;
 }
 
 bool VirtualDeviceField::exists() noexcept { return m_bdat; }

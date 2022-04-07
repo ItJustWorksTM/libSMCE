@@ -53,7 +53,7 @@ endif ()
 
 
 include (BindGen)
-smce_bindgen_host (TestUDD "TestUDD" 1.0 "s8 f0" "u32 f1" "au16 f2" "mutex f3" "mutex f4")
+smce_bindgen_host (TestUDD "TestUDD" 1.0 "s8 f0" "u32 f1" "au16 f2" "mutex f3" "mutex f4" "au16 f5")
 target_link_libraries (TestUDD PUBLIC "${SMCE_LINK_TARGET}")
 
 add_executable (SMCE_Tests
