@@ -133,7 +133,7 @@ BoardData::BoardData(const ShmAllocator<void>& shm_valloc, const BoardConfig& c)
                 BoardDeviceFieldType{type}
             );
             // clang-format on
-            ++bases[device_field_type_to_bank_idx[static_cast<std::size_t>(type)]];
+            bases[device_field_type_to_bank_idx[static_cast<std::size_t>(type)]] += count;
         }
     }
 }
