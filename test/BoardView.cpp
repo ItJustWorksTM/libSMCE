@@ -193,14 +193,16 @@ TEST_CASE("BoardView RGB444 cvt", "[BoardView]") {
         std::cerr << tc.build_log().second;
     REQUIRE_FALSE(ec);
     smce::Board br{};
-    REQUIRE(br.configure({.frame_buffers = {{}}}));
+    REQUIRE(br.configure(
+        {.frame_buffers = {smce::BoardConfig::FrameBuffer{
+             .key = 0x04'06'05'03'02'00'01'0A, .direction = smce::BoardConfig::FrameBuffer::Direction::in}}}));
     REQUIRE(br.attach_sketch(sk));
     REQUIRE(br.prepare());
     auto bv = br.view();
     REQUIRE(bv.valid());
     REQUIRE(br.start());
     REQUIRE(br.suspend());
-    auto fb = bv.frame_buffers[0];
+    auto fb = bv.frame_buffers[0x04'06'05'03'02'00'01'0A];
     REQUIRE(fb.exists());
 
     {

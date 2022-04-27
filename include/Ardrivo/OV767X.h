@@ -22,6 +22,19 @@
 #include <cstddef>
 #include "SMCE_dll.hpp"
 
+#define OV7670_VSYNC 8
+#define OV7670_HREF 1 // A1
+#define OV7670_PLK 0  // A0
+#define OV7670_XCLK 9
+#define OV7670_D0 10
+#define OV7670_D1 1
+#define OV7670_D2 0
+#define OV7670_D3 2
+#define OV7670_D4 3
+#define OV7670_D5 5
+#define OV7670_D6 6
+#define OV7670_D7 4
+
 // clang-format off
 enum SMCE_OV767_Format {
     RGB888, // RRRRRRRRGGGGGGGGBBBBBBBB // SMCE extension

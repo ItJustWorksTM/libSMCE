@@ -30,11 +30,20 @@ extern void maybe_init();
 
 SMCE__DLL_API OV767X Camera;
 
-OV767X::OV767X() noexcept = default;
+OV767X::OV767X() noexcept : m_format{RGB888} {
+    constexpr static int default_pins[8]{OV7670_D0, OV7670_D1, OV7670_D2, OV7670_D3,
+                                         OV7670_D4, OV7670_D5, OV7670_D6, OV7670_D7};
+    setPins(OV7670_VSYNC, OV7670_HREF, OV7670_PLK, OV7670_XCLK, default_pins);
+}
 OV767X::~OV767X() = default;
 
 void OV767X::setPins([[maybe_unused]] int vsync, [[maybe_unused]] int href, [[maybe_unused]] int pclk,
-                     [[maybe_unused]] int xclk, [[maybe_unused]] const int dpins[8]) {}
+                     [[maybe_unused]] int xclk, [[maybe_unused]] const int dpins[8]) {
+    static_assert(sizeof(m_key) == 8);
+    m_key = 0;
+    for (std::size_t i = 0; i < sizeof(m_key); ++i)
+        m_key |= static_cast<std::size_t>(dpins[i] & 0xFF) << (i * CHAR_BIT);
+}
 
 /*
  * VGA = 0,  // 640x480
