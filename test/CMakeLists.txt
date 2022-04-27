@@ -20,7 +20,7 @@ if (DEFINED CMAKE_CXX_STANDARD)
 endif ()
 set (CMAKE_CXX_STANDARD 20)
 
-find_package (Catch2 QUIET)
+find_package (Catch2 3 QUIET)
 if (NOT Catch2_FOUND)
   include (FetchContent)
   FetchContent_Declare (
