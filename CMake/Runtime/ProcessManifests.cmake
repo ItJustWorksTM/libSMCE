@@ -15,6 +15,8 @@
 #  limitations under the License.
 #
 
+include (DownloadCacher)
+
 function (process_manifests)
   file (GLOB manifests "${CMAKE_SOURCE_DIR}/manifests/*.cmake")
 
@@ -133,22 +135,10 @@ function (process_manifests)
         set (${patchu}root "${CMAKE_MATCH_1}")
 
       elseif (PLUGIN${uPATCH}_URI MATCHES "^https?://(.+)$")
-        message (STATUS "[Plugin ${PLUGIN_NAME}] Downloading${spatch}...")
-        file (MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/plugins${upatch}_dls")
-        set (ark${upatch}_path "${CMAKE_BINARY_DIR}/plugins${upatch}_dls/${PLUGIN_NAME}.ark")
-        if (EXISTS "${ark${upatch}_path}")
-          message (STATUS "[Plugin ${PLUGIN_NAME}] Download was cached")
-        else ()
-          file (DOWNLOAD "${CMAKE_MATCH_1}" "${ark${upatch}_path}" STATUS ark${upatch}_dlstatus)
-          list (GET ark${upatch}_dlstatus 0 ark${upatch}_dlstatus_code)
-          if (ark${upatch}_dlstatus_code)
-            list (GET ark${upatch}_dlstatus 1 ark${upatch}_dlstatus_message)
-            file (REMOVE "${ark${upatch}_path}")
-            message (FATAL_ERROR "[Plugin ${PLUGIN_NAME}] Download failed: (${ark${upatch}_dlstatus_code}) ${ark${upatch}_dlstatus_message}")
-          endif ()
-          message (STATUS "[Plugin ${PLUGIN_NAME}] Download complete")
+        cached_download (URL "${CMAKE_MATCH_1}" DEST ark${upatch}_path RESULT_VARIABLE error_param)
+        if (error_param)
+          message (FATAL_ERROR "${error_param}")
         endif ()
-
         message (STATUS "[Plugin ${PLUGIN_NAME}] Inflating${spatch}...")
         set (${patchu}root "${CMAKE_BINARY_DIR}/plugins${upatch}_roots/${PLUGIN_NAME}")
         file (MAKE_DIRECTORY "${${patchu}root}")
@@ -293,6 +283,10 @@ function (process_manifests)
     if (sources)
       message (DEBUG "[Plugin ${PLUGIN_NAME}] Declaring OBJECT target")
       add_library (smce_plugin_${PLUGIN_NAME} OBJECT ${sources})
+      target_include_directories (smce_plugin_${PLUGIN_NAME} SYSTEM PRIVATE
+          "${SMCE_DIR}/RtResources/Ardrivo/include"
+          "${PROJECT_BINARY_DIR}/SMCE_Devices/include"
+      )
       set (visibility PUBLIC)
     else ()
       message (DEBUG "[Plugin ${PLUGIN_NAME}] Declaring INTERFACE target")
@@ -300,7 +294,6 @@ function (process_manifests)
       set (visibility INTERFACE)
     endif ()
 
-    target_include_directories (smce_plugin_${PLUGIN_NAME} SYSTEM PRIVATE "${SMCE_DIR}/RtResources/Ardrivo/include" "${PROJECT_BINARY_DIR}/SMCE_Devices/include")
     target_include_directories (smce_plugin_${PLUGIN_NAME} ${visibility} ${incdirs})
     target_link_directories (smce_plugin_${PLUGIN_NAME} ${visibility} ${linkdirs})
     target_link_libraries (smce_plugin_${PLUGIN_NAME} ${visibility} ${linklibs})
