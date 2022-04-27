@@ -467,6 +467,9 @@ jobs:
             codename: Buster
             image: gcc:10-buster
           - name: Ubuntu
+            codename: Jammy
+            image: ubuntu:jammy
+          - name: Ubuntu
             codename: Impish
             image: ubuntu:impish
           - name: Ubuntu
@@ -480,7 +483,7 @@ jobs:
       options: --security-opt seccomp=unconfined
     env:
       DEBIAN_FRONTEND: "noninteractive"
-      CMAKE_VERSION: 3.21.3
+      CMAKE_VERSION: 3.23.1
     steps:
       - name: Setup workdir
         run: mkdir /tmp/wk && cd /tmp/wk
