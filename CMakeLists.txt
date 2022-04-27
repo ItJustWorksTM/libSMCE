@@ -21,7 +21,7 @@ if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.19")
   cmake_policy (SET CMP0112 NEW)
 endif ()
 
-project (libSMCE VERSION 1.5.6.5)
+project (libSMCE VERSION 1.5.7)
 list (APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/CMake/Modules")
 include (UserConfigVars)
 
