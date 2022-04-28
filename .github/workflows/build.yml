@@ -313,6 +313,54 @@ jobs:
         with:
           name: libSMCE-windows-${{ matrix.compiler.c }}
           path: build/packages/*
+  build-alpine:
+    name: libSMCE - Alpine (${{ matrix.compiler.name }})
+    runs-on: ubuntu-latest
+    container: alpine:latest
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler:
+          - name: GCC
+            c: gcc
+            cxx: g++
+            pkgs: [ g++ ]
+          - name: Clang/LLVM
+            c: clang
+            cxx: clang++
+            pkgs: [ clang, compiler-rt, compiler-rt-static, lld, libunwind-dev, musl-dev, g++ ]
+    env:
+      CC: ${{ matrix.compiler.c }}
+      CXX: ${{ matrix.compiler.cxx }}
+    steps:
+      - run: cd ~
+      - uses: actions/checkout@v3
+      - name: Check deps
+        run: |
+          apk update
+          apk upgrade
+          apk add git ninja cmake ${{ join(matrix.compiler.pkgs, ' ') }}
+          apk add wget linux-headers openssl-dev mosquitto-dev
+      - name: Install arduino-prelude APK
+        run: |
+          wget -O arduino-prelude.apk https://github.com/ItJustWorksTM/arduino-prelude/releases/download/v1.0.2/arduino-prelude-1.0.2-r0-x86_64.apk
+          apk add --allow-untrusted ./arduino-prelude.apk
+          rm arduino-prelude.apk
+      - name: CMake configure
+        run: |
+          if [ "${{ matrix.compiler.c }}" = "clang" ]; then
+            echo 'LDFLAGS=-fuse-ld=lld --rtlib=compiler-rt -lunwind' >> $GITHUB_ENV
+          fi
+          cmake -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -S ./ -B ./build
+      - name: CMake build
+        run: cmake --build ./build
+      - name: Build & Run tests
+        run: |
+          cmake --build ./build --target SMCE_Tests
+          cd build/test
+          ctest --output-on-failure
   build-arch:
     name: libSMCE - ArchLinux (${{ matrix.compiler.name }})
     runs-on: ubuntu-latest
