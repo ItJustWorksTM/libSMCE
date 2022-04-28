@@ -100,6 +100,7 @@ target_sources (Ardrivo PRIVATE
     include/Ardrivo/SMCE.hpp
     include/Ardrivo/SMCE_dll.hpp
     include/Ardrivo/SMCE_numeric.hpp
+    include/Ardrivo/SMCE_support.hpp
     include/Ardrivo/Stream.h
     src/Ardrivo/Stream.cpp
     include/Ardrivo/WString.h

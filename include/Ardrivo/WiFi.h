@@ -22,6 +22,7 @@
 #include <cstdint>
 #include "IPAddress.h"
 #include "SMCE_dll.hpp"
+#include "SMCE_support.hpp"
 #include "WiFiClient.h"
 
 // clang-format off
@@ -75,21 +76,21 @@ struct WiFiClass {
                 [[maybe_unused]] IPAddress gateway, [[maybe_unused]] IPAddress subnet) {}
     void setDNS([[maybe_unused]] IPAddress dns_server1) {}
     void setDNS([[maybe_unused]] IPAddress dns_server1, [[maybe_unused]] IPAddress dns_server2) {}
-    /*[[nodiscard]]*/ char* SSID() const { return nullptr; }
-    /*[[nodiscard]]*/ char* SSID([[maybe_unused]] std::uint8_t networkItem) const { return nullptr; }
+    SMCE__NODISCARD char* SSID() const { return nullptr; }
+    SMCE__NODISCARD char* SSID([[maybe_unused]] std::uint8_t networkItem) const { return nullptr; }
     std::uint8_t* BSSID(std::uint8_t* bssid);
-    /*[[nodiscard]]*/ std::int32_t RSSI() { return 0; }
-    /*[[nodiscard]]*/ std::int32_t RSSI([[maybe_unused]] std::uint8_t networkItem) { return 0; }
-    /*[[nodiscard]]*/ std::uint8_t encryptionType() { return ENC_TYPE_AUTO; }
-    /*[[nodiscard]]*/ std::uint8_t encryptionType([[maybe_unused]] std::uint8_t networkItem) { return ENC_TYPE_AUTO; }
+    SMCE__NODISCARD std::int32_t RSSI() { return 0; }
+    SMCE__NODISCARD std::int32_t RSSI([[maybe_unused]] std::uint8_t networkItem) { return 0; }
+    SMCE__NODISCARD std::uint8_t encryptionType() { return ENC_TYPE_AUTO; }
+    SMCE__NODISCARD std::uint8_t encryptionType([[maybe_unused]] std::uint8_t networkItem) { return ENC_TYPE_AUTO; }
     std::int8_t scanNetworks() { return 0; }
-    /*[[nodiscard]]*/ static std::uint8_t getSocket() { return 0; }
+    SMCE__NODISCARD static std::uint8_t getSocket() { return 0; }
     std::uint8_t* macAddress(std::uint8_t* mac) const;
-    /*[[nodiscard]]*/ int status() const { return WL_CONNECTED; }
+    SMCE__NODISCARD int status() const { return WL_CONNECTED; }
 
-    /*[[nodiscard]]*/ IPAddress localIP() { return {}; }
-    /*[[nodiscard]]*/ IPAddress subnetMask() { return {}; }
-    /*[[nodiscard]]*/ IPAddress gatewayIP() { return {}; }
+    SMCE__NODISCARD IPAddress localIP() { return {}; }
+    SMCE__NODISCARD IPAddress subnetMask() { return {}; }
+    SMCE__NODISCARD IPAddress gatewayIP() { return {}; }
 };
 
 SMCE__DLL_RT_API

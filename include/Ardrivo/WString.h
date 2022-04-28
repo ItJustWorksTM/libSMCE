@@ -24,6 +24,7 @@
 #include <utility>
 #include "SMCE_dll.hpp"
 #include "SMCE_numeric.hpp"
+#include "SMCE_support.hpp"
 
 struct SMCE__BIN : std::integral_constant<int, 2> {};
 constexpr SMCE__BIN BIN{};
@@ -122,12 +123,12 @@ class SMCE__DLL_RT_API String {
         typename std::enable_if<SMCE__decays_to_floating_point<T>::value, ConvTTag<T>>::type = ConvTTag<T>{})
         : String{conv_tag, static_cast<long double>(val)} {}
 
-    [[nodiscard]] const char* c_str() const noexcept;
-    [[nodiscard]] std::size_t length() const noexcept;
-    [[nodiscard]] char charAt(unsigned idx) const noexcept;
-    [[nodiscard]] char& charAt(unsigned idx) noexcept;
-    [[nodiscard]] char operator[](unsigned idx) const noexcept;
-    [[nodiscard]] char& operator[](unsigned idx) noexcept;
+    SMCE__NODISCARD const char* c_str() const noexcept;
+    SMCE__NODISCARD std::size_t length() const noexcept;
+    SMCE__NODISCARD char charAt(unsigned idx) const noexcept;
+    SMCE__NODISCARD char& charAt(unsigned idx) noexcept;
+    SMCE__NODISCARD char operator[](unsigned idx) const noexcept;
+    SMCE__NODISCARD char& operator[](unsigned idx) noexcept;
 
     template <class T>
     bool concat(const T& v) {
@@ -135,21 +136,21 @@ class SMCE__DLL_RT_API String {
         return true;
     }
 
-    [[nodiscard]] int compareTo(const String& s) const noexcept;
+    SMCE__NODISCARD int compareTo(const String& s) const noexcept;
 
-    [[nodiscard]] bool startsWith(const String& s) const noexcept;
+    SMCE__NODISCARD bool startsWith(const String& s) const noexcept;
 
-    [[nodiscard]] bool endsWith(const String& s) const noexcept;
+    SMCE__NODISCARD bool endsWith(const String& s) const noexcept;
 
     void getBytes(std::uint8_t* buffer, unsigned length) const noexcept;
 
-    [[nodiscard]] int indexOf(const char* c) const noexcept;
+    SMCE__NODISCARD int indexOf(const char* c) const noexcept;
 
-    [[nodiscard]] int indexOf(const char* c, unsigned index) const noexcept;
+    SMCE__NODISCARD int indexOf(const char* c, unsigned index) const noexcept;
 
-    [[nodiscard]] int indexOf(const String& str) const noexcept;
+    SMCE__NODISCARD int indexOf(const String& str) const noexcept;
 
-    [[nodiscard]] int indexOf(const String& str, unsigned index) const noexcept;
+    SMCE__NODISCARD int indexOf(const String& str, unsigned index) const noexcept;
 
     void remove(unsigned idx);
 
@@ -161,17 +162,17 @@ class SMCE__DLL_RT_API String {
 
     void setCharAt(unsigned index, char c);
 
-    [[nodiscard]] String substring(unsigned from) const;
+    SMCE__NODISCARD String substring(unsigned from) const;
 
-    [[nodiscard]] String substring(unsigned from, unsigned to) const;
+    SMCE__NODISCARD String substring(unsigned from, unsigned to) const;
 
-    void toCharArray(char* buffer, unsigned length) noexcept;
+    void toCharArray(char* buffer, unsigned length) const noexcept;
 
-    [[nodiscard]] long toInt() const noexcept;
+    SMCE__NODISCARD long toInt() const noexcept;
 
-    [[nodiscard]] double toDouble() const noexcept;
+    SMCE__NODISCARD double toDouble() const noexcept;
 
-    [[nodiscard]] float toFloat() const noexcept;
+    SMCE__NODISCARD float toFloat() const noexcept;
 
     void toLowerCase() noexcept;
 
@@ -180,22 +181,22 @@ class SMCE__DLL_RT_API String {
     void trim();
 
     friend SMCE__DLL_RT_API String operator+(const String&, const String&);
-    [[nodiscard]] bool equals(const String& s) const noexcept;
-    [[nodiscard]] bool equalsIgnoreCase(const String& s) const noexcept;
+    SMCE__NODISCARD bool equals(const String& s) const noexcept;
+    SMCE__NODISCARD bool equalsIgnoreCase(const String& s) const noexcept;
 
-    [[nodiscard]] bool operator==(const String& s) const noexcept;
-    [[nodiscard]] bool operator!=(const String& s) const noexcept;
-    [[nodiscard]] bool operator<(const String& s) const noexcept;
-    [[nodiscard]] bool operator<=(const String& s) const noexcept;
-    [[nodiscard]] bool operator>(const String& s) const noexcept;
-    [[nodiscard]] bool operator>=(const String& s) const noexcept;
+    SMCE__NODISCARD bool operator==(const String& s) const noexcept;
+    SMCE__NODISCARD bool operator!=(const String& s) const noexcept;
+    SMCE__NODISCARD bool operator<(const String& s) const noexcept;
+    SMCE__NODISCARD bool operator<=(const String& s) const noexcept;
+    SMCE__NODISCARD bool operator>(const String& s) const noexcept;
+    SMCE__NODISCARD bool operator>=(const String& s) const noexcept;
 
     friend SMCE__DLL_RT_API String operator+(const String&, const char*);
     friend SMCE__DLL_RT_API String operator+(const char*, const String&);
 };
 
-[[nodiscard]] SMCE__DLL_RT_API String operator+(const String& lhs, const String& rhs);
-[[nodiscard]] SMCE__DLL_RT_API String operator+(const String& lhs, const char* rhs);
-[[nodiscard]] SMCE__DLL_RT_API String operator+(const char* lhs, const String& rhs);
+SMCE__NODISCARD SMCE__DLL_RT_API String operator+(const String& lhs, const String& rhs);
+SMCE__NODISCARD SMCE__DLL_RT_API String operator+(const String& lhs, const char* rhs);
+SMCE__NODISCARD SMCE__DLL_RT_API String operator+(const char* lhs, const String& rhs);
 
 #endif

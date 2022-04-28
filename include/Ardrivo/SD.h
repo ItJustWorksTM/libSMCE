@@ -22,6 +22,7 @@
 #include <cstdint>
 #include <memory>
 #include "SMCE_dll.hpp"
+#include "SMCE_support.hpp"
 #include "Stream.h"
 
 // clang-format off
@@ -49,19 +50,19 @@ class SMCE__DLL_RT_API File : public Stream {
     ~File(); // required by PIMPL
     explicit operator bool() noexcept;
 
-    const char* name();
-    unsigned long position(); // file cursor
-    bool seek(unsigned long); // file cursor
-    unsigned long size();     // full size
-    bool isDirectory();
-    File openNextFile(SMCE_FileOpenMode mode = FILE_READ);
+    SMCE__NODISCARD const char* name();
+    SMCE__NODISCARD unsigned long position(); // file cursor
+    bool seek(unsigned long);                 // file cursor
+    SMCE__NODISCARD unsigned long size();     // full size
+    SMCE__NODISCARD bool isDirectory();
+    SMCE__NODISCARD File openNextFile(SMCE_FileOpenMode mode = FILE_READ);
     void rewindDirectory();
     void close();
 
-    int available() override; // bytes avail to read
+    SMCE__NODISCARD int available() override; // bytes avail to read
     void flush() override;
-    int peek() override; // read next char without advancing cursor
-    int read() override;
+    SMCE__NODISCARD int peek() override; // read next char without advancing cursor
+    SMCE__NODISCARD int read() override;
     std::size_t read(std::uint8_t* buffer, std::size_t size);
     std::size_t read(char* buffer, std::size_t size);
     std::size_t write(std::uint8_t c) override;
@@ -79,8 +80,8 @@ class SMCE__DLL_RT_API SDClass {
 
   public:
     bool begin(std::uint16_t cspin = 0);
-    bool exists(const char* path);
-    File open(const char* path, SMCE_FileOpenMode mode = FILE_READ);
+    SMCE__NODISCARD bool exists(const char* path);
+    SMCE__NODISCARD File open(const char* path, SMCE_FileOpenMode mode = FILE_READ);
     bool remove(const char* path);
     bool mkdir(const char* path);
     bool rmdir(const char* path);

@@ -20,6 +20,7 @@
 #define Stream_h
 #include "Print.h"
 #include "SMCE_dll.hpp"
+#include "SMCE_support.hpp"
 
 #define NO_IGNORE_CHAR '\x01'
 #define DEFAULT_TIMEOUT 1000
@@ -36,23 +37,21 @@ class SMCE__DLL_RT_API Stream : public Print {
     long _timeout{DEFAULT_TIMEOUT};
 
   protected:
-    int peekNextDigit(LookaheadMode lookahead, bool detectDecimal);
+    SMCE__NODISCARD int peekNextDigit(LookaheadMode lookahead, bool detectDecimal);
 
   public:
-    virtual int available() = 0;
+    SMCE__NODISCARD virtual int available() = 0;
     virtual int read() = 0;
-    virtual int peek() = 0;
+    SMCE__NODISCARD virtual int peek() = 0;
 
     Stream() = default;
 
-    [[nodiscard]] bool find(char target) noexcept { return find(&target, 0); }
-    [[nodiscard]] bool find(const char* target, int length) noexcept {
-        return findUntil(target, length, NO_IGNORE_CHAR);
-    }
-    [[nodiscard]] bool findUntil(char target, char terminal) noexcept { return findUntil(&target, 0, terminal); }
-    [[nodiscard]] bool findUntil(const char* target, int length, char terminal) noexcept;
-    size_t readBytes(char* buffer, int length) { return readBytesUntil(NO_IGNORE_CHAR, buffer, length); }
-    size_t readBytesUntil(char character, char* buffer, int length);
+    bool find(char target) noexcept { return find(&target, 0); }
+    bool find(const char* target, int length) noexcept { return findUntil(target, length, NO_IGNORE_CHAR); }
+    bool findUntil(char target, char terminal) noexcept { return findUntil(&target, 0, terminal); }
+    bool findUntil(const char* target, int length, char terminal) noexcept;
+    std::size_t readBytes(char* buffer, int length) { return readBytesUntil(NO_IGNORE_CHAR, buffer, length); }
+    std::size_t readBytesUntil(char character, char* buffer, int length);
     String readString() { return readStringUntil(NO_IGNORE_CHAR); }
     String readStringUntil(char terminator);
     long parseInt(LookaheadMode lookahead = SKIP_ALL, char ignore = NO_IGNORE_CHAR);

@@ -38,7 +38,7 @@ OV767X::OV767X() noexcept : m_format{RGB888} {
 OV767X::~OV767X() = default;
 
 void OV767X::setPins([[maybe_unused]] int vsync, [[maybe_unused]] int href, [[maybe_unused]] int pclk,
-                     [[maybe_unused]] int xclk, [[maybe_unused]] const int dpins[8]) {
+                     [[maybe_unused]] int xclk, const int dpins[8]) {
     static_assert(sizeof(m_key) == 8);
     m_key = 0;
     for (std::size_t i = 0; i < sizeof(m_key); ++i)
@@ -53,7 +53,7 @@ void OV767X::setPins([[maybe_unused]] int vsync, [[maybe_unused]] int href, [[ma
  * QQVGA = 4,  // 160x120
  */
 
-constexpr std::array<std::pair<uint16_t, uint16_t>, 5> resolutions{{
+constexpr static std::array<std::pair<uint16_t, uint16_t>, 5> resolutions{{
     {640, 480},
     {352, 240},
     {320, 240},

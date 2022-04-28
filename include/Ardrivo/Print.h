@@ -24,6 +24,7 @@
 #include <cstring>
 #include <iterator>
 #include "SMCE_dll.hpp"
+#include "SMCE_support.hpp"
 #include "WString.h"
 
 class SMCE__DLL_RT_API Print {
@@ -34,7 +35,7 @@ class SMCE__DLL_RT_API Print {
 
   public:
     Print() noexcept;
-    [[nodiscard]] int getWriteError() noexcept;
+    SMCE__NODISCARD int getWriteError() noexcept;
     void clearWriteError() noexcept;
 
     virtual std::size_t write(std::uint8_t) = 0;
@@ -43,7 +44,7 @@ class SMCE__DLL_RT_API Print {
     std::size_t write(const char* buffer, size_t size);
 
     // should be overridden by subclasses with buffering
-    virtual int availableForWrite();
+    SMCE__NODISCARD virtual int availableForWrite();
 
     template <std::size_t N>
     std::size_t print(const char (&lit)[N]) {

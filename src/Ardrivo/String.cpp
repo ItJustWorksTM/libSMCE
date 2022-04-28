@@ -125,7 +125,7 @@ void String::setCharAt(unsigned index, char c) { m_u[index] = c; }
 
 [[nodiscard]] String String::substring(unsigned from, unsigned to) const { return m_u.substr(from, to - from); }
 
-void String::toCharArray(char* buffer, unsigned length) noexcept {
+void String::toCharArray(char* buffer, unsigned length) const noexcept {
     std::memcpy(buffer, m_u.c_str(), (std::min)(static_cast<std::size_t>(length), m_u.length()));
 }
 
@@ -151,9 +151,9 @@ void String::toUpperCase() noexcept {
 
 void String::trim() {
     if (const auto spos = m_u.find_first_not_of(' '); spos != std::string::npos && spos != 0)
-        m_u.erase(m_u.begin(), m_u.begin() + spos);
+        m_u.erase(m_u.begin(), m_u.begin() + static_cast<std::string::difference_type>(spos));
     if (const auto lpos = m_u.find_last_not_of(' '); lpos != std::string::npos)
-        m_u.erase(m_u.begin() + lpos + 1, m_u.end());
+        m_u.erase(m_u.begin() + static_cast<std::string::difference_type>(lpos + 1), m_u.end());
 }
 
 [[nodiscard]] bool String::equals(const String& s) const noexcept { return m_u == s.m_u; }

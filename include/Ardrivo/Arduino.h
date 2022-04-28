@@ -25,6 +25,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include "SMCE_dll.hpp"
+#include "SMCE_support.hpp"
 
 #define PROGMEM
 #define F(str) str
@@ -49,30 +50,30 @@ using word = std::uint16_t;
 SMCE__DLL_RT_API void pinMode(int pin, bool mode);
 
 //** Digital I/O **//
-SMCE__DLL_RT_API int digitalRead(int pin);
+SMCE__NODISCARD SMCE__DLL_RT_API int digitalRead(int pin);
 SMCE__DLL_RT_API void digitalWrite(int pin, bool value);
 
 //** Analog I/O **//
+SMCE__NODISCARD SMCE__DLL_RT_API int analogRead(int pin);
 SMCE__DLL_RT_API void analogWrite(int pin, byte value);
-SMCE__DLL_RT_API int analogRead(int pin);
 
 //** Time **//
 SMCE__DLL_RT_API void delay(unsigned long long);
 SMCE__DLL_RT_API void delayMicroseconds(unsigned long long);
-SMCE__DLL_RT_API unsigned long micros();
-SMCE__DLL_RT_API unsigned long millis();
+SMCE__NODISCARD SMCE__DLL_RT_API unsigned long micros();
+SMCE__NODISCARD SMCE__DLL_RT_API unsigned long millis();
 
 //** Math **//
 using std::abs;
 // Straight from https://www.arduino.cc/reference/en/language/functions/math/map/#Appendix
-inline long map(long x, long in_min, long in_max, long out_min, long out_max) {
+SMCE__NODISCARD inline long map(long x, long in_min, long in_max, long out_min, long out_max) {
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 using std::max;
 using std::min;
 using std::pow;
 template <class T>
-T sq(T x) {
+SMCE__NODISCARD T sq(T x) noexcept(noexcept(x* x)) {
     return x * x;
 }
 using std::sqrt;
@@ -83,23 +84,23 @@ using std::sin;
 using std::tan;
 
 //** Characters **//
-inline bool isAlpha(char c) noexcept { return std::isalpha(+c); }
-inline bool isAlphaNumeric(char c) noexcept { return std::isalnum(+c); }
-inline bool isAscii(char c) noexcept { return static_cast<signed char>(c) >= 0; }
-inline bool isControl(char c) noexcept { return std::iscntrl(+c); }
-inline bool isDigit(char c) noexcept { return std::isdigit(+c); }
-inline bool isGraph(char c) noexcept { return std::isgraph(+c); }
-inline bool isHexadecimalDigit(char c) noexcept { return std::isxdigit(+c); }
-inline bool isLowerCase(char c) noexcept { return std::islower(+c); }
-inline bool isPrintable(char c) noexcept { return std::isprint(+c); }
-inline bool isPunct(char c) noexcept { return std::ispunct(+c); }
-inline bool isSpace(char c) noexcept { return std::isspace(+c); }
-inline bool isUpperCase(char c) noexcept { return std::isupper(+c); }
-inline bool isWhitespace(char c) noexcept { return c == ' ' || c == '\t'; }
+SMCE__NODISCARD inline bool isAlpha(char c) noexcept { return std::isalpha(+c); }
+SMCE__NODISCARD inline bool isAlphaNumeric(char c) noexcept { return std::isalnum(+c); }
+SMCE__NODISCARD inline bool isAscii(char c) noexcept { return static_cast<signed char>(c) >= 0; }
+SMCE__NODISCARD inline bool isControl(char c) noexcept { return std::iscntrl(+c); }
+SMCE__NODISCARD inline bool isDigit(char c) noexcept { return std::isdigit(+c); }
+SMCE__NODISCARD inline bool isGraph(char c) noexcept { return std::isgraph(+c); }
+SMCE__NODISCARD inline bool isHexadecimalDigit(char c) noexcept { return std::isxdigit(+c); }
+SMCE__NODISCARD inline bool isLowerCase(char c) noexcept { return std::islower(+c); }
+SMCE__NODISCARD inline bool isPrintable(char c) noexcept { return std::isprint(+c); }
+SMCE__NODISCARD inline bool isPunct(char c) noexcept { return std::ispunct(+c); }
+SMCE__NODISCARD inline bool isSpace(char c) noexcept { return std::isspace(+c); }
+SMCE__NODISCARD inline bool isUpperCase(char c) noexcept { return std::isupper(+c); }
+SMCE__NODISCARD inline bool isWhitespace(char c) noexcept { return c == ' ' || c == '\t'; }
 
 //** Random numbers **//
-inline long random(long min, long max) { return std::rand() % (max - min) + min; }
-inline long random(long max) { return random(0, max); }
+SMCE__NODISCARD inline long random(long min, long max) { return std::rand() % (max - min) + min; }
+SMCE__NODISCARD inline long random(long max) { return random(0, max); }
 inline void randomSeed(unsigned long s) { std::srand(s); }
 
 //** Bits **//

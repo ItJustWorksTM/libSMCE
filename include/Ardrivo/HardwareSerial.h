@@ -23,6 +23,7 @@
 #include <cstddef>
 #include <cstdint>
 #include "SMCE_dll.hpp"
+#include "SMCE_support.hpp"
 #include "Stream.h"
 
 #define SERIAL_5N1 0x00
@@ -55,11 +56,11 @@ struct SMCE__DLL_RT_API HardwareSerial : Stream {
     void begin(unsigned long, std::uint8_t = SERIAL_8N1);
     void end();
 
-    [[nodiscard]] int available() override;
-    [[nodiscard]] int read() override;
-    [[nodiscard]] int peek() override;
+    SMCE__NODISCARD int available() override;
+    int read() override;
+    SMCE__NODISCARD int peek() override;
 
-    [[nodiscard]] int availableForWrite() override;
+    SMCE__NODISCARD int availableForWrite() override;
 
     size_t write(std::uint8_t) override;
     size_t write(const std::uint8_t*, size_t) override;
@@ -68,7 +69,7 @@ struct SMCE__DLL_RT_API HardwareSerial : Stream {
     inline size_t write(unsigned int n) { return write((std::uint8_t)n); }
     inline size_t write(int n) { return write((std::uint8_t)n); }
     using Print::write;
-    [[nodiscard]] constexpr /* explicit(false) */ operator bool() noexcept { return true; }
+    SMCE__NODISCARD constexpr /* explicit(false) */ operator bool() noexcept { return true; }
 
   private:
     friend SMCE_HardwareSerialImpl;

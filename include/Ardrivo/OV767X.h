@@ -21,6 +21,7 @@
 
 #include <cstddef>
 #include "SMCE_dll.hpp"
+#include "SMCE_support.hpp"
 
 #define OV7670_VSYNC 8
 #define OV7670_HREF 1 // A1
@@ -63,10 +64,10 @@ class SMCE__DLL_RT_API OV767X {
     int begin(SMCE_OV767_Resolution resolution, SMCE_OV767_Format format, int fps); // Supported FPS: 1, 5, 10, 15, 30
     void end();
 
-    int width() const;
-    int height() const;
-    int bitsPerPixel() const;
-    int bytesPerPixel() const;
+    SMCE__NODISCARD int width() const;
+    SMCE__NODISCARD int height() const;
+    SMCE__NODISCARD int bitsPerPixel() const;
+    SMCE__NODISCARD int bytesPerPixel() const;
 
     void readFrame(void* buffer);
 
