@@ -22,25 +22,26 @@ set (BOOST_ENABLE_CMAKE True)
 
 if (DEFINED BOOST_SOURCE_ROOT)
   set (boost_SOURCE_DIR "${BOOST_SOURCE_ROOT}")
+  set (boost_BINARY_DIR "${PROJECT_BINARY_DIR}/ext-boost")
 else ()
   include (FetchContent)
   # Can't reasonably default to Git until https://gitlab.kitware.com/cmake/cmake/-/issues/16144 is fixed
   if (NOT BOOST_SOURCE_USE_GIT)
     if (NOT WIN32)
       FetchContent_Declare (Boost
-          URL "https://boostorg.jfrog.io/artifactory/main/release/1.78.0/source/boost_1_78_0.tar.gz"
-          URL_HASH SHA256=94ced8b72956591c4775ae2207a9763d3600b30d9d7446562c552f0a14a63be7
+          URL "https://boostorg.jfrog.io/artifactory/main/release/1.79.0/source/boost_1_79_0.tar.gz"
+          URL_HASH SHA256=273f1be93238a068aba4f9735a4a2b003019af067b9c183ed227780b8f36062c
       )
     else ()
       FetchContent_Declare (Boost
-          URL "https://boostorg.jfrog.io/artifactory/main/release/1.78.0/source/boost_1_78_0.7z"
-          URL_HASH SHA256=090cefea470bca990fa3f3ed793d865389426915b37a2a3258524a7258f0790c
+          URL "https://boostorg.jfrog.io/artifactory/main/release/1.79.0/source/boost_1_79_0.7z"
+          URL_HASH SHA256=6c97cf4f4a0eb00ed776c88065ab3f59e183fa5e65f6464ff94f92328352d9d6
       )
     endif ()
   else ()
     FetchContent_Declare (Boost
         GIT_REPOSITORY "https://github.com/boostorg/boost"
-        GIT_TAG "boost-1.78.0"
+        GIT_TAG "boost-1.79.0"
         GIT_SHALLOW On
         GIT_PROGRESS On
     )
@@ -51,7 +52,7 @@ else ()
     FetchContent_Populate (Boost)
 
     if (NOT EXISTS "${boost_SOURCE_DIR}/CMakeLists.txt")
-      file (DOWNLOAD "https://github.com/boostorg/boost/raw/boost-1.78.0/CMakeLists.txt" "${boost_SOURCE_DIR}/CMakeLists.txt")
+      file (DOWNLOAD "https://github.com/boostorg/boost/raw/boost-1.79.0/CMakeLists.txt" "${boost_SOURCE_DIR}/CMakeLists.txt")
     endif ()
     message ("Download complete")
   endif ()
