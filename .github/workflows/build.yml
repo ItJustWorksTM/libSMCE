@@ -616,47 +616,47 @@ jobs:
       CC: ${{ matrix.os.c }}
       CXX: ${{ matrix.os.cxx }}
     steps:
-       - name: Setup workdir
-         run: mkdir /tmp/wk && cd /tmp/wk
-       - name: Fetch deps
-         run: |
-           [[ '${{ matrix.os.name }}' == 'Fedora' ]] && dnf install -y perl jq which tar git cmake rpmdevtools rpmlint ninja-build gcc-c++ openssl-devel || true
-           [[ '${{ matrix.os.name }}' == 'openSUSE' ]] && zypper install -y perl jq which tar git cmake rpmdevtools rpm-build rpmlint ninja gcc10-c++ libopenssl-devel || true
-           [[ '${{ matrix.os.name }}' == 'OpenMandriva' ]] && dnf install -y perl jq which tar git cmake rpmdevtools rpm-build rpmlint ninja clang glibc-devel lib64openssl-devel || true
-       - uses: actions/checkout@v3
-       - name: Setup global CMake interceptor
-         run: ci/setup-cmake-interceptor.sh
-       - name: CMake Configure
-         run: cmake -G Ninja -DSMCE_BUILD_PROFILE=${{ matrix.os.profile }} -S ./ -B ./build
-       - name: CMake Build
-         run: cmake --build ./build
-       - name: CPack
-         run: cmake --build ./build --target package
-       - name: rpmlint
-         run: rpmlint ./build/*.rpm || true
-       - name: Test installation
-         if: matrix.os.name != 'openSUSE'
-         uses: addnab/docker-run-action@v3
-         with:
-           image: ${{ matrix.os.image }}
-           options: -v ${{ github.workspace }}:/host --security-opt seccomp=unconfined
-           run: |
-             [[ '${{ matrix.os.name }}' == 'openSUSE' ]] && zypper install -y dnf rpm-repos-openSUSE || true
-             dnf install -y /host/build/*.rpm
-             dnf install -y cmake gcc-c++
-             [[ '${{ matrix.os.name }}' == 'OpenMandriva' ]] && dnf install -y make glibc-devel || true
-             cd /host/extra/samples/stduart
-             CC=gcc CXX=g++ cmake -S . -B build
-             cmake --build ./build
-             ./build/stduart --help
-       - name: Upload artifacts
-         uses: 'actions/upload-artifact@v2'
-         with:
-           name: libSMCE-RPM-${{ matrix.os.name }}${{ matrix.os.codename }}
-           path: build/*.rpm
-       - name: Collect CMake coverage information
-         run: ci/scan-cmake-commands.sh
-       - name: Upload coverage to Codecov
-         uses: codecov/codecov-action@v2
-         with:
-           files: ./cmake-codecov-report.json
+      - name: Setup workdir
+        run: mkdir /tmp/wk && cd /tmp/wk
+      - name: Fetch deps
+        run: |
+          [[ '${{ matrix.os.name }}' == 'Fedora' ]] && dnf install -y perl jq which tar git cmake rpmdevtools rpmlint ninja-build gcc-c++ openssl-devel || true
+          [[ '${{ matrix.os.name }}' == 'openSUSE' ]] && zypper install -y perl jq which tar git cmake rpmdevtools rpm-build rpmlint ninja gcc10-c++ libopenssl-devel || true
+          [[ '${{ matrix.os.name }}' == 'OpenMandriva' ]] && dnf install -y perl jq which tar git cmake rpmdevtools rpm-build rpmlint ninja clang glibc-devel lib64openssl-devel || true
+      - uses: actions/checkout@v3
+      - name: Setup global CMake interceptor
+        run: ci/setup-cmake-interceptor.sh
+      - name: CMake Configure
+        run: cmake -G Ninja -DSMCE_BUILD_PROFILE=${{ matrix.os.profile }} -S ./ -B ./build
+      - name: CMake Build
+        run: cmake --build ./build
+      - name: CPack
+        run: cmake --build ./build --target package
+      - name: rpmlint
+        run: rpmlint ./build/*.rpm || true
+      - name: Test installation
+        if: matrix.os.name != 'openSUSE'
+        uses: addnab/docker-run-action@v3
+        with:
+          image: ${{ matrix.os.image }}
+          options: -v ${{ github.workspace }}:/host --security-opt seccomp=unconfined
+          run: |
+            [[ '${{ matrix.os.name }}' == 'openSUSE' ]] && zypper install -y dnf rpm-repos-openSUSE || true
+            dnf install -y /host/build/*.rpm
+            dnf install -y cmake gcc-c++
+            [[ '${{ matrix.os.name }}' == 'OpenMandriva' ]] && dnf install -y make glibc-devel || true
+            cd /host/extra/samples/stduart
+            CC=gcc CXX=g++ cmake -S . -B build
+            cmake --build ./build
+            ./build/stduart --help
+      - name: Upload artifacts
+        uses: 'actions/upload-artifact@v2'
+        with:
+          name: libSMCE-RPM-${{ matrix.os.name }}${{ matrix.os.codename }}
+          path: build/*.rpm
+      - name: Collect CMake coverage information
+        run: ci/scan-cmake-commands.sh
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          files: ./cmake-codecov-report.json
