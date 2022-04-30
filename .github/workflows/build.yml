@@ -328,7 +328,7 @@ jobs:
           - name: Clang/LLVM
             c: clang
             cxx: clang++
-            pkgs: [ clang, compiler-rt, compiler-rt-static, lld, libunwind-dev, musl-dev, g++ ]
+            pkgs: [ clang, compiler-rt, compiler-rt-static, lld, llvm-libunwind-dev, musl-dev, g++ ]
     env:
       CC: ${{ matrix.compiler.c }}
       CXX: ${{ matrix.compiler.cxx }}
