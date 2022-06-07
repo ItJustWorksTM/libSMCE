@@ -498,6 +498,44 @@ jobs:
           cd build/test
           ctest --output-on-failure
 
+  build-voidlinux:
+    name: libSMCE - VoidLinux (${{ matrix.compiler.name }})
+    runs-on: ubuntu-latest
+    container:
+      image: voidlinux/voidlinux:latest
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler:
+          - name: GCC
+            c: gcc
+            cxx: g++
+          - name: Clang/LLVM
+            c: clang
+            cxx: clang++
+    env:
+      CC: ${{ matrix.compiler.c }}
+      CXX: ${{ matrix.compiler.cxx }} 
+    steps:
+      - name: Check deps
+        run: |
+          xbps-install -Syu xbps
+          xbps-install -Syu ${{ matrix.compiler.c }} git cmake ninja openssl-devel libmosquitto-devel pkg-config
+          cmake --version
+          ninja --version
+          ${{ matrix.compiler.c }} --version
+          ${{ matrix.compiler.cxx }} --version
+      - run: cd ~
+      - uses: actions/checkout@v3
+      - name: CMake configure
+        run: cmake -G Ninja -S ./ -B ./build
+      - name: CMake build
+        run: cmake --build ./build
+      - name: Build & Run tests
+        run: |
+          cmake --build ./build --target SMCE_Tests
+          (cd build/test; ctest --output-on-failure)
+
   package-deb:
     name: Package per-distro DEBs (${{ matrix.os.name }} ${{ matrix.os.codename }})
     runs-on: ubuntu-latest
