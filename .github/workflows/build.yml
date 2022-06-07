@@ -343,7 +343,7 @@ jobs:
           apk add wget linux-headers openssl-dev mosquitto-dev
       - name: Install arduino-prelude APK
         run: |
-          wget -O arduino-prelude.apk https://github.com/ItJustWorksTM/arduino-prelude/releases/download/v1.0.2/arduino-prelude-1.0.2-r0-x86_64.apk
+          wget -O arduino-prelude.apk https://github.com/ItJustWorksTM/arduino-prelude/releases/download/v1.0.2/arduino-prelude-1.0.2-r0.x86_64.apk
           apk add --allow-untrusted ./arduino-prelude.apk
           rm arduino-prelude.apk
       - name: CMake configure
