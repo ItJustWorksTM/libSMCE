@@ -50,7 +50,8 @@ String::String(ConvTag, long double val) : m_u{std::to_string(val)} {}
 
 String::String(ConvTag, std::uintmax_t val, SMCE__BIN) {
     if (val == 0) {
-        m_u = "0";
+        m_u.reserve(1);
+        m_u.push_back('0');
         return;
     }
     m_u.resize(bit_width(val));
@@ -62,7 +63,8 @@ String::String(ConvTag, std::uintmax_t val, SMCE__BIN) {
 
 String::String(ConvTag, std::uintmax_t val, SMCE__HEX) {
     if (val == 0) {
-        m_u = "0";
+        m_u.reserve(1);
+        m_u.push_back('0');
         return;
     }
     const auto bits = bit_width(val);

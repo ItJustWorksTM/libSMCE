@@ -62,7 +62,7 @@ elseif ("${SMCE_MOSQUITTO_LINKING}" STREQUAL "SOURCE")
   include (FetchContent)
   FetchContent_Declare (mosquitto
       GIT_REPOSITORY "https://github.com/eclipse/mosquitto"
-      GIT_TAG v2.0.10
+      GIT_TAG v2.0.15
   )
   FetchContent_GetProperties (mosquitto)
   if (NOT mosquitto_POPULATED)

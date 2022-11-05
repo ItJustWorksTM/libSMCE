@@ -1,5 +1,5 @@
 #
-#  BuildProfiles/UbuntuHirsute.cmake
+#  BuildProfiles/UbuntuKinetic.cmake
 #  Copyright 2021-2022 ItJustWorksTM
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,5 +29,5 @@ set (SMCE_MOSQUITTO_LINKING AUTO)
 set (SMCE_OPENSSL_LINKING SHARED)
 set (SMCE_ARDRIVO_OV767X On)
 
-set (SMCE_OS_RELEASE "ubuntu2104")
+set (SMCE_OS_RELEASE "ubuntu2210")
 set (SMCE_CPACK_PROFILE "Templates/Debian")

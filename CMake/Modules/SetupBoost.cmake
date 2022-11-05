@@ -29,19 +29,19 @@ else ()
   if (NOT BOOST_SOURCE_USE_GIT)
     if (NOT WIN32)
       FetchContent_Declare (Boost
-          URL "https://boostorg.jfrog.io/artifactory/main/release/1.79.0/source/boost_1_79_0.tar.gz"
-          URL_HASH SHA256=273f1be93238a068aba4f9735a4a2b003019af067b9c183ed227780b8f36062c
+          URL "https://boostorg.jfrog.io/artifactory/main/release/1.80.0/source/boost_1_80_0.tar.gz"
+          URL_HASH SHA256=4b2136f98bdd1f5857f1c3dea9ac2018effe65286cf251534b6ae20cc45e1847
       )
     else ()
       FetchContent_Declare (Boost
-          URL "https://boostorg.jfrog.io/artifactory/main/release/1.79.0/source/boost_1_79_0.7z"
-          URL_HASH SHA256=6c97cf4f4a0eb00ed776c88065ab3f59e183fa5e65f6464ff94f92328352d9d6
+          URL "https://boostorg.jfrog.io/artifactory/main/release/1.80.0/source/boost_1_80_0.7z"
+          URL_HASH SHA256=d12a2af721e22dbfb984ef061ee4c4ab2387f1904f6d65bc5acebaa34d6366ec
       )
     endif ()
   else ()
     FetchContent_Declare (Boost
         GIT_REPOSITORY "https://github.com/boostorg/boost"
-        GIT_TAG "boost-1.79.0"
+        GIT_TAG "boost-1.80.0"
         GIT_SHALLOW On
         GIT_PROGRESS On
     )
@@ -52,7 +52,7 @@ else ()
     FetchContent_Populate (Boost)
 
     if (NOT EXISTS "${boost_SOURCE_DIR}/CMakeLists.txt")
-      file (DOWNLOAD "https://github.com/boostorg/boost/raw/boost-1.79.0/CMakeLists.txt" "${boost_SOURCE_DIR}/CMakeLists.txt")
+      file (DOWNLOAD "https://github.com/boostorg/boost/raw/boost-1.80.0/CMakeLists.txt" "${boost_SOURCE_DIR}/CMakeLists.txt")
     endif ()
     message ("Download complete")
   endif ()

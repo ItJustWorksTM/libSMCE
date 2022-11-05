@@ -29,7 +29,7 @@ jobs:
   coverage-linux:
     name: libSMCE (coverage) - Linux
     runs-on: ubuntu-latest
-    container: ubuntu:hirsute
+    container: ubuntu:jammy
     env:
       DEBIAN_FRONTEND: "noninteractive"
     steps:
@@ -40,7 +40,7 @@ jobs:
           apt-get install -y lcov curl wget git cmake ninja-build g++ libmosquitto-dev pkg-config jq perl-base
           ninja --version
           cmake --version
-          wget -O Juniper.deb https://www.juniper-lang.org/installers/Juniper-3.0.0.deb
+          wget -O Juniper.deb https://www.juniper-lang.org/installers/Juniper-3.1.0.deb
           apt-get install ./Juniper.deb
       - name: Setup global CMake interceptor
         run: ci/setup-cmake-interceptor.sh
@@ -69,11 +69,11 @@ jobs:
         run: |
           ci/scan-cmake-commands.sh
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           files: ./coverage.info,./cmake-codecov-report.json
       - name: Upload traces
-        uses: 'actions/upload-artifact@v2'
+        uses: 'actions/upload-artifact@v3'
         with:
           name: cmcov-traces
           path: CMakeTrace/
@@ -88,10 +88,10 @@ jobs:
             os: ubuntu-latest
             c: gcc-10
             cxx: g++-10
-          - lib: libc++
-            os: ubuntu-latest
-            c: clang-14
-            cxx: clang++-14 -stdlib=libc++
+#          - lib: libc++
+#            os: ubuntu-latest
+#            c: clang-15
+#            cxx: clang++-15 -stdlib=libc++
     env:
       CC: ${{ matrix.c }}
       CXX: ${{ matrix.cxx }}
@@ -100,14 +100,14 @@ jobs:
         if: matrix.lib == 'libc++'
         run: |
           sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
-          sudo apt-get update && sudo apt-get install -y clang-14 libc++-14-dev libc++abi-14-dev
+          sudo apt-get update && sudo apt-get install -y clang-15 libc++-15-dev libc++abi-15-dev
       - uses: actions/checkout@v3
       - run: ci/setup-cmake-interceptor.sh
       - run: cmake -DSMCE_BUILD_PROFILE=CxxStdLibDebug -S . -B build
       - run: cmake --build build/ --target SMCE_Tests
       - run: (cd build/test/; ctest --output-on-failure)
       - run: ci/scan-cmake-commands.sh
-      - uses: codecov/codecov-action@v2
+      - uses: codecov/codecov-action@v3
         with:
           files: ./cmake-codecov-report.json
 
@@ -164,7 +164,7 @@ jobs:
           rm -rd build/packages/_CPack_Packages
       - name: Upload artifacts
         if: matrix.compiler.release
-        uses: 'actions/upload-artifact@v2'
+        uses: 'actions/upload-artifact@v3'
         with:
           name: libSMCE-ubuntu-${{ matrix.compiler.c }}
           path: build/packages/*
@@ -176,8 +176,13 @@ jobs:
       fail-fast: false
       matrix:
         compiler:
-          - name: GCC 11
+          - name: GCC 12
             release: true
+            slug: gcc
+            c: gcc-12
+            cxx: g++-12
+          - name: GCC 11
+            release: false
             slug: gcc
             c: gcc-11
             cxx: g++-11
@@ -186,12 +191,12 @@ jobs:
             slug: gcc
             c: gcc-10
             cxx: g++-10
-          - name: Clang/LLVM 13
+          - name: Clang/LLVM 15
             release: true
             slug: clang
-            c: clang-13
-            cxx: clang++-13
-          - name: AppleClang 12
+            c: clang-15
+            cxx: clang++-15
+          - name: AppleClang 14
             release: true
             slug: appleclang
             c: clang
@@ -204,6 +209,7 @@ jobs:
       - name: Check deps
         run: |
           brew install ninja openssl@3 bash
+          [ "${{ matrix.compiler.slug }}" = "clang" ] && brew install llvm
           curl -sL https://github.com/AeroStun/brew-lipo/raw/master/brew-lipo.sh | bash -s openssl@3
           ninja --version
           cmake --version
@@ -225,8 +231,8 @@ jobs:
         if: matrix.compiler.slug != 'appleclang'
         run: |
           export OPENSSL_ROOT_DIR=$(brew --prefix openssl@3)
-          [ "${{ matrix.compiler.slug }}" = "clang" ] && export CC="$(brew --prefix llvm)/bin/clang -stdlib=libc++ -nostdinc++ -I/usr/local/opt/llvm/include/c++/v1 -L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib -Wno-unused-command-line-argument"
-          [ "${{ matrix.compiler.slug }}" = "clang" ] && export CXX="$(brew --prefix llvm)/bin/clang++ -stdlib=libc++ -nostdinc++ -I/usr/local/opt/llvm/include/c++/v1 -L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib -Wno-unused-command-line-argument"
+          [ "${{ matrix.compiler.slug }}" = "clang" ] && export CC="$(brew --prefix llvm)/bin/clang"
+          [ "${{ matrix.compiler.slug }}" = "clang" ] && export CXX="$(brew --prefix llvm)/bin/clang++" CXXFLAGS="-stdlib=libc++ -nostdinc++ -I/usr/local/opt/llvm/include/c++/v1 -L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib -Wno-unused-command-line-argument"
           mkdir build
           cmake -G Ninja \
             -DCMAKE_BUILD_TYPE=Release \
@@ -237,8 +243,8 @@ jobs:
         run: cmake --build ./build
       - name: Build & Run tests
         run: |
-          [ "${{ matrix.compiler.slug }}" = "clang" ] && export CC="$(brew --prefix llvm)/bin/clang -stdlib=libc++ -nostdinc++ -I/usr/local/opt/llvm/include/c++/v1 -L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib -Wno-unused-command-line-argument"
-          [ "${{ matrix.compiler.slug }}" = "clang" ] && export CXX="$(brew --prefix llvm)/bin/clang++ -stdlib=libc++ -nostdinc++ -I/usr/local/opt/llvm/include/c++/v1 -L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib -Wno-unused-command-line-argument"
+          [ "${{ matrix.compiler.slug }}" = "clang" ] && export CC="$(brew --prefix llvm)/bin/clang"
+          [ "${{ matrix.compiler.slug }}" = "clang" ] && export CXX="$(brew --prefix llvm)/bin/clang++" CXXFLAGS="-stdlib=libc++ -nostdinc++ -I/usr/local/opt/llvm/include/c++/v1 -L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib -Wno-unused-command-line-argument"
           cmake --build ./build --target SMCE_Tests
           (cd build/test/; ctest --output-on-failure)
       - name: Package
@@ -248,14 +254,14 @@ jobs:
           rm -rd build/packages/_CPack_Packages
       - name: Upload artifacts
         if: matrix.compiler.release
-        uses: 'actions/upload-artifact@v2'
+        uses: 'actions/upload-artifact@v3'
         with:
           name: libSMCE-macos-${{ matrix.compiler.slug }}
           path: build/packages/*
       - name: Collect CMake coverage information
         run: ci/scan-cmake-commands.sh
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           files: ./cmake-codecov-report.json
 
@@ -309,7 +315,7 @@ jobs:
           rm -R packages/_CPack_Packages
           cd ..
       - name: Upload artifacts
-        uses: 'actions/upload-artifact@v2'
+        uses: 'actions/upload-artifact@v3'
         with:
           name: libSMCE-windows-${{ matrix.compiler.c }}
           path: build/packages/*
@@ -477,12 +483,6 @@ jobs:
         run: |
           dnf -y install curl git cmake ninja ${{ matrix.compiler.pkg }} glibc-devel lib64openssl-devel
           ninja --version
-
-          if [[ -f /usr/lib64/librt.so ]]; then
-            echo "This hotfix is no longer needed" && exit 255
-          else
-            ln -s /lib64/librt.so.1 /usr/lib64/librt.so
-          fi
       - name: CMake configure
         run: |
           cmake -G Ninja \
@@ -548,19 +548,16 @@ jobs:
             image: debian:bookworm
           - name: Debian
             codename: Bullseye
-            image: gcc:11-bullseye
+            image: gcc:12-bullseye
           - name: Debian
             codename: Buster
             image: gcc:10-buster
           - name: Ubuntu
+            codename: Kinetic
+            image: ubuntu:kinetic
+          - name: Ubuntu
             codename: Jammy
             image: ubuntu:jammy
-          - name: Ubuntu
-            codename: Impish
-            image: ubuntu:impish
-          - name: Ubuntu
-            codename: Hirsute
-            image: ubuntu:hirsute
           - name: Ubuntu
             codename: Focal
             image: ubuntu:focal
@@ -569,7 +566,7 @@ jobs:
       options: --security-opt seccomp=unconfined
     env:
       DEBIAN_FRONTEND: "noninteractive"
-      CMAKE_VERSION: 3.23.1
+      CMAKE_VERSION: 3.24.3
     steps:
       - name: Setup workdir
         run: mkdir /tmp/wk && cd /tmp/wk
@@ -604,14 +601,14 @@ jobs:
             apt-get update -y
             apt-get install -y /host/build/*.deb
       - name: Upload artifacts
-        uses: 'actions/upload-artifact@v2'
+        uses: 'actions/upload-artifact@v3'
         with:
           name: libSMCE-DEB-${{ matrix.os.name }}${{ matrix.os.codename }}
           path: build/*.deb
       - name: Collect CMake coverage information
         run: ci/scan-cmake-commands.sh
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           files: ./cmake-codecov-report.json
   package-rpm:
@@ -633,6 +630,10 @@ jobs:
             codename: 35
             image: fedora:35
             profile: FedoraHost
+          - name: Fedora
+            codename: 36
+            image: fedora:36
+            profile: FedoraHost
 #         - name: Fedora
 #           codename: Rawhide
 #           image: fedora:rawhide
@@ -641,8 +642,8 @@ jobs:
             codename: Leap
             image: opensuse/leap
             profile: OpenSuseLeap
-            c: gcc-10
-            cxx: g++-10
+            c: gcc-11
+            cxx: g++-11
 #         - name: OpenMandriva
 #           codename: Lx4.2
 #           image: openmandriva/4.2
@@ -659,7 +660,7 @@ jobs:
       - name: Fetch deps
         run: |
           [[ '${{ matrix.os.name }}' == 'Fedora' ]] && dnf install -y perl jq which tar git cmake rpmdevtools rpmlint ninja-build gcc-c++ openssl-devel || true
-          [[ '${{ matrix.os.name }}' == 'openSUSE' ]] && zypper install -y perl jq which tar git cmake rpmdevtools rpm-build rpmlint ninja gcc10-c++ libopenssl-devel || true
+          [[ '${{ matrix.os.name }}' == 'openSUSE' ]] && zypper install -y perl jq which tar git cmake rpmdevtools rpm-build rpmlint ninja gcc11-c++ libopenssl-devel || true
           [[ '${{ matrix.os.name }}' == 'OpenMandriva' ]] && dnf install -y perl jq which tar git cmake rpmdevtools rpm-build rpmlint ninja clang glibc-devel lib64openssl-devel || true
       - uses: actions/checkout@v3
       - name: Setup global CMake interceptor
@@ -688,13 +689,13 @@ jobs:
             cmake --build ./build
             ./build/stduart --help
       - name: Upload artifacts
-        uses: 'actions/upload-artifact@v2'
+        uses: 'actions/upload-artifact@v3'
         with:
           name: libSMCE-RPM-${{ matrix.os.name }}${{ matrix.os.codename }}
           path: build/*.rpm
       - name: Collect CMake coverage information
         run: ci/scan-cmake-commands.sh
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           files: ./cmake-codecov-report.json

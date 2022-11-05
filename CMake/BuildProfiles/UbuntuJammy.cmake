@@ -1,5 +1,5 @@
 #
-#  BuildProfiles/UbuntuImpish.cmake
+#  BuildProfiles/UbuntuJammy.cmake
 #  Copyright 2021-2022 ItJustWorksTM
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
