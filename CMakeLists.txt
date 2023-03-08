@@ -139,7 +139,7 @@ else ()
 endif ()
 
 
-add_library (objSMCE OBJECT)
+add_library (objSMCE OBJECT )
 configure_coverage (objSMCE)
 set_property (TARGET objSMCE PROPERTY CXX_EXTENSIONS Off)
 set_property (TARGET objSMCE PROPERTY POSITION_INDEPENDENT_CODE True)
@@ -168,6 +168,7 @@ target_sources (objSMCE PRIVATE
     src/SMCE/PluginManifest.cpp
     include/SMCE/SketchConf.hpp
 )
+
 if (NOT MSVC)
   target_compile_options (objSMCE PRIVATE "-Wall" "-Wextra" "-Wpedantic" "-Werror" "-Wcast-align")
 else ()
