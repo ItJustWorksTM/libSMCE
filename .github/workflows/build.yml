@@ -69,7 +69,7 @@ jobs:
         run: |
           ci/scan-cmake-commands.sh
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v7
         with:
           files: ./coverage.info,./cmake-codecov-report.json
       - name: Upload traces
@@ -107,7 +107,7 @@ jobs:
       - run: cmake --build build/ --target SMCE_Tests
       - run: (cd build/test/; ctest --output-on-failure)
       - run: ci/scan-cmake-commands.sh
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v7
         with:
           files: ./cmake-codecov-report.json
 
@@ -261,7 +261,7 @@ jobs:
       - name: Collect CMake coverage information
         run: ci/scan-cmake-commands.sh
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v7
         with:
           files: ./cmake-codecov-report.json
 
@@ -608,7 +608,7 @@ jobs:
       - name: Collect CMake coverage information
         run: ci/scan-cmake-commands.sh
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v7
         with:
           files: ./cmake-codecov-report.json
   package-rpm:
@@ -696,6 +696,6 @@ jobs:
       - name: Collect CMake coverage information
         run: ci/scan-cmake-commands.sh
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v7
         with:
           files: ./cmake-codecov-report.json
