@@ -73,7 +73,7 @@ jobs:
         with:
           files: ./coverage.info,./cmake-codecov-report.json
       - name: Upload traces
-        uses: 'actions/upload-artifact@v3'
+        uses: 'actions/upload-artifact@v7'
         with:
           name: cmcov-traces
           path: CMakeTrace/
@@ -164,7 +164,7 @@ jobs:
           rm -rd build/packages/_CPack_Packages
       - name: Upload artifacts
         if: matrix.compiler.release
-        uses: 'actions/upload-artifact@v3'
+        uses: 'actions/upload-artifact@v7'
         with:
           name: libSMCE-ubuntu-${{ matrix.compiler.c }}
           path: build/packages/*
@@ -254,7 +254,7 @@ jobs:
           rm -rd build/packages/_CPack_Packages
       - name: Upload artifacts
         if: matrix.compiler.release
-        uses: 'actions/upload-artifact@v3'
+        uses: 'actions/upload-artifact@v7'
         with:
           name: libSMCE-macos-${{ matrix.compiler.slug }}
           path: build/packages/*
@@ -315,7 +315,7 @@ jobs:
           rm -R packages/_CPack_Packages
           cd ..
       - name: Upload artifacts
-        uses: 'actions/upload-artifact@v3'
+        uses: 'actions/upload-artifact@v7'
         with:
           name: libSMCE-windows-${{ matrix.compiler.c }}
           path: build/packages/*
@@ -601,7 +601,7 @@ jobs:
             apt-get update -y
             apt-get install -y /host/build/*.deb
       - name: Upload artifacts
-        uses: 'actions/upload-artifact@v3'
+        uses: 'actions/upload-artifact@v7'
         with:
           name: libSMCE-DEB-${{ matrix.os.name }}${{ matrix.os.codename }}
           path: build/*.deb
@@ -689,7 +689,7 @@ jobs:
             cmake --build ./build
             ./build/stduart --help
       - name: Upload artifacts
-        uses: 'actions/upload-artifact@v3'
+        uses: 'actions/upload-artifact@v7'
         with:
           name: libSMCE-RPM-${{ matrix.os.name }}${{ matrix.os.codename }}
           path: build/*.rpm
