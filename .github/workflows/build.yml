@@ -86,12 +86,12 @@ jobs:
         include:
           - lib: libstdc++
             os: ubuntu-latest
-            c: gcc-10
-            cxx: g++-10
+            c: gcc-13
+            cxx: g++-13
 #          - lib: libc++
 #            os: ubuntu-latest
-#            c: clang-15
-#            cxx: clang++-15 -stdlib=libc++
+#            c: clang-18
+#            cxx: clang++-18 -stdlib=libc++
     env:
       CC: ${{ matrix.c }}
       CXX: ${{ matrix.cxx }}
@@ -118,21 +118,21 @@ jobs:
       fail-fast: false
       matrix:
         compiler:
-          - name: GCC 10
-            c: gcc-10
-            cxx: g++-10
+          - name: GCC 13
+            c: gcc-13
+            cxx: g++-13
             release: true
-          - name: Clang/LLVM 12
-            c: clang-12
-            cxx: clang++-12
+          - name: Clang/LLVM 18
+            c: clang-18
+            cxx: clang++-18
             release: true
-          - name: Clang/LLVM 11
-            c: clang-11
-            cxx: clang++-11
+          - name: Clang/LLVM 17
+            c: clang-17
+            cxx: clang++-17
             release: false
-          - name: Clang/LLVM 10
-            c: clang-10
-            cxx: clang++-10
+          - name: Clang/LLVM 16
+            c: clang-16
+            cxx: clang++-16
             release: false
     env:
       CC: ${{ matrix.compiler.c }}
@@ -176,27 +176,27 @@ jobs:
       fail-fast: false
       matrix:
         compiler:
-          - name: GCC 12
+          - name: GCC 15
             release: true
             slug: gcc
-            c: gcc-12
-            cxx: g++-12
-          - name: GCC 11
+            c: gcc-15
+            cxx: g++-15
+          - name: GCC 14
             release: false
             slug: gcc
-            c: gcc-11
-            cxx: g++-11
-          - name: GCC 10
+            c: gcc-14
+            cxx: g++-14
+          - name: GCC 13
             release: false
             slug: gcc
-            c: gcc-10
-            cxx: g++-10
-          - name: Clang/LLVM 15
+            c: gcc-13
+            cxx: g++-13
+          - name: Clang/LLVM 20
             release: true
             slug: clang
-            c: clang-15
-            cxx: clang++-15
-          - name: AppleClang 14
+            c: clang-20
+            cxx: clang++-20
+          - name: AppleClang 21
             release: true
             slug: appleclang
             c: clang
@@ -566,7 +566,7 @@ jobs:
       options: --security-opt seccomp=unconfined
     env:
       DEBIAN_FRONTEND: "noninteractive"
-      CMAKE_VERSION: 3.24.3
+      CMAKE_VERSION: 4.4.5
     steps:
       - name: Setup workdir
         run: mkdir /tmp/wk && cd /tmp/wk
@@ -642,8 +642,8 @@ jobs:
             codename: Leap
             image: opensuse/leap
             profile: OpenSuseLeap
-            c: gcc-11
-            cxx: g++-11
+            c: gcc-16
+            cxx: g++-16
 #         - name: OpenMandriva
 #           codename: Lx4.2
 #           image: openmandriva/4.2
